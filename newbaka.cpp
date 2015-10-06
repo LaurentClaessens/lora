@@ -66,9 +66,9 @@ void my_copy_file(path from_path,path to_path)
 
     time_t t_ori=last_write_time(from_path);
 
-    //copy_file(from_path,to_path);
-    //last_write_time( to_path,t_ori );
-    //assert( last_write_time(from_path)==last_write_time(to_path) );
+    copy_file(from_path,to_path);
+    last_write_time( to_path,t_ori );
+    assert( last_write_time(from_path)==last_write_time(to_path) );
 }
 
 // The derived class run() member have to return a boolean saying either one has to continue the work after or not.
@@ -115,6 +115,9 @@ class FileCopyTask : public GenericTask{
         }
         my_copy_file(  orig_path,bak_path  );
 
+        if (!is_regular_file(orig_path)){  throw string("The file "+orig_path.string()+"was not created");  }
+        if (!is_regular_file(bak_path)){  throw string("The file "+bak_path.string()+"was not created") ; }
+        if (!is_regular_file(purge_path)){  throw string("The file "+purge_path.string()+"was not created") ; }
         assert( is_regular_file(orig_path) );
         assert( is_regular_file(bak_path) );
         assert( is_regular_file(purge_path) );
@@ -221,8 +224,7 @@ class Configuration{
         this->home_path=getenv("HOME");
         boost::gregorian::date now=boost::gregorian::day_clock::local_day();
         string sd=to_simple_string(now);
-        path purge_path = purge_rep_path/sd;
-        cout<<"le répertoire de purge"<<purge_path<<endl;
+        this->purge_path = purge_rep_path/sd;
         create_tree(purge_path);
         assert( is_directory(purge_path) );
     }
