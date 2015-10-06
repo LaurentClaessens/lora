@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 //
 //
-// g++  newbaka.cpp  -o newbaka /usr/lib/i386-linux-gnu/libboost_filesystem.a   /usr/lib/i386-linux-gnu/libboost_thread.so -lboost_filesystem -lboost_system
+// g++  newbaka.cpp  -o newbaka /usr/lib/i386-linux-gnu/libboost_filesystem.a   /usr/lib/i386-linux-gnu/libboost_thread.so -lboost_filesystem -lboost_system  /usr/lib/i386-linux-gnu/libboost_date_time.so
 //
 
 // TODO : should task_list be a shared pointer ? Could that avoid my 'still' boolean in make_the_work ?
@@ -29,23 +29,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <boost/filesystem.hpp>
 #include <boost/thread.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
 
 using namespace boost::filesystem;
 using namespace std;
 
 
 
-// My prototypes
+// Header
 void DealWithRepertory(path);
 void DealWithFile(path);
-
-
-bool create_tree(path);      // recursively creates the directory tree up to 'rep_path'.
-void my_copy_file(path ,path );  // copy 'from_path' to 'to_path' keeping the 'last_write_time' attribute.
-                                // the destination file cannot exist (in case of home->backup, the file has to be moved to the purge first).
+bool create_tree(path);             // recursively creates the directory tree up to 'rep_path'.
+void my_copy_file(path ,path );     // copy 'from_path' to 'to_path' keeping the 'last_write_time' attribute.
+                                    // the destination file cannot exist (in case of home->backup, the file has to be moved to the purge first).
 
 // Example : the triple (  /home/myself/foo/bar.txt  ;  /backup/foo/bar.txt   ;   /purge/<date>/<time>/foo/bar.txt )
-struct PathTriple{
+struct pathTriple{
     path orig;
     path bak;
     path purge;
@@ -53,9 +52,10 @@ struct PathTriple{
 
 bool create_tree(path rep_path)
 {
+    cout<<"tree : rep_path"<<rep_path<<endl;
     path parent_path=rep_path.parent_path();
     if (is_directory( parent_path ) ) {}
-    else { create_tree(parent_path); } 
+    else { create_tree(parent_path);  } 
     create_directory(rep_path); 
 }
 
@@ -65,10 +65,10 @@ void my_copy_file(path from_path,path to_path)
     assert( !is_regular_file(to_path) );
 
     time_t t_ori=last_write_time(from_path);
-    copy_file(from_path,to_path);
-    last_write_time( to_path,t_ori );
 
-    assert( last_write_time(from_path)==last_write_time(to_path) );
+    //copy_file(from_path,to_path);
+    //last_write_time( to_path,t_ori );
+    //assert( last_write_time(from_path)==last_write_time(to_path) );
 }
 
 // The derived class run() member have to return a boolean saying either one has to continue the work after or not.
@@ -90,11 +90,17 @@ class FileCopyTask : public GenericTask{
         path orig_path;
         path bak_path;
         path purge_path;
+
+    public:
     FileCopyTask(pathTriple triple):GenericTask()
     {
-        this->orig_path=triple.home;
+        this->orig_path=triple.orig;
         this->bak_path=triple.bak;
         this->purge_path=triple.purge;
+        cout<<"Voici un triple"<<endl;
+        cout<<"original " <<orig_path<<endl;
+        cout<<"backup " <<bak_path<<endl;
+        cout<<"purge " <<purge_path<<endl;
     }
     bool run(){
         assert(is_regular_file(orig_path));
@@ -180,6 +186,7 @@ bool run_next(deque<GenericTask*> &task_list){
 // Says if one has to perform the proposed backup.
 bool do_we_backup(path orig_path,path bak_path)
 {
+    assert(is_regular_file(orig_path));
     if (!is_regular_file(bak_path)){return true;}
     uintmax_t s_orig=file_size(orig_path);
     uintmax_t s_bak=file_size(bak_path);
@@ -187,8 +194,7 @@ bool do_we_backup(path orig_path,path bak_path)
     time_t t_ori=last_write_time(orig_path);
     time_t t_bak=last_write_time(bak_path);
     if (t_ori>t_bak){return true;}
-    //TODO : the copied file has last_write_time set to backup time. One has to set it to the one of the original file.
-    //if (t_ori<t_bak){throw string("The last_write_date of this file is f*cked up !"+orig_path.string()+" "+bak_path.string()+" ?");}
+    if (t_ori<t_bak){throw string("The last_write_date of this file is f*cked up !"+orig_path.string()+" "+bak_path.string()+" ?");}
     return false;
 }
 
@@ -203,11 +209,22 @@ class Configuration{
         // example : purge_rep_path is  /mnt/part-backup/bakapurge/
         //           purge_path is      /mnt/part-backup/bakapurge/<date>/<time>/
         // The latter is made public.
+    Configuration(){ }
     Configuration(path starting_path,path backup_path, path purge_rep_path)
     {
+        assert(  is_directory(starting_path) );
+        assert(  is_directory(backup_path) );
+        assert(  is_directory(purge_rep_path) );
+
         this->starting_path=starting_path;
         this->backup_path=backup_path;
         this->home_path=getenv("HOME");
+        boost::gregorian::date now=boost::gregorian::day_clock::local_day();
+        string sd=to_simple_string(now);
+        path purge_path = purge_rep_path/sd;
+        cout<<"le répertoire de purge"<<purge_path<<endl;
+        create_tree(purge_path);
+        assert( is_directory(purge_path) );
     }
     path home_to_backup(path local_path)
     {
@@ -217,23 +234,36 @@ class Configuration{
         spath.replace(0,shome.size(),sbackup);
         return path(spath);
     }
+    path home_to_purge(path local_path)
+    {
+        string spath=local_path.string();
+        string shome=home_path.string();
+        string spurge=this->purge_path.string();
+        spath.replace(0,shome.size(),spurge);
+        return path(spath);
+    }
 
     void DealWithFile(path file_path){
         path bak_path=this->home_to_backup(file_path);
+        path purge_path=this->home_to_purge(file_path);
         if (do_we_backup(file_path,bak_path))
         {
-            assert( !starts_with(bak_path,this->starting_path ) );
-            FileCopyTask*  ftask= new FileCopyTask(file_path,bak_path);
+            cout<<"ooBFFRooTQiPPV  "<<file_path;
+            assert( !boost::algorithm::starts_with(bak_path,this->starting_path ) );
+            pathTriple triple;
+            triple.orig=file_path;
+            triple.bak=bak_path;
+            triple.purge=purge_path;
+            FileCopyTask*  ftask= new FileCopyTask(triple);
             task_list.push_back(ftask);
         }
     }
 
-    //void DealWithRepertory(string rep_name){ DealWithRepertory( path(rep_name) ); }
     void DealWithRepertory(path rep_path) {
-    
         directory_iterator end_itr;
         for(  directory_iterator itr(rep_path); itr!=end_itr;++itr  )
         {
+            cout<<"ooEZSQooEBagDY  "<<rep_path;
             path pathname=itr->path();
             if (is_directory(pathname))
             {
@@ -253,8 +283,12 @@ class Configuration{
     }
     void MakeBackup()
     { 
+        cout<<"make backup"<<endl;
         path sp=this->starting_path;
+        cout<<"sp  "<<sp<<endl;
+        cout<<"ooYEJJooZLokyp "<<home_to_backup(sp);
         create_tree(home_to_backup(sp));
+        cout<<"ok pour créer";
         DealWithRepertory(sp); 
         EndingTask*  etask= new EndingTask();
         task_list.push_back(etask);
@@ -302,7 +336,7 @@ int main(int argc, char *argv[])
 try
     {    
     path starting_path=get_starting_path(argc,argv);
-    Configuration a=Configuration(starting_path,path("/home/moky/.part_backup"));
+    Configuration a=Configuration(starting_path,path("/mnt/part-backup/bakatot.newbaka"),path("/mnt/part-backup/bakapurge.newbaka"));
     a.MakeBackup();
     //launching the thread that runs the tasks
     boost::thread sheduler( make_the_work, a.task_list );
