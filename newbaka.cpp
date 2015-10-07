@@ -19,14 +19,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // g++  newbaka.cpp  -o newbaka /usr/lib/i386-linux-gnu/libboost_filesystem.a   /usr/lib/i386-linux-gnu/libboost_thread.so -lboost_filesystem -lboost_system  /usr/lib/i386-linux-gnu/libboost_date_time.so
 //
-// Pour info : avant d'avoir séparé les déclarations et les implémentations, le fichier compilé fait : 336K newbaka   (commit )<++>
+// Pour info : avant d'avoir séparé les déclarations et les implémentations, le fichier compilé fait : 336K newbaka   (commit df821ec8ed3ac1ed511e23ec24572b8fbef40ad5)
 
 // TODO : should task_list be a shared pointer ? Could that avoid my 'still' boolean in make_the_work ?
 
 #include <iostream>
 #include <string>
 #include <deque>
-#include <boost/filesystem.hpp>
+#include <boost/filesystem.hpp>             // the file filesystem.hpp is itself protected by #ifndef... #endif thus this is not included twice (by #include "newbaka.h")
 #include <boost/thread.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
@@ -34,11 +34,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace boost::filesystem;
 using namespace std;
-
-void DealWithRepertory(path);
-void DealWithFile(path);
-bool create_tree(path);             // recursively creates the directory tree up to the given directory.
-void my_copy_file(path ,path );     // copy 'from_path' to 'to_path' keeping the 'last_write_time' attribute.
 
 // Example : the triple (  /home/myself/foo/bar.txt  ;  /backup/foo/bar.txt   ;   /purge/<date>/<time>/foo/bar.txt )
 struct pathTriple{
@@ -71,65 +66,6 @@ void my_copy_file(path from_path,path to_path)
     };
 }
 
-// The derived class run() member have to return a boolean saying either one has to continue the work after or not.
-// returning true make the work continue (either performing next task either waiting for a new task to arrive).
-// returning false exits the working thread and closes the execution of the program.
-class GenericTask{
-    public:
-        GenericTask(){ }
-        virtual bool run(){ throw string("You tried to run a GenericTask"); }
-};
-
-// FileCopyTask do
-// - move the backup file (if exists) to the purge repertory
-// - copy the home file to the backup repertory.
-// The main loop (especially DealWith...) determines the paths : this run() is stupid.
-// The last_write_time attribute of the copied file is the one of the original file.
-class FileCopyTask : public GenericTask{
-    private: 
-        path orig_path;
-        path bak_path;
-        path purge_path;
-
-    public:
-    FileCopyTask(pathTriple triple):GenericTask()
-    {
-        this->orig_path=triple.orig;
-        this->bak_path=triple.bak;
-        this->purge_path=triple.purge;
-    }
-    bool run(){
-        assert(is_regular_file(orig_path));
-
-        cout<<"(file) Copy  "<<this->orig_path;
-        cout<<"--->  "<<this->bak_path<<"..."<<endl;
-
-        if (is_regular_file(bak_path))
-        {
-            create_tree(purge_path.parent_path());
-            rename( bak_path,purge_path );
-            assert( is_regular_file(purge_path) );
-        }
-        my_copy_file(  orig_path,bak_path  );
-
-
-        vector<path> test_list;
-        test_list.push_back( orig_path );
-        test_list.push_back( bak_path );
-        test_list.push_back( purge_path );
-
-        for (int i=0;i<test_list.size();++i)
-        {
-            if (!is_regular_file(test_list[i])){ 
-                string st="The file"+test_list[i].string()+" has not been created.";
-                throw st;  }
-        }
-        assert( is_regular_file(orig_path) );
-        assert( is_regular_file(bak_path) );
-        return true;
-    }
-};
-
 void copy_tree(path orig_path,path bak_path)
 {
     cout<<"(rep) Copy "<<orig_path<<" --> "<<bak_path;
@@ -151,35 +87,6 @@ void copy_tree(path orig_path,path bak_path)
     }
     cout<<"done (rep)"<<endl;
 }
-
-class RepertoryCopyTask : public GenericTask{
-    public: 
-        path orig_path;
-        path bak_path;
-        RepertoryCopyTask(path orig_path,path bak_path):GenericTask()
-    {
-        this->orig_path=orig_path;
-        this->bak_path=bak_path;
-    }
-    bool run()
-    {
-        cout<<"Copy  "<<this->orig_path<<endl;
-        cout<<"--->  "<<this->bak_path<<endl;
-        copy_tree(orig_path,bak_path);
-        return true;
-    }
-};
-
-class EndingTask : public GenericTask{
-    public:
-        bool ending_task;
-    EndingTask(){ }
-    bool run()
-    {
-        return false;
-    }
-};
-
 
 bool run_next(deque<GenericTask*> &task_list){
     // run the next task in 'task_list' and remove him from the list
