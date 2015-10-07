@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // g++  newbaka.cpp  -o newbaka /usr/lib/i386-linux-gnu/libboost_filesystem.a   /usr/lib/i386-linux-gnu/libboost_thread.so -lboost_filesystem -lboost_system  /usr/lib/i386-linux-gnu/libboost_date_time.so
 //
-// Pour info : avant d'avoir séparé les déclarations et les implémentations, le fichier complilé fait : 336K newbaka
+// Pour info : avant d'avoir séparé les déclarations et les implémentations, le fichier compilé fait : 336K newbaka   (commit )<++>
 
 // TODO : should task_list be a shared pointer ? Could that avoid my 'still' boolean in make_the_work ?
 
@@ -35,6 +35,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace boost::filesystem;
 using namespace std;
 
+void DealWithRepertory(path);
+void DealWithFile(path);
+bool create_tree(path);             // recursively creates the directory tree up to the given directory.
+void my_copy_file(path ,path );     // copy 'from_path' to 'to_path' keeping the 'last_write_time' attribute.
 
 // Example : the triple (  /home/myself/foo/bar.txt  ;  /backup/foo/bar.txt   ;   /purge/<date>/<time>/foo/bar.txt )
 struct pathTriple{

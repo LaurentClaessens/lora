@@ -18,7 +18,3 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
 
-void DealWithRepertory(path);
-void DealWithFile(path);
-bool create_tree(path);             // recursively creates the directory tree up to the given directory.
-void my_copy_file(path ,path );     // copy 'from_path' to 'to_path' keeping the 'last_write_time' attribute.
