@@ -16,11 +16,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
-class GenericTask{
-    public:
-        GenericTask(){ }
-        virtual bool run(){ throw string("You tried to run a GenericTask"); }
-};
+GenericTask::GenericTask(){ }
+virtual bool GenericTask::run(){ throw string("You tried to run a GenericTask"); }
+
 
 class FileCopyTask : public GenericTask{
     private: 
@@ -29,6 +27,7 @@ class FileCopyTask : public GenericTask{
         path purge_path;
 
     public:
+
     FileCopyTask(pathTriple triple):GenericTask()
     {
         this->orig_path=triple.orig;

@@ -30,7 +30,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <boost/thread.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
-#include "newbaka.h"           
+#include "newbaka.h"
+#include "tasks.h"
 
 using namespace boost::filesystem;
 using namespace std;

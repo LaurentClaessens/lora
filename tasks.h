@@ -17,6 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 //
 
+#ifndef __INCLUDE_TASKS_H__
+#define __INCLUDE_TASKS_H__
+
+
 
 
 // 'newbaka' has a loop over all the files/directories to be backuped and creates a list of taskes ('task_list'). That list is read by a thread which lanch the 'run' method over the elements of the task list.
@@ -32,7 +36,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class GenericTask{
     public:
         GenericTask(){ }
-        virtual bool run(){ throw string("You tried to run a GenericTask"); }
+        virtual bool run() const;
 };
 
 // FileCopyTask do
@@ -47,67 +51,23 @@ class FileCopyTask : public GenericTask{
         path purge_path;
 
     public:
-    FileCopyTask(pathTriple triple):GenericTask()
-    {
-        this->orig_path=triple.orig;
-        this->bak_path=triple.bak;
-        this->purge_path=triple.purge;
-    }
-    bool run(){
-        assert(is_regular_file(orig_path));
-
-        cout<<"(file) Copy  "<<this->orig_path;
-        cout<<"--->  "<<this->bak_path<<"..."<<endl;
-
-        if (is_regular_file(bak_path))
-        {
-            create_tree(purge_path.parent_path());
-            rename( bak_path,purge_path );
-            assert( is_regular_file(purge_path) );
-        }
-        my_copy_file(  orig_path,bak_path  );
-
-
-        vector<path> test_list;
-        test_list.push_back( orig_path );
-        test_list.push_back( bak_path );
-        test_list.push_back( purge_path );
-
-        for (int i=0;i<test_list.size();++i)
-        {
-            if (!is_regular_file(test_list[i])){ 
-                string st="The file"+test_list[i].string()+" has not been created.";
-                throw st;  }
-        }
-        assert( is_regular_file(orig_path) );
-        assert( is_regular_file(bak_path) );
-        return true;
-    }
+    FileCopyTask(pathTriple triple):GenericTask();
+    bool run() const;
 };
 
 class RepertoryCopyTask : public GenericTask{
     public: 
         path orig_path;
         path bak_path;
-        RepertoryCopyTask(path orig_path,path bak_path):GenericTask()
-    {
-        this->orig_path=orig_path;
-        this->bak_path=bak_path;
-    }
-    bool run()
-    {
-        cout<<"Copy  "<<this->orig_path<<endl;
-        cout<<"--->  "<<this->bak_path<<endl;
-        copy_tree(orig_path,bak_path);
-        return true;
-    }
+        RepertoryCopyTask(path orig_path,path bak_path):GenericTask();
+    bool run() const;
 };
 
 class FinalTask : public GenericTask{
     public:
         EndingTask(){ }
-    bool run()
-    {
-        return false;
-    }
+    bool run() { return false; } const;
 };
+
+
+#endif
