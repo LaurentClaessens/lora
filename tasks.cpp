@@ -84,12 +84,14 @@ class RepertoryCopyTask : public GenericTask{
     }
 };
 
-class EndingTask : public GenericTask{
+class FinalTask : public GenericTask{
     public:
         bool ending_task;
-    EndingTask(){ }
+    FinalTask(){}
     bool run()
     {
         return false;
     }
 };
+
+

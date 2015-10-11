@@ -22,6 +22,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
+#include <boost/filesystem.hpp>
+
+
 
 // 'newbaka' has a loop over all the files/directories to be backuped and creates a list of taskes ('task_list'). That list is read by a thread which lanch the 'run' method over the elements of the task list.
 // There are the following types of taskes :
@@ -31,6 +34,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // all are derivated from GenericTask (in order to fool the type control and put more than one type in the same list).
 //
 // The return value of 'run' (boolean) says if one has to continue or bot with the next task. In a normal execution the only task returning 'false' is the final one created right after the main loop.
+
+// Example : the triple (  /home/myself/foo/bar.txt  ;  /backup/foo/bar.txt   ;   /purge/<date>/<time>/foo/bar.txt )
+struct pathTriple{
+    boost::filesystem::path orig;
+    boost::filesystem::path bak;
+    boost::filesystem::path purge;
+};
 
 
 class GenericTask{
@@ -46,27 +56,27 @@ class GenericTask{
 // The last_write_time attribute of the copied file is the one of the original file.
 class FileCopyTask : public GenericTask{
     private: 
-        path orig_path;
-        path bak_path;
-        path purge_path;
+        boost::filesystem::path orig_path;
+        boost::filesystem::path bak_path;
+        boost::filesystem::path purge_path;
 
     public:
-    FileCopyTask(pathTriple triple):GenericTask();
-    bool run() const;
+        FileCopyTask(const pathTriple);
+        bool run() const;
 };
 
 class RepertoryCopyTask : public GenericTask{
     public: 
-        path orig_path;
-        path bak_path;
-        RepertoryCopyTask(path orig_path,path bak_path):GenericTask();
+        boost::filesystem::path orig_path;
+        boost::filesystem::path bak_path;
+        RepertoryCopyTask(const boost::filesystem::path orig_path,const boost::filesystem::path bak_path);
     bool run() const;
 };
 
 class FinalTask : public GenericTask{
     public:
-        EndingTask(){ }
-    bool run() { return false; } const;
+        void EndingTask() const { } 
+    bool run() const;
 };
 
 

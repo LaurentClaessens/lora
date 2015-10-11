@@ -30,18 +30,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <boost/thread.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
+
 #include "newbaka.h"
 #include "tasks.h"
 
 using namespace boost::filesystem;
 using namespace std;
-
-// Example : the triple (  /home/myself/foo/bar.txt  ;  /backup/foo/bar.txt   ;   /purge/<date>/<time>/foo/bar.txt )
-struct pathTriple{
-    path orig;
-    path bak;
-    path purge;
-};
 
 bool create_tree(path rep_path)
 {
@@ -90,8 +84,6 @@ void copy_tree(path orig_path,path bak_path)
 }
 
 bool run_next(deque<GenericTask*> &task_list){
-    // run the next task in 'task_list' and remove him from the list
-    // return false if this was the ending task and true if one has to continue.
     bool ret;
     ret=task_list.front()->run();       // equivalent to   (*task_list.front()).run()
     task_list.pop_front();
@@ -99,7 +91,6 @@ bool run_next(deque<GenericTask*> &task_list){
     return ret;
 }
 
-// Says if one has to perform the proposed backup.
 bool do_we_backup(path orig_path,path bak_path)
 {
     assert(is_regular_file(orig_path));
@@ -114,34 +105,20 @@ bool do_we_backup(path orig_path,path bak_path)
     return false;
 }
 
-class Configuration{
-    public:
-        path starting_path;
-        path backup_path;
-        path home_path;
-        path purge_path;
-        deque<GenericTask*> task_list;
-        // purge_rep_path is the path to the _general_ purge repertory. Then purge_path is computed and created.
-        // example : purge_rep_path is  /mnt/part-backup/bakapurge/
-        //           purge_path is      /mnt/part-backup/bakapurge/<date>/<time>/
-        // The latter is made public.
-    Configuration(){ }
-    Configuration(path starting_path,path backup_path, path purge_rep_path)
+Configuration::Configuration(){ }
+Configuration::Configuration(const path starting_path,const path backup_path,const path purge_rep_path) : starting_path(starting_path),backup_path(backup_path),home_path(getenv("HOME"))
     {
         assert(  is_directory(starting_path) );
         assert(  is_directory(backup_path) );
         assert(  is_directory(purge_rep_path) );
 
-        this->starting_path=starting_path;
-        this->backup_path=backup_path;
-        this->home_path=getenv("HOME");
         boost::gregorian::date now=boost::gregorian::day_clock::local_day();
-        string sd=to_simple_string(now);
+        const string sd=to_simple_string(now);
         this->purge_path = purge_rep_path/sd;
         create_tree(purge_path);
         assert( is_directory(purge_path) );
     }
-    path home_to_backup(path local_path)
+path Configuration::home_to_backup(path local_path) const;
     {
         string spath=local_path.string();
         string shome=home_path.string();
@@ -149,7 +126,7 @@ class Configuration{
         spath.replace(0,shome.size(),sbackup);
         return path(spath);
     }
-    path home_to_purge(path local_path)
+path Configuration::home_to_purge(path local_path) const;
     {
         string spath=local_path.string();
         string shome=home_path.string();
@@ -158,7 +135,7 @@ class Configuration{
         return path(spath);
     }
 
-    void DealWithFile(path file_path){
+void Configuration::DealWithFile(path file_path){
         path bak_path=this->home_to_backup(file_path);
         path purge_path=this->home_to_purge(file_path);
         if (do_we_backup(file_path,bak_path))
@@ -173,7 +150,7 @@ class Configuration{
         }
     }
 
-    void DealWithRepertory(path rep_path) {
+void Configuration::DealWithRepertory(path rep_path) {
         directory_iterator end_itr;
         for(  directory_iterator itr(rep_path); itr!=end_itr;++itr  )
         {
@@ -194,17 +171,17 @@ class Configuration{
             }
         }
     }
-    void MakeBackup()
+void Configuration::MakeBackup()
     { 
-        path sp=this->starting_path;
+        const path sp=this->starting_path;
         create_tree(home_to_backup(sp));
         DealWithRepertory(sp); 
-        EndingTask*  etask= new EndingTask();
+        FinalTask*  etask= new FinalTask();
         task_list.push_back(etask);
     }
 };
 
-path get_starting_path(int argc, char *argv[])
+path get_starting_path(int argc, char *argv[]) const
 {
     path starting_path;
     path full_path;
@@ -227,7 +204,6 @@ path get_starting_path(int argc, char *argv[])
     return full_path;
 }
 
-// This function is in a separated thread and execute the tasks in the list.
 void make_the_work(  deque<GenericTask*> &task_list)
 {
     bool still=true;
