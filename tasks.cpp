@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
 #include <string>
+#include <boost/filesystem.hpp>
 #include "tasks.h"
 
 bool create_tree(path rep_path)
