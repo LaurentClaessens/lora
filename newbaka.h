@@ -35,7 +35,10 @@ bool run_next(std::deque<GenericTask*> &task_list);             // run the next 
 
 bool do_we_backup(const path orig_path,const path bak_path);         // Says if one has to perform the proposed backup.
 
-
+// Constructors for 'Configuration'
+// 0 argument : read everything from the configuration file which is "newbaka.cfg".
+// 1 argument : the argument is the configuration file path. 
+// 3 arguments : starting path, backup and purge paths.
 class Configuration
 {
     public:
@@ -48,8 +51,10 @@ class Configuration
         // example : purge_rep_path is  /mnt/part-backup/bakapurge/
         //           purge_path is      /mnt/part-backup/bakapurge/<date>/<time>/
         // The latter is made public.
+
     Configuration();
-    Configuration(const path starting_path,const path backup_path,const path purge_rep_path);
+    Configuration(const path,const path,const path);
+    Configuration(const path);      // the starting path. Other paths are read from the configuration file.
 
     path home_to_backup(const path local_path) const;
     path home_to_purge(const path local_path) const;
@@ -58,8 +63,13 @@ class Configuration
     void MakeBackup();
 };
 
-// The path to ba backuped is the one passed as argument. This function return that path, normalised and absolute.
+// The path to be backuped is the one passed as argument. This function return that path, normalised and absolute.
 path get_starting_path(int argc, char *argv[]);
+
+
+// Read the file 'cfg_path' and return an object of type 'user_configuration'.
+// - starting path, backup_path, purge_path
+user_configuration read_configuration_file(const path cfg_path)
 
 
 // This function is in a separated thread and execute the tasks in the list.

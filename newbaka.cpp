@@ -23,11 +23,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <deque>
 #include <boost/filesystem.hpp>             // the file filesystem.hpp is itself protected by #ifndef... #endif thus this is not included twice (by #include "newbaka.h")
 #include <boost/thread.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 
 #include "newbaka.h"
@@ -58,7 +60,43 @@ bool do_we_backup(path orig_path,path bak_path)
     return false;
 }
 
-Configuration::Configuration(){ }
+vector<path> read_configuration_file(const path cfg_path)
+{
+    assert(is_regular_file(cfg_path));
+    ifstream cfg_file(cfg_path.c_str());
+    string line;
+    string bp,pp,sp;
+    vector<string> parts;
+    while (  std::getline(cfg_file,line) )
+    {
+        cout<<line;
+        split( parts,line,boost::is_any_of("=") );
+        cout<<line<<endl;
+        cout<<parts[0]<<endl;
+        cout<<parts[1]<<endl;
+        string one=parts[1];
+        cout<<one;
+        if (parts[0]=="starting")  { sp=one; }
+        else if (parts[0]=="backup") { bp=one; }
+        else if (parts[0]=="purge") { pp=one; }
+        else { throw string("Unknown entry in the configuration file :"+parts[0]); }
+    }
+    assert(is_directory(bp));
+    assert(is_directory(pp));
+    assert(is_directory(sp));
+
+    vector<path> ret_vector;
+    ret_vector.pull_back(path(sp));
+    ret_vector.pull_back(path(bp));
+    ret_vector.pull_back(path(pp));
+    return ret_vector;
+}
+
+Configuration::Configuration()
+{
+    Configuration(path("newbaka.cfg"));
+}
+
 Configuration::Configuration(const path starting_path,const path backup_path,const path purge_rep_path) : starting_path(starting_path),backup_path(backup_path),home_path(getenv("HOME"))
     {
         assert(  is_directory(starting_path) );
@@ -71,6 +109,7 @@ Configuration::Configuration(const path starting_path,const path backup_path,con
         create_tree(purge_path);
         assert( is_directory(purge_path) );
     }
+
 path Configuration::home_to_backup(const path local_path) const
     {
         string spath=local_path.string();
@@ -133,7 +172,6 @@ void Configuration::MakeBackup()
         FinalTask*  etask= new FinalTask();
         task_list.push_back(etask);
     }
-
 path get_starting_path(int argc, char *argv[])
 {
     path starting_path;
@@ -166,7 +204,7 @@ void make_the_work(  deque<GenericTask*> &task_list)
         {
             try{
              still=run_next(task_list);
-            }
+               }
             catch (string err) { cout<<string("I got a bad news : ")<<err<<endl; }
         }
     }
@@ -177,6 +215,11 @@ int main(int argc, char *argv[])
 try
     {    
     path starting_path=get_starting_path(argc,argv);
+    vector<path> rv=read_configuration_file("newbaka.cfg");
+    cout<<rv[0]<<endl;
+    cout<<rv[1]<<endl;
+    cout<<rv[2]<<endl;
+    throw string("done");
     Configuration a=Configuration(starting_path,path("/mnt/part-backup/bakatot.newbaka"),path("/mnt/part-backup/bakapurge.newbaka"));
     a.MakeBackup();
     //launching the thread that runs the tasks
