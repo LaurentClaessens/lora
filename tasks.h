@@ -21,8 +21,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define __INCLUDE_TASKS_H__
 
 
-
 #include <boost/filesystem.hpp>
+
+using boost::filesystem::path;
 
 
 
@@ -35,6 +36,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // The return value of 'run' (boolean) says if one has to continue or bot with the next task. In a normal execution the only task returning 'false' is the final one created right after the main loop.
 
+
+bool create_tree(const path);             // recursively creates the directory tree up to the given directory.
+void my_copy_file(const path ,const path );      // copy but keeping the same last_write_time attribute.
+void copy_tree(const path,const path);
+
+
 // Example : the triple (  /home/myself/foo/bar.txt  ;  /backup/foo/bar.txt   ;   /purge/<date>/<time>/foo/bar.txt )
 struct pathTriple{
     boost::filesystem::path orig;
@@ -45,7 +52,7 @@ struct pathTriple{
 
 class GenericTask{
     public:
-        GenericTask(){ }
+        GenericTask();
         virtual bool run() const;
 };
 
@@ -75,9 +82,9 @@ class RepertoryCopyTask : public GenericTask{
 
 class FinalTask : public GenericTask{
     public:
-        void EndingTask() const { } 
-    bool run() const;
+        FinalTask() ;
+        bool run() const;
 };
 
 
-#endif
+#endif      //__INCLUDE_TASKS_H__

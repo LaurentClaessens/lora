@@ -30,16 +30,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace boost::filesystem;
 using namespace std;
 
-bool run_next(std::deque<GenericTask*> &task_list);           // run the next task in 'task_list' and remove him from the list
+bool run_next(std::deque<GenericTask*> &task_list);             // run the next task in 'task_list' and remove him from the list
+                                                                // return false if this was the ending task and true if one has to continue.
 
-bool create_tree(const path);             // recursively creates the directory tree up to the given directory.
-void my_copy_file(const path ,const path );     // copy 'from_path' to 'to_path' keeping the 'last_write_time' attribute.
-void copy_tree(const path,const path);
-bool create_tree(const path rep_path);
-void my_copy_file(const path from_path,const path to_path);      // copy but keeping the same last_write_time attribute.
-void copy_tree(const path orig_path,const path bak_path);
-
-                                                        // return false if this was the ending task and true if one has to continue.
 bool do_we_backup(const path orig_path,const path bak_path);         // Says if one has to perform the proposed backup.
 
 
@@ -58,52 +51,19 @@ class Configuration
     Configuration();
     Configuration(const path starting_path,const path backup_path,const path purge_rep_path);
 
-    path home_to_backup(path local_path) const;
-    path home_to_purge(path local_path) const;
-    void DealWithFile(path file_path) const;
-    void DealWithRepertory(path rep_path) ;
+    path home_to_backup(const path local_path) const;
+    path home_to_purge(const path local_path) const;
+    void DealWithFile(const path file_path) ;
+    void DealWithRepertory(const path rep_path) ;
     void MakeBackup();
 };
 
-path get_starting_path(int argc, char *argv[])
-{
-    path starting_path;
-    path full_path;
-    if (argc != 2)
-    {
-        throw std::string("You have to pass a repertory name or path.");
-    }
-    else
-    {
-        starting_path=path(argv[1]);
-        if (starting_path.is_relative()){
-            full_path=absolute(starting_path);
-        }
-        else {
-            full_path=starting_path;
-        }
-    }
-    full_path=canonical(full_path);
-    std::cout<<"We are going to backup the repertory "<<full_path<<endl;
-    return full_path;
-}
+// The path to ba backuped is the one passed as argument. This function return that path, normalised and absolute.
+path get_starting_path(int argc, char *argv[]);
+
 
 // This function is in a separated thread and execute the tasks in the list.
-void make_the_work(  std::deque<GenericTask*> &task_list)
-{
-    bool still=true;
-    while (still)
-    {
-        if (task_list.size() != 0)
-        {
-            try{
-             still=run_next(task_list);
-            }
-            catch (std::string err) { std::cout<<std::string("I got a bad news : ")<<err<<endl; }
-        }
-    }
-}
-
+void make_the_work(  std::deque<GenericTask*> &task_list);
 
 
 #endif     // __NEWBAKA_H_INCLUDED__

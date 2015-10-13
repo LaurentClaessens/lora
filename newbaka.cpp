@@ -21,7 +21,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Pour info : avant d'avoir séparé les déclarations et les implémentations, le fichier compilé fait : 336K newbaka   (commit df821ec8ed3ac1ed511e23ec24572b8fbef40ad5)
 
-// TODO : should task_list be a shared pointer ? Could that avoid my 'still' boolean in make_the_work ?
 
 #include <iostream>
 #include <string>
@@ -36,52 +35,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace boost::filesystem;
 using namespace std;
-
-bool create_tree(path rep_path)
-{
-    path parent_path=rep_path.parent_path();
-    if (is_directory( parent_path ) ) {}
-    else { create_tree(parent_path);  } 
-    create_directory(rep_path); 
-}
-
-void my_copy_file(path from_path,path to_path)
-{
-    assert( is_regular_file(from_path) );
-    assert( !is_regular_file(to_path) );
-
-    time_t t_ori=last_write_time(from_path);
-
-    copy_file(from_path,to_path);
-    last_write_time( to_path,t_ori );
-    
-    if( last_write_time(from_path)!=last_write_time(to_path) )
-    {
-        throw string("The last_write_time did not copy well for "+from_path.string());
-    };
-}
-
-void copy_tree(path orig_path,path bak_path)
-{
-    cout<<"(rep) Copy "<<orig_path<<" --> "<<bak_path;
-    create_directory(bak_path);
-    directory_iterator end_itr;
-    for(  directory_iterator itr(orig_path); itr!=end_itr;++itr  )
-    {
-        path pathname=itr->path();
-        path bak_sub=bak_path/pathname.filename();
-        if (is_directory(pathname))
-        {  
-            create_directory(bak_sub);
-            copy_tree(pathname,bak_sub);
-        }
-        else if (is_regular_file(pathname))
-        {
-            my_copy_file(pathname,bak_sub);
-        }
-    }
-    cout<<"done (rep)"<<endl;
-}
 
 bool run_next(deque<GenericTask*> &task_list){
     bool ret;
@@ -118,7 +71,7 @@ Configuration::Configuration(const path starting_path,const path backup_path,con
         create_tree(purge_path);
         assert( is_directory(purge_path) );
     }
-path Configuration::home_to_backup(path local_path) const;
+path Configuration::home_to_backup(const path local_path) const
     {
         string spath=local_path.string();
         string shome=home_path.string();
@@ -126,7 +79,7 @@ path Configuration::home_to_backup(path local_path) const;
         spath.replace(0,shome.size(),sbackup);
         return path(spath);
     }
-path Configuration::home_to_purge(path local_path) const;
+path Configuration::home_to_purge(const path local_path) const
     {
         string spath=local_path.string();
         string shome=home_path.string();
@@ -135,9 +88,10 @@ path Configuration::home_to_purge(path local_path) const;
         return path(spath);
     }
 
-void Configuration::DealWithFile(path file_path){
-        path bak_path=this->home_to_backup(file_path);
-        path purge_path=this->home_to_purge(file_path);
+void Configuration::DealWithFile(const path file_path) 
+    {
+        const path bak_path=this->home_to_backup(file_path);
+        const path purge_path=this->home_to_purge(file_path);
         if (do_we_backup(file_path,bak_path))
         {
             assert( !boost::algorithm::starts_with(bak_path,this->starting_path ) );
@@ -150,7 +104,7 @@ void Configuration::DealWithFile(path file_path){
         }
     }
 
-void Configuration::DealWithRepertory(path rep_path) {
+void Configuration::DealWithRepertory(const path rep_path) {
         directory_iterator end_itr;
         for(  directory_iterator itr(rep_path); itr!=end_itr;++itr  )
         {
@@ -179,9 +133,8 @@ void Configuration::MakeBackup()
         FinalTask*  etask= new FinalTask();
         task_list.push_back(etask);
     }
-};
 
-path get_starting_path(int argc, char *argv[]) const
+path get_starting_path(int argc, char *argv[])
 {
     path starting_path;
     path full_path;

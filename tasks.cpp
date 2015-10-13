@@ -15,30 +15,78 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
+//
+//
 
-GenericTask::GenericTask(){ }
-virtual bool GenericTask::run(){ throw string("You tried to run a GenericTask"); }
+#include <iostream>
+#include <string>
+#include "tasks.h"
+
+bool create_tree(path rep_path)
+{
+    path parent_path=rep_path.parent_path();
+    if (is_directory( parent_path ) ) {}
+    else { create_tree(parent_path);  } 
+    create_directory(rep_path); 
+}
+
+void my_copy_file(path from_path,path to_path)
+{
+    assert( is_regular_file(from_path) );
+    assert( !is_regular_file(to_path) );
+
+    time_t t_ori=last_write_time(from_path);
+
+    copy_file(from_path,to_path);
+    last_write_time( to_path,t_ori );
+    
+    if( last_write_time(from_path)!=last_write_time(to_path) )
+    {
+        throw std::string("The last_write_time did not copy well for "+from_path.string());
+    };
+}
+
+void copy_tree(path orig_path,path bak_path)
+{
+    std::cout<<"(rep) Copy "<<orig_path<<" --> "<<bak_path;
+    create_directory(bak_path);
+    boost::filesystem::directory_iterator end_itr;
+    for(  boost::filesystem::directory_iterator itr(orig_path); itr!=end_itr;++itr  )
+    {
+        path pathname=itr->path();
+        path bak_sub=bak_path/pathname.filename();
+        if (is_directory(pathname))
+        {  
+            create_directory(bak_sub);
+            copy_tree(pathname,bak_sub);
+        }
+        else if (is_regular_file(pathname))
+        {
+            my_copy_file(pathname,bak_sub);
+        }
+    }
+    std::cout<<"done (rep)"<<std::endl;
+}
+
+GenericTask::GenericTask(){ };
+bool GenericTask::run() const
+{ 
+    throw std::string("You tried to run a GenericTask"); 
+} 
 
 
-class FileCopyTask : public GenericTask{
-    private: 
-        path orig_path;
-        path bak_path;
-        path purge_path;
-
-    public:
-
-    FileCopyTask(pathTriple triple):GenericTask()
+FileCopyTask::FileCopyTask(pathTriple triple):GenericTask()
     {
         this->orig_path=triple.orig;
         this->bak_path=triple.bak;
         this->purge_path=triple.purge;
     }
-    bool run(){
+bool FileCopyTask::run() const
+{
         assert(is_regular_file(orig_path));
 
-        cout<<"(file) Copy  "<<this->orig_path;
-        cout<<"--->  "<<this->bak_path<<"..."<<endl;
+        std::cout<<"(file) Copy  "<<this->orig_path;
+        std::cout<<"--->  "<<this->bak_path<<"..."<<std::endl;
 
         if (is_regular_file(bak_path))
         {
@@ -49,7 +97,7 @@ class FileCopyTask : public GenericTask{
         my_copy_file(  orig_path,bak_path  );
 
 
-        vector<path> test_list;
+        std::vector<path> test_list;
         test_list.push_back( orig_path );
         test_list.push_back( bak_path );
         test_list.push_back( purge_path );
@@ -57,41 +105,29 @@ class FileCopyTask : public GenericTask{
         for (int i=0;i<test_list.size();++i)
         {
             if (!is_regular_file(test_list[i])){ 
-                string st="The file"+test_list[i].string()+" has not been created.";
+                std::string st="The file"+test_list[i].string()+" has not been created.";
                 throw st;  }
         }
         assert( is_regular_file(orig_path) );
         assert( is_regular_file(bak_path) );
         return true;
-    }
-};
+}
 
-class RepertoryCopyTask : public GenericTask{
-    public: 
-        path orig_path;
-        path bak_path;
-        RepertoryCopyTask(path orig_path,path bak_path):GenericTask()
+RepertoryCopyTask::RepertoryCopyTask(path orig_path,path bak_path):GenericTask()
     {
         this->orig_path=orig_path;
         this->bak_path=bak_path;
     }
-    bool run()
+bool RepertoryCopyTask::run() const
     {
-        cout<<"Copy  "<<this->orig_path<<endl;
-        cout<<"--->  "<<this->bak_path<<endl;
+        std::cout<<"Copy  "<<this->orig_path<<std::endl;
+        std::cout<<"--->  "<<this->bak_path<<std::endl;
         copy_tree(orig_path,bak_path);
         return true;
     }
-};
 
-class FinalTask : public GenericTask{
-    public:
-        bool ending_task;
-    FinalTask(){}
-    bool run()
+FinalTask::FinalTask(){}
+bool FinalTask::run() const
     {
         return false;
     }
-};
-
-
