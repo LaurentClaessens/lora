@@ -17,9 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 //
 //
-// g++  newbaka.cpp  -o newbaka /usr/lib/i386-linux-gnu/libboost_filesystem.a   /usr/lib/i386-linux-gnu/libboost_thread.so -lboost_filesystem -lboost_system  /usr/lib/i386-linux-gnu/libboost_date_time.so
 //
 // Pour info : avant d'avoir séparé les déclarations et les implémentations, le fichier compilé fait : 336K newbaka   (commit df821ec8ed3ac1ed511e23ec24572b8fbef40ad5)
+// Il en fait maintenant 252.
 
 
 #include <iostream>
