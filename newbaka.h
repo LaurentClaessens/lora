@@ -52,24 +52,27 @@ class Configuration
         //           purge_path is      /mnt/part-backup/bakapurge/<date>/<time>/
         // The latter is made public.
 
-    Configuration();
-    Configuration(const path,const path,const path);
-    Configuration(const path);      // the starting path. Other paths are read from the configuration file.
+        Configuration();
+        Configuration(const path,const path,const path);        // The arguments are : starting,backup,purge.
 
-    path home_to_backup(const path local_path) const;
-    path home_to_purge(const path local_path) const;
-    void DealWithFile(const path file_path) ;
-    void DealWithRepertory(const path rep_path) ;
-    void MakeBackup();
+        void add_exclude_path(const path);                 // exclude the given path
+        void add_exclude_path(vector<path>);         // exclude the given vector of paths 
+        void MakeBackup();
+
+    private :
+        vector<path> exclude_paths;
+        path home_to_backup(const path local_path) const;
+        path home_to_purge(const path local_path) const;
+        void DealWithFile(const path file_path) ;
+        void DealWithRepertory(const path rep_path) ;
 };
 
 // The path to be backuped is the one passed as argument. This function return that path, normalised and absolute.
 path get_starting_path(int argc, char *argv[]);
 
-
-// Read the file 'cfg_path' and return an object of type 'user_configuration'.
+// Read the file 'cfg_path' and return an object of type 'Configuration' that is ready to perform a backup.
 // - starting path, backup_path, purge_path
-user_configuration read_configuration_file(const path cfg_path)
+Configuration read_configuration_file(const path cfg_path);
 
 
 // This function is in a separated thread and execute the tasks in the list.

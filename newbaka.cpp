@@ -60,42 +60,45 @@ bool do_we_backup(path orig_path,path bak_path)
     return false;
 }
 
-vector<path> read_configuration_file(const path cfg_path)
+Configuration read_configuration_file(const path cfg_path)
 {
     assert(is_regular_file(cfg_path));
     ifstream cfg_file(cfg_path.c_str());
     string line;
-    string bp,pp,sp;
+    path bp,pp,sp;
     vector<string> parts;
+    vector<path> exclude;
     while (  std::getline(cfg_file,line) )
     {
-        cout<<line;
         split( parts,line,boost::is_any_of("=") );
-        cout<<line<<endl;
-        cout<<parts[0]<<endl;
-        cout<<parts[1]<<endl;
-        string one=parts[1];
-        cout<<one;
-        if (parts[0]=="starting")  { sp=one; }
-        else if (parts[0]=="backup") { bp=one; }
-        else if (parts[0]=="purge") { pp=one; }
-        else { throw string("Unknown entry in the configuration file :"+parts[0]); }
+        switch (parts.size())
+        {
+         case 0 : 
+             throw string("Malformed configuration file : "+line); 
+             break;
+         case 1 :       // probably empty line
+             break;
+         case 2 :
+            path one=path(parts[1]);
+            if (parts[0]=="starting")  { sp=one; }
+            else if (parts[0]=="backup") { bp=one; }
+            else if (parts[0]=="purge") { pp=one; }
+            else if (parts[0]=="exclude") {   exclude.push_back(one) ; }
+            else { throw string("Unknown entry in the configuration file :"+parts[0]); }
+            break;
+        }
     }
     assert(is_directory(bp));
     assert(is_directory(pp));
     assert(is_directory(sp));
 
-    vector<path> ret_vector;
-    ret_vector.pull_back(path(sp));
-    ret_vector.pull_back(path(bp));
-    ret_vector.pull_back(path(pp));
-    return ret_vector;
+    Configuration config=Configuration(sp,bp,pp);
+    config.add_exclude_path(exclude);
+
+    return config;
 }
 
-Configuration::Configuration()
-{
-    Configuration(path("newbaka.cfg"));
-}
+Configuration::Configuration(){}
 
 Configuration::Configuration(const path starting_path,const path backup_path,const path purge_rep_path) : starting_path(starting_path),backup_path(backup_path),home_path(getenv("HOME"))
     {
@@ -126,6 +129,19 @@ path Configuration::home_to_purge(const path local_path) const
         spath.replace(0,shome.size(),spurge);
         return path(spath);
     }
+
+void Configuration::add_exclude_path(const path ex)
+{
+    exclude_paths.push_back(ex);
+}
+
+void Configuration::add_exclude_path(vector<path> vp)
+{
+    for (  std::vector<path>::iterator it=vp.begin();it!=vp.end();++it  )
+    {
+        add_exclude_path(*it);
+    }
+}
 
 void Configuration::DealWithFile(const path file_path) 
     {
@@ -205,7 +221,7 @@ void make_the_work(  deque<GenericTask*> &task_list)
             try{
              still=run_next(task_list);
                }
-            catch (string err) { cout<<string("I got a bad news : ")<<err<<endl; }
+            catch (string err) { cout<<string("**** I got a bad news : ")<<err<<endl; }
         }
     }
 }
@@ -215,12 +231,7 @@ int main(int argc, char *argv[])
 try
     {    
     path starting_path=get_starting_path(argc,argv);
-    vector<path> rv=read_configuration_file("newbaka.cfg");
-    cout<<rv[0]<<endl;
-    cout<<rv[1]<<endl;
-    cout<<rv[2]<<endl;
-    throw string("done");
-    Configuration a=Configuration(starting_path,path("/mnt/part-backup/bakatot.newbaka"),path("/mnt/part-backup/bakapurge.newbaka"));
+    Configuration a=read_configuration_file("newbaka.cfg");
     a.MakeBackup();
     //launching the thread that runs the tasks
     boost::thread sheduler( make_the_work, a.task_list );

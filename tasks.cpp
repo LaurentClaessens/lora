@@ -38,6 +38,8 @@ void my_copy_file(path from_path,path to_path)
 
     time_t t_ori=last_write_time(from_path);
 
+    std::cout<<"Copy file "<<from_path<<"--> "<<to_path<<std::endl;
+
     copy_file(from_path,to_path);
     last_write_time( to_path,t_ori );
     
@@ -49,7 +51,7 @@ void my_copy_file(path from_path,path to_path)
 
 void copy_tree(path orig_path,path bak_path)
 {
-    std::cout<<"(rep) Copy "<<orig_path<<" --> "<<bak_path;
+    std::cout<<"(rep) Copy "<<orig_path<<" --> "<<bak_path<<std::endl;
     create_directory(bak_path);
     boost::filesystem::directory_iterator end_itr;
     for(  boost::filesystem::directory_iterator itr(orig_path); itr!=end_itr;++itr  )
@@ -66,7 +68,7 @@ void copy_tree(path orig_path,path bak_path)
             my_copy_file(pathname,bak_sub);
         }
     }
-    std::cout<<"done (rep)"<<std::endl;
+    std::cout<<"done (rep "<<orig_path<<")"<<std::endl;
 }
 
 GenericTask::GenericTask(){ };
@@ -85,9 +87,6 @@ FileCopyTask::FileCopyTask(pathTriple triple):GenericTask()
 bool FileCopyTask::run() const
 {
         assert(is_regular_file(orig_path));
-
-        std::cout<<"(file) Copy  "<<this->orig_path;
-        std::cout<<"--->  "<<this->bak_path<<"..."<<std::endl;
 
         if (is_regular_file(bak_path))
         {
@@ -121,8 +120,6 @@ RepertoryCopyTask::RepertoryCopyTask(path orig_path,path bak_path):GenericTask()
     }
 bool RepertoryCopyTask::run() const
     {
-        std::cout<<"Copy  "<<this->orig_path<<std::endl;
-        std::cout<<"--->  "<<this->bak_path<<std::endl;
         copy_tree(orig_path,bak_path);
         return true;
     }
