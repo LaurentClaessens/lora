@@ -31,13 +31,13 @@ path purge_rep_to_purge_datetime(path);
 path purge_rep_to_purge_modified(path);
 path purge_rep_to_purge_removed(path);
 
-// Constructors for 'Configuration'
+// Constructors for 'MainBackupLoop'
 // 3 arguments : starting path, backup and purge paths.
 //
 // * purge_modified_path is the one of the modified files; ex : /mnt/part-backup/<date>/<time>/modified
 // * purge_removed_path is the one of removed files; ex : /mnt/part-backup/<date>/<time>/removed
 // but the argument for the 3-parameters constructor is purge_rep_path; ex : /mnt/part_backup
-class Configuration
+class MainBackupLoop
 {
     public:
         const path starting_path;
@@ -51,8 +51,8 @@ class Configuration
         //           purge_modified_path is      /mnt/part-backup/bakapurge/<date>/<time>/
         // The latter is made public.
 
-        Configuration();
-        Configuration(const path,const path,const path);        // The arguments are : starting,backup,purge.
+        MainBackupLoop();
+        MainBackupLoop(const path,const path,const path);        // The arguments are : starting,backup,purge.
 
         void add_exclude_path(const path);                 // exclude the given path
         void add_exclude_path(vector<path>);         // exclude the given vector of paths 

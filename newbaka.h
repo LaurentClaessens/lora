@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <boost/filesystem.hpp>
 #include <deque>
 #include "tasks.h"
-#include "configuration.h"
+#include "mainbackuploop.h"
 
 using namespace boost::filesystem;
 using namespace std;
@@ -34,9 +34,9 @@ bool run_next(std::deque<GenericTask*> &task_list);             // run the next 
 // The path to be backuped is the one passed as argument. This function return that path, normalised and absolute.
 path get_starting_path(int argc, char *argv[]);
 
-// Read the file 'cfg_path' and return an object of type 'Configuration' that is ready to perform a backup.
+// Read the file 'cfg_path' and return an object of type 'MainBackupLoop' that is ready to perform a backup.
 // - starting path, backup_path, purge_modified_path
-Configuration read_configuration_file(const path cfg_path);
+MainBackupLoop read_configuration_file(const path cfg_path);
 
 
 // This function is in a separated thread and execute the tasks in the list.

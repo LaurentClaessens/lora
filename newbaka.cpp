@@ -27,14 +27,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "newbaka.h"
 #include "tasks.h"
-#include "configuration.h"
+#include "mainbackuploop.h"
 
 using namespace boost::filesystem;
 using namespace std;
 
 // The line 'exclude=foo/bar' exclude the directory $HOME/foo/bar
 // if you want to exclude a repertory that is not in $HOME, you have to write the full path in the configuration file.
-Configuration read_configuration_file(const path cfg_path)
+MainBackupLoop read_configuration_file(const path cfg_path)
 {
     assert(is_regular_file(cfg_path));
     ifstream cfg_file(cfg_path.c_str());
@@ -73,7 +73,7 @@ Configuration read_configuration_file(const path cfg_path)
     assert(is_directory(pp));
     assert(is_directory(sp));
 
-    Configuration config=Configuration(sp,bp,pp);
+    MainBackupLoop config=MainBackupLoop(sp,bp,pp);
     config.add_exclude_path(exclude);
 
     return config;
@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
 try
     {    
     path starting_path=get_starting_path(argc,argv);
-    Configuration a=read_configuration_file("backup.cfg");          // There is the file 'newbaka.cfg' as example.
+    MainBackupLoop a=read_configuration_file("backup.cfg");          // There is the file 'newbaka.cfg' as example.
     a.MakeBackup();
     //launching the thread that runs the tasks
     boost::thread scheduler( make_the_work, a.task_list );

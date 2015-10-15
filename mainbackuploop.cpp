@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <ctime>            // get the current time
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-#include "configuration.h"
+#include "mainbackuploop.h"
 #include "tasks.h"
 
 using namespace boost::filesystem;
@@ -64,9 +64,9 @@ path purge_rep_to_purge_removed(const path purge_rep_path)
     return purge_rep_to_purge_datetime(purge_rep_path)/"removed";
 }
 
-Configuration::Configuration(){}
+MainBackupLoop::MainBackupLoop(){}
 
-Configuration::Configuration(const path starting_path,const path backup_path,const path purge_rep_path) : starting_path(starting_path),backup_path(backup_path),home_path(getenv("HOME")),purge_removed_path(purge_rep_to_purge_removed(purge_rep_path)),purge_modified_path(purge_rep_to_purge_modified(purge_rep_path))
+MainBackupLoop::MainBackupLoop(const path starting_path,const path backup_path,const path purge_rep_path) : starting_path(starting_path),backup_path(backup_path),home_path(getenv("HOME")),purge_removed_path(purge_rep_to_purge_removed(purge_rep_path)),purge_modified_path(purge_rep_to_purge_modified(purge_rep_path))
     {
         assert(  is_directory(starting_path) );
         assert(  is_directory(backup_path) );
@@ -79,7 +79,7 @@ Configuration::Configuration(const path starting_path,const path backup_path,con
         assert( is_directory(purge_removed_path) );
     }
 
-path Configuration::home_to_backup(const path local_path) const
+path MainBackupLoop::home_to_backup(const path local_path) const
     {
         string spath=local_path.string();
         string shome=home_path.string();
@@ -87,7 +87,7 @@ path Configuration::home_to_backup(const path local_path) const
         spath.replace(0,shome.size(),sbackup);
         return path(spath);
     }
-path Configuration::home_to_purge(const path local_path) const
+path MainBackupLoop::home_to_purge(const path local_path) const
     {
         string spath=local_path.string();
         string shome=home_path.string();
@@ -96,12 +96,12 @@ path Configuration::home_to_purge(const path local_path) const
         return path(spath);
     }
 
-void Configuration::add_exclude_path(const path ex)
+void MainBackupLoop::add_exclude_path(const path ex)
 {
     excluded_paths.push_back(ex);
 }
 
-void Configuration::add_exclude_path(std::vector<path> vp)
+void MainBackupLoop::add_exclude_path(std::vector<path> vp)
 {
     for (  std::vector<path>::iterator it=vp.begin();it!=vp.end();++it  )
     {
@@ -109,7 +109,7 @@ void Configuration::add_exclude_path(std::vector<path> vp)
     }
 }
 
-void Configuration::DealWithFile(const path file_path) 
+void MainBackupLoop::DealWithFile(const path file_path) 
     {
         const path bak_path=this->home_to_backup(file_path);
         const path purge_modified_path=this->home_to_purge(file_path);
@@ -125,7 +125,7 @@ void Configuration::DealWithFile(const path file_path)
         }
     }
 
-void Configuration::DealWithRepertory(const path rep_path) {
+void MainBackupLoop::DealWithRepertory(const path rep_path) {
         if (!is_excluded(rep_path))
         {
             directory_iterator end_itr;
@@ -150,7 +150,7 @@ void Configuration::DealWithRepertory(const path rep_path) {
         }
     }
 
-bool Configuration::is_excluded(const path pathname)
+bool MainBackupLoop::is_excluded(const path pathname)
 {
     for (  std::vector<path>::iterator iter=excluded_paths.begin();iter!=excluded_paths.end();++iter  )
     {
@@ -159,7 +159,7 @@ bool Configuration::is_excluded(const path pathname)
     return false;
 } 
 
-void Configuration::MakeBackup()
+void MainBackupLoop::MakeBackup()
     { 
         create_tree(home_to_backup(starting_path));
         DealWithRepertory(starting_path); 
