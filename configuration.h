@@ -27,19 +27,28 @@ using namespace std;
 
 bool do_we_backup(const path orig_path,const path bak_path);         // Says if one has to perform the proposed backup.
 
+path purge_rep_to_purge_datetime(path);
+path purge_rep_to_purge_modified(path);
+path purge_rep_to_purge_removed(path);
+
 // Constructors for 'Configuration'
 // 3 arguments : starting path, backup and purge paths.
+//
+// * purge_modified_path is the one of the modified files; ex : /mnt/part-backup/<date>/<time>/modified
+// * purge_removed_path is the one of removed files; ex : /mnt/part-backup/<date>/<time>/removed
+// but the argument for the 3-parameters constructor is purge_rep_path; ex : /mnt/part_backup
 class Configuration
 {
     public:
         const path starting_path;
         const path backup_path;
         const path home_path;
-        path purge_path;
+        const path purge_modified_path;
+        const path purge_removed_path;
         std::deque<GenericTask*> task_list;
-        // purge_rep_path is the path to the _general_ purge repertory. Then purge_path is computed and created.
+        // purge_rep_path is the path to the _general_ purge repertory. Then purge_modified_path is computed and created.
         // example : purge_rep_path is  /mnt/part-backup/bakapurge/
-        //           purge_path is      /mnt/part-backup/bakapurge/<date>/<time>/
+        //           purge_modified_path is      /mnt/part-backup/bakapurge/<date>/<time>/
         // The latter is made public.
 
         Configuration();
@@ -51,7 +60,7 @@ class Configuration
         void MakeBackup();
 
     private :
-        vector<path> exclude_paths;
+        vector<path> excluded_paths;
         path home_to_backup(const path local_path) const;
         path home_to_purge(const path local_path) const;
         void DealWithFile(const path file_path) ;

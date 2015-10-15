@@ -15,11 +15,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
-//
-//
-//
-// Pour info : avant d'avoir séparé les déclarations et les implémentations, le fichier compilé fait : 336K newbaka   (commit df821ec8ed3ac1ed511e23ec24572b8fbef40ad5)
-// Il en fait maintenant 252.
 
 
 #include <iostream>
@@ -37,19 +32,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace boost::filesystem;
 using namespace std;
 
-bool run_next(deque<GenericTask*> &task_list){
-    bool ret;
-    ret=task_list.front()->run();       // equivalent to   (*task_list.front()).run()
-    task_list.pop_front();
-    cout<<task_list.size()<<" tasks remaining"<<endl;
-    return ret;
-}
+// The line 'exclude=foo/bar' exclude the directory $HOME/foo/bar
+// if you want to exclude a repertory that is not in $HOME, you have to write the full path in the configuration file.
 Configuration read_configuration_file(const path cfg_path)
 {
     assert(is_regular_file(cfg_path));
     ifstream cfg_file(cfg_path.c_str());
     string line;
     path bp,pp,sp;
+    const path home_path=path(getenv("HOME"));
     vector<string> parts;
     vector<path> exclude;
     while (  std::getline(cfg_file,line) )
@@ -67,7 +58,13 @@ Configuration read_configuration_file(const path cfg_path)
             if (parts[0]=="starting")  { sp=one; }
             else if (parts[0]=="backup") { bp=one; }
             else if (parts[0]=="purge") { pp=one; }
-            else if (parts[0]=="exclude") {   exclude.push_back(one) ; }
+            else if (parts[0]=="exclude") 
+            {   
+                if (one.is_absolute()){ exclude.push_back(one) ;}
+                else { 
+                    exclude.push_back(  home_path/one  ) ;
+                    }
+            }
             else { throw string("Unknown entry in the configuration file :"+parts[0]); }
             break;
         }
@@ -105,6 +102,14 @@ path get_starting_path(int argc, char *argv[])
     return full_path;
 }
 
+bool run_next(deque<GenericTask*> &task_list){
+    bool ret;
+    ret=task_list.front()->run();       // equivalent to   (*task_list.front()).run()
+    task_list.pop_front();
+    cout<<task_list.size()<<" tasks remaining"<<endl;
+    return ret;
+}
+
 void make_the_work(  deque<GenericTask*> &task_list)
 {
     bool still=true;
@@ -125,11 +130,11 @@ int main(int argc, char *argv[])
 try
     {    
     path starting_path=get_starting_path(argc,argv);
-    Configuration a=read_configuration_file("newbaka.cfg");
+    Configuration a=read_configuration_file("backup.cfg");          // There is the file 'newbaka.cfg' as example.
     a.MakeBackup();
     //launching the thread that runs the tasks
-    boost::thread sheduler( make_the_work, a.task_list );
-    sheduler.join();
+    boost::thread scheduler( make_the_work, a.task_list );
+    scheduler.join();
     }
 catch (string err) { cout<<string("I got a bad news : ")<<err<<endl; }
 }

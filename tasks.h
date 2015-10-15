@@ -66,7 +66,7 @@ class FileCopyTask : public GenericTask{
     private: 
         boost::filesystem::path orig_path;
         boost::filesystem::path bak_path;
-        boost::filesystem::path purge_path;
+        boost::filesystem::path purge_modified_path;
 
     public:
         FileCopyTask(const pathTriple);

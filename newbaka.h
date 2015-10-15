@@ -15,8 +15,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
-//
-
 
 
 // header technique from http://www.cplusplus.com/forum/articles/10627/
@@ -33,13 +31,11 @@ using namespace std;
 
 bool run_next(std::deque<GenericTask*> &task_list);             // run the next task in 'task_list' and remove him from the list
                                                                 // return false if this was the ending task and true if one has to continue.
-
-
 // The path to be backuped is the one passed as argument. This function return that path, normalised and absolute.
 path get_starting_path(int argc, char *argv[]);
 
 // Read the file 'cfg_path' and return an object of type 'Configuration' that is ready to perform a backup.
-// - starting path, backup_path, purge_path
+// - starting path, backup_path, purge_modified_path
 Configuration read_configuration_file(const path cfg_path);
 
 

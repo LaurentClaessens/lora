@@ -82,7 +82,7 @@ FileCopyTask::FileCopyTask(pathTriple triple):GenericTask()
     {
         this->orig_path=triple.orig;
         this->bak_path=triple.bak;
-        this->purge_path=triple.purge;
+        this->purge_modified_path=triple.purge;
     }
 bool FileCopyTask::run() const
 {
@@ -90,9 +90,9 @@ bool FileCopyTask::run() const
 
         if (is_regular_file(bak_path))
         {
-            create_tree(purge_path.parent_path());
-            rename( bak_path,purge_path );
-            assert( is_regular_file(purge_path) );
+            create_tree(purge_modified_path.parent_path());
+            rename( bak_path,purge_modified_path );
+            assert( is_regular_file(purge_modified_path) );
         }
         my_copy_file(  orig_path,bak_path  );
 
@@ -100,7 +100,7 @@ bool FileCopyTask::run() const
         std::vector<path> test_list;
         test_list.push_back( orig_path );
         test_list.push_back( bak_path );
-        test_list.push_back( purge_path );
+        test_list.push_back( purge_modified_path );
 
         for (int i=0;i<test_list.size();++i)
         {
