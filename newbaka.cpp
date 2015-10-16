@@ -130,10 +130,12 @@ int main(int argc, char *argv[])
 try
     {    
     path starting_path=get_starting_path(argc,argv);
-    MainBackupLoop a=read_configuration_file("backup.cfg");          // There is the file 'newbaka.cfg' as example.
-    a.MakeBackup();
+    MainBackupLoop backup_loop=read_configuration_file("backup.cfg");          // There is the file 'newbaka.cfg' as example.
+    backup_loop.MakeBackup();
+    MainPurgeLoop purge_loop=backup_loop.purge();
+    purge_loop.MakePurge();
     //launching the thread that runs the tasks
-    boost::thread scheduler( make_the_work, a.task_list );
+    boost::thread scheduler( make_the_work, backup_loop.task_list );
     scheduler.join();
     }
 catch (string err) { cout<<string("I got a bad news : ")<<err<<endl; }

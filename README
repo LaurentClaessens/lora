@@ -39,3 +39,5 @@ When looking at /mnt/backup/bakatot.newbaka/blah/stuff.tex
 
 
 By the way, newbaka has very bad performance against renaming an intere directory : in the first pass, it copy everithing and in the second pass, it move the whole to the purge directory.
+
+

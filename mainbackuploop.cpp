@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include "mainbackuploop.h"
+#include "mainpurgeloop.h"
 #include "tasks.h"
 
 using namespace boost::filesystem;
@@ -38,7 +39,7 @@ bool do_we_backup(path orig_path,path bak_path)
     return false;
 }
 
-path purge_rep_to_purge_datetime(const path purge_rep_path)
+path purge_path_to_purge_datetime(const path purge_path)
 {
     // std::to_string requires c++11. This is why we compile with g++ -std=c++11
     time_t tt;
@@ -53,24 +54,24 @@ path purge_rep_to_purge_datetime(const path purge_rep_path)
     string s_date=s_year+"-"+s_mon+"-"+s_mday;
     string s_time=s_hour+"h"+s_min;
 
-    return purge_rep_path/s_date/s_time;
+    return purge_path/s_date/s_time;
 }
-path purge_rep_to_purge_modified(const path purge_rep_path)
+path purge_path_to_purge_modified(const path purge_path)
 {
-    return purge_rep_to_purge_datetime(purge_rep_path)/"modified";
+    return purge_path_to_purge_datetime(purge_path)/"modified";
 }
-path purge_rep_to_purge_removed(const path purge_rep_path)
+path purge_path_to_purge_removed(const path purge_path)
 {
-    return purge_rep_to_purge_datetime(purge_rep_path)/"removed";
+    return purge_path_to_purge_datetime(purge_path)/"removed";
 }
 
 MainBackupLoop::MainBackupLoop(){}
 
-MainBackupLoop::MainBackupLoop(const path starting_path,const path backup_path,const path purge_rep_path) : starting_path(starting_path),backup_path(backup_path),home_path(getenv("HOME")),purge_removed_path(purge_rep_to_purge_removed(purge_rep_path)),purge_modified_path(purge_rep_to_purge_modified(purge_rep_path))
+MainBackupLoop::MainBackupLoop(const path starting_path,const path backup_path,const path purge_path) : starting_path(starting_path),backup_path(backup_path),home_path(getenv("HOME")),purge_removed_path(purge_path_to_purge_removed(purge_path)),purge_modified_path(purge_path_to_purge_modified(purge_path)),purge_datetime_path(purge_path_to_purge_datetime(purge_path)), purge_path(purge_path)
     {
         assert(  is_directory(starting_path) );
         assert(  is_directory(backup_path) );
-        assert(  is_directory(purge_rep_path) );
+        assert(  is_directory(purge_path) );
 
         create_tree(purge_modified_path);
         create_tree(purge_removed_path);
@@ -83,15 +84,15 @@ path MainBackupLoop::home_to_backup(const path local_path) const
     {
         string spath=local_path.string();
         string shome=home_path.string();
-        string sbackup=this->backup_path.string();
+        string sbackup=backup_path.string();
         spath.replace(0,shome.size(),sbackup);
         return path(spath);
     }
-path MainBackupLoop::home_to_purge(const path local_path) const
+path MainBackupLoop::home_to_modified_purge(const path local_path) const
     {
         string spath=local_path.string();
         string shome=home_path.string();
-        string spurge=this->purge_modified_path.string();
+        string spurge=purge_modified_path.string();
         spath.replace(0,shome.size(),spurge);
         return path(spath);
     }
@@ -112,7 +113,7 @@ void MainBackupLoop::add_exclude_path(std::vector<path> vp)
 void MainBackupLoop::DealWithFile(const path file_path) 
     {
         const path bak_path=this->home_to_backup(file_path);
-        const path purge_modified_path=this->home_to_purge(file_path);
+        const path purge_modified_path=this->home_to_modified_purge(file_path);
         if (do_we_backup(file_path,bak_path))
         {
             assert( !boost::algorithm::starts_with(bak_path,this->starting_path ) );
@@ -166,3 +167,10 @@ void MainBackupLoop::MakeBackup()
         FinalTask*  etask= new FinalTask();
         task_list.push_back(etask);
     }
+
+MainPurgeLoop MainBackupLoop::purge() const
+{
+    MainPurgeLoop a( starting_path,backup_path,purge_path );
+    a.task_list=task_list;
+    return a;
+}
