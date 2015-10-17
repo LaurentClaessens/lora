@@ -33,7 +33,6 @@ using namespace boost::filesystem;
 using namespace std;
 
 // The line 'exclude=foo/bar' exclude the directory $HOME/foo/bar
-// if you want to exclude a repertory that is not in $HOME, you have to write the full path in the configuration file.
 MainBackupLoop read_configuration_file(const path cfg_path)
 {
     assert(is_regular_file(cfg_path));
@@ -73,10 +72,12 @@ MainBackupLoop read_configuration_file(const path cfg_path)
     assert(is_directory(pp));
     assert(is_directory(sp));
 
-    MainBackupLoop config=MainBackupLoop(sp,bp,pp);
-    config.add_exclude_path(exclude);
+    DirectoryConverter converter(bp,pp);       //  the purge directories are created here.
 
-    return config;
+    MainBackupLoop backup_loop=MainBackupLoop(sp,converter);
+    backup_loop.add_exclude_path(exclude);
+
+    return backup_loop;
 }
 
 path get_starting_path(int argc, char *argv[])
@@ -132,7 +133,7 @@ try
     path starting_path=get_starting_path(argc,argv);
     MainBackupLoop backup_loop=read_configuration_file("backup.cfg");          // There is the file 'newbaka.cfg' as example.
     backup_loop.MakeBackup();
-    MainPurgeLoop purge_loop=backup_loop.purge();
+    MainPurgeLoop purge_loop=backup_loop.purge_loop();
     purge_loop.MakePurge();
     //launching the thread that runs the tasks
     boost::thread scheduler( make_the_work, backup_loop.task_list );

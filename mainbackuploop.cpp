@@ -42,6 +42,9 @@ bool do_we_backup(path orig_path,path bak_path)
 
 MainBackupLoop::MainBackupLoop(){}
 
+
+// the main backup loop is not intended to be constructed "by hand".
+// It is constructed and returned by the 'read_configuration_file' function. This is because it has to posses a DirectoryConverter which has to be constructed separatelly.
 MainBackupLoop::MainBackupLoop(const path starting_path,const path backup_path,const path purge_path) : starting_path(starting_path),backup_path(backup_path),home_path(getenv("HOME")),purge_removed_path(purge_path_to_purge_removed(purge_path)),purge_modified_path(purge_path_to_purge_modified(purge_path)),purge_datetime_path(purge_path_to_purge_datetime(purge_path)), purge_path(purge_path)
     {
         assert(  is_directory(starting_path) );
@@ -71,11 +74,12 @@ void MainBackupLoop::add_exclude_path(std::vector<path> vp)
 
 void MainBackupLoop::DealWithFile(const path file_path) 
     {
-        const path bak_path=this->home_to_backup(file_path);
-        const path purge_modified_path=this->home_to_modified_purge(file_path);
+        assert( is_regular_file(file_path) );
+        const path bak_path=directory_converter.home_to_backup(file_path);
+        const path purge_modified_path=directory_converter.home_to_modified_purge(file_path);
         if (do_we_backup(file_path,bak_path))
         {
-            assert( !boost::algorithm::starts_with(bak_path,this->starting_path ) );
+            assert( !boost::algorithm::starts_with(bak_path,starting_path ) );
             pathTriple triple;
             triple.orig=file_path;
             triple.bak=bak_path;
@@ -94,7 +98,7 @@ void MainBackupLoop::DealWithRepertory(const path rep_path) {
                 path pathname=itr->path();
                 if (is_directory(pathname))
                 {
-                    path bak_rep=home_to_backup(pathname);
+                    path bak_rep=directory_converter.home_to_backup(pathname);
                     if (!is_directory(bak_rep))
                     {
 

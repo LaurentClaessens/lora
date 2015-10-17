@@ -16,9 +16,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
+#ifndef __DIRECTORY_CONVERTER_H__
+#define __DIRECTORY_CONVERTER_H__
 
+#include <boost/filesystem.hpp>
 
-// 'DirectoryConvertor' serves to convert from one directory to the other between
+using namespace boost::filesystem;
+
+// 'DirectoryConverter' serves to convert from one directory to the other between
 // - purge                  (purge_path)
 // - purge modified         (purge_modified_path)
 // - purge removed          (purge_removed_path)
@@ -27,7 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // It creates the needed directories.
 //
 // An instance of this class is created buy the main backup loop and then given to the main purge loop.
-class DirectoryConvertor
+class DirectoryConverter
 {
     private :
         const path purge_path;
@@ -45,3 +50,6 @@ class DirectoryConvertor
         path local_to_backup(const path local_path) const;
         path local_to_modified_purge(const path local_path) const;            
 }
+
+
+#endif      //__DIRECTORY_CONVERTER_H__

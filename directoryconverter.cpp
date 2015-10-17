@@ -16,6 +16,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
+#include <boost/filesystem.hpp>
+#include <string>
+
+using namespace boost::filesystem;
+using namespace std;
 
 path purge_path_to_purge_datetime(const path purge_path)
 {
@@ -79,5 +84,5 @@ path DirectoryConverter::backup_to_removed_purge(const path pathname) const
     string s_return=pathname.string();
     s_return.replace(0,s_backup.size(),s_removed);
     assert(  boost::starts_with(s_return,purge_removed_path) );
-    return path(spath);
+    return path(s_return);
 }

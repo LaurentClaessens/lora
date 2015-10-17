@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <boost/filesystem.hpp>
 #include "tasks.h"
 #include "mainpurgeloop.h"
+#include "directoryconverter.h"
 
 using namespace boost::filesystem;
 using namespace std;
@@ -40,6 +41,17 @@ bool do_we_backup(const path orig_path,const path bak_path);         // Says if 
 class MainBackupLoop
 {
     public:
+        MainBackupLoop();
+        MainBackupLoop(const path,DirectoryConverter);        // The arguments are : starting, directory_converter.  The latter contains the purge, home and backup paths.
+
+        void add_exclude_path(const path);                 // exclude the given path
+        void add_exclude_path(vector<path>);         // exclude the given vector of paths 
+        bool is_excluded(const path);               // says if that path is excluded from the backup
+        void MakeBackup();
+        MainPurgeLoop purge_loop() const;
+
+    private :
+        const DirectoryConverter directory_converter;
         const path starting_path;
         const path backup_path;
         const path home_path;
@@ -48,21 +60,7 @@ class MainBackupLoop
         const path purge_path;
         const path purge_datetime_path;         
         std::deque<GenericTask*> task_list;
-        // purge_path is the path to the _general_ purge repertory. Then purge_modified_path is computed and created.
-        // example : purge_path is  /mnt/part-backup/bakapurge/
-        //           purge_modified_path is      /mnt/part-backup/bakapurge/<date>/<time>/
-        // The latter is made public.
 
-        MainBackupLoop();
-        MainBackupLoop(const path,const path,const path);        // The arguments are : starting,backup,purge_path.
-
-        void add_exclude_path(const path);                 // exclude the given path
-        void add_exclude_path(vector<path>);         // exclude the given vector of paths 
-        bool is_excluded(const path);               // says if that path is excluded from the backup
-        void MakeBackup();
-        MainPurgeLoop purge() const;
-
-    private :
         vector<path> excluded_paths;
         void DealWithFile(const path file_path) ;
         void DealWithRepertory(const path rep_path) ;
