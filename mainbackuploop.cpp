@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace boost::filesystem;
 
+
 bool do_we_backup(path orig_path,path bak_path)
 {
     assert(is_regular_file(orig_path));
@@ -37,32 +38,6 @@ bool do_we_backup(path orig_path,path bak_path)
     if (t_ori>t_bak){return true;}
     if (t_ori<t_bak){throw string("The last_write_date of this file is f*cked up !"+orig_path.string()+" "+bak_path.string()+" ?");}
     return false;
-}
-
-path purge_path_to_purge_datetime(const path purge_path)
-{
-    // std::to_string requires c++11. This is why we compile with g++ -std=c++11
-    time_t tt;
-    time(&tt);
-    struct tm* timeinfo=localtime(&tt);
-    string s_year=std::to_string(timeinfo->tm_year+1900);
-    string s_mon=std::to_string(timeinfo->tm_mon+1);
-    string s_mday=std::to_string(timeinfo->tm_mday+1);
-    string s_hour=std::to_string(timeinfo->tm_hour);
-    string s_min=std::to_string(timeinfo->tm_min);
-
-    string s_date=s_year+"-"+s_mon+"-"+s_mday;
-    string s_time=s_hour+"h"+s_min;
-
-    return purge_path/s_date/s_time;
-}
-path purge_path_to_purge_modified(const path purge_path)
-{
-    return purge_path_to_purge_datetime(purge_path)/"modified";
-}
-path purge_path_to_purge_removed(const path purge_path)
-{
-    return purge_path_to_purge_datetime(purge_path)/"removed";
 }
 
 MainBackupLoop::MainBackupLoop(){}
@@ -80,22 +55,6 @@ MainBackupLoop::MainBackupLoop(const path starting_path,const path backup_path,c
         assert( is_directory(purge_removed_path) );
     }
 
-path MainBackupLoop::home_to_backup(const path local_path) const
-    {
-        string spath=local_path.string();
-        string shome=home_path.string();
-        string sbackup=backup_path.string();
-        spath.replace(0,shome.size(),sbackup);
-        return path(spath);
-    }
-path MainBackupLoop::home_to_modified_purge(const path local_path) const
-    {
-        string spath=local_path.string();
-        string shome=home_path.string();
-        string spurge=purge_modified_path.string();
-        spath.replace(0,shome.size(),spurge);
-        return path(spath);
-    }
 
 void MainBackupLoop::add_exclude_path(const path ex)
 {

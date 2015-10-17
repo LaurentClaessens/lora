@@ -4,8 +4,10 @@ newbaka:tasks.o newbaka.cpp newbaka.h mainbackuploop.o mainpurgeloop.o
 tasks.o:tasks.cpp tasks.h
 	LC_ALL=C g++ -std=c++11  -g -rdynamic -c -o tasks.o -lboost_filesystem -lboost_system  tasks.cpp
 
-mainbackuploop.o:mainbackuploop.cpp mainbackuploop.h
+mainbackuploop.o:mainbackuploop.cpp mainbackuploop.h directoryconverter.o
 	LC_ALL=C g++ -std=c++11  -g -rdynamic -c -o mainbackuploop.o    -lboost_filesystem -lboost_system  mainbackuploop.cpp
 
-mainpurgeloop.o:mainpurgeloop.cpp mainpurgeloop.h
+mainpurgeloop.o:mainpurgeloop.cpp mainpurgeloop.h directoryconverter.o
 	LC_ALL=C g++ -std=c++11  -g -rdynamic -c -o mainpurgeloop.o    -lboost_filesystem -lboost_system  mainpurgeloop.cpp
+directoryconverter.o:
+	LC_ALL=C g++ -std=c++11  -g -rdynamic -c -o directoryconverter.o    -lboost_filesystem -lboost_system  directoryconverter.cpp

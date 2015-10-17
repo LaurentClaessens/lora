@@ -28,28 +28,6 @@ using namespace std;
 
 bool do_we_backup(const path orig_path,const path bak_path);         // Says if one has to perform the proposed backup.
 
-// Serve to convert from one directory to the other bewteen
-// - purge                  (purge_path)
-// - purge modified         (purge_modified_path)
-// - purge removed          (purge_removed_path)
-// - local file             
-class DirectoryConvertor
-{
-    private :
-        const path purge_path;
-        const path purge_modified_path;
-        const path purge_removed_path;
-        const path home_path;
-    public:
-        DirectoryConverter();
-        DirectoryConverter();
-        path purge_to_purge_datetime(path);
-        path purge_to_purge_modified(path);
-        path purge_to_purge_removed(path);
-        path local_to_backup(const path local_path) const;
-        path local_to_modified_purge(const path local_path) const;            
-}
-
 
 // Constructors for 'MainBackupLoop'
 // 3 arguments : starting path, backup and purge paths.
