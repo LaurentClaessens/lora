@@ -52,6 +52,7 @@ class MainBackupLoop
         void MakeBackup();
         MainPurgeLoop purge_loop() const;
         Ttask_list get_task_list();            // template because maybe I want to change the type of 'task_list'
+        void full_process();
 
 
     private :

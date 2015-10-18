@@ -33,7 +33,7 @@ using namespace boost::filesystem;
 using namespace std;
 
 // The line 'exclude=foo/bar' exclude the directory $HOME/foo/bar
-MainBackupLoop read_configuration_file(const path cfg_path)
+template <class Ttask_list> MainBackupLoop<Ttask_list> read_configuration_file(const path cfg_path)
 {
     assert(is_regular_file(cfg_path));
     ifstream cfg_file(cfg_path.c_str());
@@ -74,7 +74,7 @@ MainBackupLoop read_configuration_file(const path cfg_path)
 
     DirectoryConverter converter(bp,pp);       //  the purge directories are created here.
 
-    MainBackupLoop backup_loop=MainBackupLoop(sp,converter);
+    MainBackupLoop<Ttask_list> backup_loop=MainBackupLoop<Ttask_list>(sp,converter);
     backup_loop.add_exclude_path(exclude);
 
     return backup_loop;
@@ -91,7 +91,8 @@ path get_starting_path(int argc, char *argv[])
     else
     {
         starting_path=path(argv[1]);
-        if (starting_path.is_relative()){
+        if (starting_path.is_relative())
+        {
             full_path=absolute(starting_path);
         }
         else {
@@ -103,7 +104,8 @@ path get_starting_path(int argc, char *argv[])
     return full_path;
 }
 
-bool run_next(deque<GenericTask*> &task_list){
+template <class Ttask_list>bool run_next(Ttask_list &task_list)
+{
     bool ret;
     ret=task_list.front()->run();       // equivalent to   (*task_list.front()).run()
     task_list.pop_front();
@@ -111,9 +113,9 @@ bool run_next(deque<GenericTask*> &task_list){
     return ret;
 }
 
-template <typename T> void make_the_work(T loop)
+template <typename T,class Ttask_list> void make_the_work(T loop)
 {   
-    deque<GenericTask*> task_list=loop.get_task_list();
+    Ttask_list task_list=loop.get_task_list();
     bool still=true;
     while (still)
     {
@@ -132,14 +134,17 @@ int main(int argc, char *argv[])
 try
     {    
     path starting_path=get_starting_path(argc,argv);
-    MainBackupLoop backup_loop=read_configuration_file("backup.cfg");          // There is the file 'newbaka.cfg' as example.
+    // the type deque<GenericTask*> is stille hard-coded two times.
+    MainBackupLoop<deque<GenericTask*>> backup_loop=read_configuration_file<deque<GenericTask*>>("backup.cfg");          // There is the file 'newbaka.cfg' as example.
+
     backup_loop.MakeBackup();
     MainPurgeLoop purge_loop=backup_loop.purge_loop();
-    purge_loop.MakePurge();
     //launching the thread that runs the tasks
     make_the_work(backup_loop);
     //boost::thread scheduler( make_the_work, backup_loop );
     //scheduler.join();
+    purge_loop.MakePurge();
+
     }
 catch (string err) { cout<<string("I got a bad news : ")<<err<<endl; }
 }

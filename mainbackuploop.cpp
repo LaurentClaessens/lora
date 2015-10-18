@@ -40,11 +40,11 @@ bool do_we_backup(path orig_path,path bak_path)
     return false;
 }
 
-MainBackupLoop::MainBackupLoop(){}
+template <class Ttask_list> MainBackupLoop<Ttask_list>::MainBackupLoop(){}
 
 // the main backup loop is not intended to be constructed "by hand".
 // It is constructed and returned by the 'read_configuration_file' function. This is because it has to posses a DirectoryConverter which has to be constructed separately.
-MainBackupLoop::MainBackupLoop(const path starting_path,const DirectoryConverter directory_converter) : starting_path(starting_path)
+template  <class Ttask_list> MainBackupLoop<Ttask_list>::MainBackupLoop(const path starting_path,const DirectoryConverter directory_converter) : starting_path(starting_path)
 {
     assert(  is_directory(starting_path) );
     assert(  is_directory(backup_path) );
@@ -57,12 +57,12 @@ MainBackupLoop::MainBackupLoop(const path starting_path,const DirectoryConverter
     assert( is_directory(purge_removed_path) );
 }
 
-void MainBackupLoop::add_exclude_path(const path ex)
+template <class Ttask_list> void MainBackupLoop<Ttask_list>::add_exclude_path(const path ex)
 {
     excluded_paths.push_back(ex);
 }
 
-void MainBackupLoop::add_exclude_path(std::vector<path> vp)
+template <class Ttask_list> void MainBackupLoop<Ttask_list>::add_exclude_path(std::vector<path> vp)
 {
     for (  std::vector<path>::iterator it=vp.begin();it!=vp.end();++it  )
     {
@@ -70,7 +70,7 @@ void MainBackupLoop::add_exclude_path(std::vector<path> vp)
     }
 }
 
-void MainBackupLoop::DealWithFile(const path file_path) 
+template <class Ttask_list> void MainBackupLoop<Ttask_list>::DealWithFile(const path file_path) 
     {
         assert( is_regular_file(file_path) );
         const path bak_path=directory_converter.home_to_backup(file_path);
@@ -87,7 +87,7 @@ void MainBackupLoop::DealWithFile(const path file_path)
         }
     }
 
-void MainBackupLoop::DealWithRepertory(const path rep_path) {
+template <class Ttask_list> void MainBackupLoop<Ttask_list>::DealWithRepertory(const path rep_path) {
         if (!is_excluded(rep_path))
         {
             directory_iterator end_itr;
@@ -112,7 +112,7 @@ void MainBackupLoop::DealWithRepertory(const path rep_path) {
         }
     }
 
-bool MainBackupLoop::is_excluded(const path pathname)
+template <class Ttask_list> bool MainBackupLoop<Ttask_list>::is_excluded(const path pathname)
 {
     for (  std::vector<path>::iterator iter=excluded_paths.begin();iter!=excluded_paths.end();++iter  )
     {
@@ -121,7 +121,7 @@ bool MainBackupLoop::is_excluded(const path pathname)
     return false;
 } 
 
-void MainBackupLoop::MakeBackup()
+template <class Ttask_list> void MainBackupLoop<Ttask_list>::MakeBackup()
     { 
         create_tree(directory_converter.home_to_backup(starting_path));
         DealWithRepertory(starting_path); 
@@ -129,7 +129,7 @@ void MainBackupLoop::MakeBackup()
         task_list.push_back(etask);
     }
 
-MainPurgeLoop MainBackupLoop::purge_loop() const
+template <class Ttask_list> MainPurgeLoop MainBackupLoop<Ttask_list>::purge_loop() const
 {
     MainPurgeLoop a( starting_path,backup_path,purge_path,directory_converter );
     a.task_list=task_list;

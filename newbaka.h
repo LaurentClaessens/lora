@@ -36,7 +36,7 @@ path get_starting_path(int argc, char *argv[]);
 
 // Read the file 'cfg_path' and return an object of type 'MainBackupLoop' that is ready to perform a backup.
 // - starting path, backup_path, purge_modified_path
-MainBackupLoop read_configuration_file(const path cfg_path);
+template <class Ttask_list> MainBackupLoop<Ttask_list> read_configuration_file(const path cfg_path);
 
 
 #endif     // __NEWBAKA_H_INCLUDED__
