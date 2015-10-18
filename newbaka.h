@@ -39,8 +39,4 @@ path get_starting_path(int argc, char *argv[]);
 MainBackupLoop read_configuration_file(const path cfg_path);
 
 
-// This function is in a separated thread and execute the tasks in the list.
-void make_the_work(  std::deque<GenericTask*> &task_list);
-
-
 #endif     // __NEWBAKA_H_INCLUDED__

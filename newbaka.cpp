@@ -111,8 +111,9 @@ bool run_next(deque<GenericTask*> &task_list){
     return ret;
 }
 
-void make_the_work(  deque<GenericTask*> &task_list)
-{
+template <typename T> void make_the_work(T loop)
+{   
+    deque<GenericTask*> task_list=loop.get_task_list();
     bool still=true;
     while (still)
     {
@@ -136,8 +137,9 @@ try
     MainPurgeLoop purge_loop=backup_loop.purge_loop();
     purge_loop.MakePurge();
     //launching the thread that runs the tasks
-    boost::thread scheduler( make_the_work, backup_loop.task_list );
-    scheduler.join();
+    make_the_work(backup_loop);
+    //boost::thread scheduler( make_the_work, backup_loop );
+    //scheduler.join();
     }
 catch (string err) { cout<<string("I got a bad news : ")<<err<<endl; }
 }

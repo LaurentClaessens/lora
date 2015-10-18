@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
+#include <iostream>
 #include <boost/filesystem.hpp>
 #include "mainbackuploop.h"
 #include "mainpurgeloop.h"
@@ -24,44 +25,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 MainPurgeLoop::MainPurgeLoop(){}
 
-MainPurgeLoop::MainPurgeLoop(const path starting_path,const path backup_path,const path purge_path) : starting_path(starting_path),starting_backup_path(home_to_backup(starting_path)),backup_path(backup_path),home_path(getenv("HOME")),purge_removed_path(purge_path_to_purge_removed(purge_path)),purge_modified_path(purge_path_to_purge_modified(purge_path))
+MainPurgeLoop::MainPurgeLoop(const path starting_path,const path backup_path,const path purge_path,const DirectoryConverter directory_converter) : directory_converter(directory_converter)
     {
-        assert(  is_directory(starting_path) );
-        assert(  is_directory(starting_backup_path) );
-        assert(  is_directory(backup_path) );
-        assert(  is_directory(purge_path) );
-
-        create_tree(purge_modified_path);
-        create_tree(purge_removed_path);
-
-        assert( is_directory(purge_modified_path) );
-        assert( is_directory(purge_removed_path) );
+        directory_converter.create_purge_directories();
+        assert( directory_converter.are_all_paths_ok() );
     }
 
 void MainPurgeLoop::MakePurge()
 {
-    DealWithDirectory(starting_backup_path);
+    DealWithDirectory(directory_converter.backup_path);
 }
 
-MainPurgeLoop::backup_to_home(const path backup_path) const
-{
-    string s_backup_path=backup_path.string();
-    string s_purge_path=purge_path.string();
-    string s_home=home_path.string();
-    string s_return=backup_path.string();
-    s_return.replace(0,s_purge_path.size(),s_home);
-    return path(s_return);
-}
-
-MainPurgeLoop::DealWithDirectory(const path backup_path)
+void MainPurgeLoop::DealWithDirectory(const path backup_path)
 {
     assert(is_directory(backup_path));
     const path home_rep_path=backup_to_home(backup_path);
-    cout<<"(purge) Le répertoire "<<backup_path<<"correspond à "<<home_rep_path;
+    std::cout<<"(purge) Le répertoire "<<backup_path<<"correspond à "<<home_rep_path<<std::endl;
     directory_iterator end_itr;
     for(  directory_iterator itr(backup_path); itr!=end_itr;++itr  )
     {
-        path truc=backup_to_home(itr);
-        cout<<"(purge) Le truc "<<backup_path<<"correspond à "<<home_rep_path;
-    }a
+        path truc=directory_converter.backup_to_home(itr->path());
+        std::cout<<"(purge) Le truc "<<backup_path<<"correspond à "<<home_rep_path<<std::endl;
+    }
+}
+
+template <typename T> T MainBackupLoop::get_task_list()
+{
+    return task_list;
 }

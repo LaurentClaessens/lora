@@ -9,5 +9,5 @@ mainbackuploop.o:mainbackuploop.cpp mainbackuploop.h directoryconverter.o
 
 mainpurgeloop.o:mainpurgeloop.cpp mainpurgeloop.h directoryconverter.o
 	LC_ALL=C g++ -std=c++11  -g -rdynamic -c -o mainpurgeloop.o    -lboost_filesystem -lboost_system  mainpurgeloop.cpp
-directoryconverter.o:
-	LC_ALL=C g++ -std=c++11  -g -rdynamic -c -o directoryconverter.o    -lboost_filesystem -lboost_system  directoryconverter.cpp
+directoryconverter.o:directoryconverter.h
+	LC_ALL=C g++ -std=c++11  -g -rdynamic -c -o directoryconverter.o -lboost_filesystem -lboost_system  directoryconverter.cpp

@@ -16,8 +16,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
-#include <boost/filesystem.hpp>
 #include <string>
+#include <boost/filesystem.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include "directoryconverter.h"
+#include "tasks.h"
 
 using namespace boost::filesystem;
 using namespace std;
@@ -50,39 +53,67 @@ DirectoryConverter::DirectoryConverter(const path backup_path,const path purge_p
     create_tree(purge_modified_path);
     create_tree(purge_removed_path);
 
-    assert(is_directory(purge_modified_path))
-    assert(is_directory(purge_removed_path))
+    assert(is_directory(purge_modified_path));
+    assert(is_directory(purge_removed_path));
 }
 
-path DirectoryConverter::local_to_backup(const path local_path) const
+path DirectoryConverter::home_to_backup(const path local_path) const
 {
-    assert(  boost::starts_with(local_path,home_path) );
-    const string shome=home_path.string();
-    const string sbackup=backup_path.string();
+    assert(  boost::algorithm::starts_with(local_path,home_path) );
+    const string s_home=home_path.string();
+    const string s_backup=backup_path.string();
     string s_return=local_path.string();
-    s_return.replace(0,shome.size(),sbackup);
-    assert(  boost::starts_with(s_return,backup_path) );
+    s_return.replace(0,s_home.size(),s_backup);
+    assert(  boost::algorithm::starts_with(s_return,s_backup) );
     return path(s_return);
 }
 
-path DirectoryConverter::local_to_modified_purge(const path local_path) const
+path DirectoryConverter::home_to_modified_purge(const path local_path) const
 {
-    assert(  boost::starts_with(local_path,home_path) );
-    const string shome=home_path.string();
-    const string spurge=purge_modified_path.string();
+    assert(  boost::algorithm::starts_with(local_path,home_path) );
+    const string s_home=home_path.string();
+    const string s_purge=purge_modified_path.string();
     string s_return=local_path.string();
-    s_return.replace(0,shome.size(),spurge);
-    assert(  boost::starts_with(s_return,purge_modified_path) );
+    s_return.replace(0,s_home.size(),s_purge);
+    assert(  boost::algorithm::starts_with(s_return,s_purge) );
     return path(s_return);
 }
 
 path DirectoryConverter::backup_to_removed_purge(const path pathname) const
 {
-    assert(  boost::starts_with(pathname,backup_path) );
+    assert(  boost::algorithm::starts_with(pathname,backup_path) );
     const string s_removed=purge_removed_path.string();
     const string s_backup=backup_path.string();
     string s_return=pathname.string();
     s_return.replace(0,s_backup.size(),s_removed);
-    assert(  boost::starts_with(s_return,purge_removed_path) );
+    assert(  boost::algorithm::starts_with(s_return,s_removed) );
     return path(s_return);
+}
+
+path DirectoryConverter::backup_to_home(const path pathname) const
+{
+    string s_backup_path=pathname.string();
+    string s_purge_path=purge_path.string();
+    string s_home=home_path.string();
+    string s_return=backup_path.string();
+    s_return.replace(0,s_purge_path.size(),s_home);
+    return path(s_return);
+}
+
+        
+void DirectoryConverter::create_purge_directories() const
+{
+     create_tree(purge_modified_path);
+     create_tree(purge_removed_path);
+}
+
+bool DirectoryConverter::are_all_paths_ok() const
+{
+    if (!is_directory(purge_path)){return false;}
+    if (!is_directory(backup_path)){return false;}
+    if (!is_directory(purge_modified_path)){return false;}
+    if (!is_directory(purge_removed_path)){return false;}
+    if (!is_directory(purge_datetime_path)){return false;}
+    if (!is_directory(home_path)){return false;}
+    return true;
 }

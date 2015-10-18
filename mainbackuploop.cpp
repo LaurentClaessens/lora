@@ -42,22 +42,20 @@ bool do_we_backup(path orig_path,path bak_path)
 
 MainBackupLoop::MainBackupLoop(){}
 
-
 // the main backup loop is not intended to be constructed "by hand".
-// It is constructed and returned by the 'read_configuration_file' function. This is because it has to posses a DirectoryConverter which has to be constructed separatelly.
-MainBackupLoop::MainBackupLoop(const path starting_path,const path backup_path,const path purge_path) : starting_path(starting_path),backup_path(backup_path),home_path(getenv("HOME")),purge_removed_path(purge_path_to_purge_removed(purge_path)),purge_modified_path(purge_path_to_purge_modified(purge_path)),purge_datetime_path(purge_path_to_purge_datetime(purge_path)), purge_path(purge_path)
-    {
-        assert(  is_directory(starting_path) );
-        assert(  is_directory(backup_path) );
-        assert(  is_directory(purge_path) );
+// It is constructed and returned by the 'read_configuration_file' function. This is because it has to posses a DirectoryConverter which has to be constructed separately.
+MainBackupLoop::MainBackupLoop(const path starting_path,const DirectoryConverter directory_converter) : starting_path(starting_path)
+{
+    assert(  is_directory(starting_path) );
+    assert(  is_directory(backup_path) );
+    assert(  is_directory(purge_path) );
 
-        create_tree(purge_modified_path);
-        create_tree(purge_removed_path);
+    create_tree(purge_modified_path);
+    create_tree(purge_removed_path);
 
-        assert( is_directory(purge_modified_path) );
-        assert( is_directory(purge_removed_path) );
-    }
-
+    assert( is_directory(purge_modified_path) );
+    assert( is_directory(purge_removed_path) );
+}
 
 void MainBackupLoop::add_exclude_path(const path ex)
 {
@@ -125,15 +123,20 @@ bool MainBackupLoop::is_excluded(const path pathname)
 
 void MainBackupLoop::MakeBackup()
     { 
-        create_tree(home_to_backup(starting_path));
+        create_tree(directory_converter.home_to_backup(starting_path));
         DealWithRepertory(starting_path); 
         FinalTask*  etask= new FinalTask();
         task_list.push_back(etask);
     }
 
-MainPurgeLoop MainBackupLoop::purge() const
+MainPurgeLoop MainBackupLoop::purge_loop() const
 {
-    MainPurgeLoop a( starting_path,backup_path,purge_path );
+    MainPurgeLoop a( starting_path,backup_path,purge_path,directory_converter );
     a.task_list=task_list;
     return a;
+}
+
+template <class Ttask_list> Ttask_list MainBackupLoop<Ttask_list>::get_task_list()
+{
+    return task_list;
 }

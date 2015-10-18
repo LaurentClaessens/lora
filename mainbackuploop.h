@@ -38,17 +38,21 @@ bool do_we_backup(const path orig_path,const path bak_path);         // Says if 
 // * purge_datetime_path is the one which contains the two others; ex : /mnt/part-backup/<date>/<time>
 // * purge_path is the generic purge path; ex : /mnt/part-backup
 // but the argument for the 3-parameters constructor is purge_path; ex : /mnt/part_backup
+
+template <class Ttask_list>
 class MainBackupLoop
 {
     public:
         MainBackupLoop();
-        MainBackupLoop(const path,DirectoryConverter);        // The arguments are : starting, directory_converter.  The latter contains the purge, home and backup paths.
+        MainBackupLoop(const path,const DirectoryConverter);        // The arguments are : starting, directory_converter.  The latter contains the purge, home and backup paths.
 
         void add_exclude_path(const path);                 // exclude the given path
         void add_exclude_path(vector<path>);         // exclude the given vector of paths 
         bool is_excluded(const path);               // says if that path is excluded from the backup
         void MakeBackup();
         MainPurgeLoop purge_loop() const;
+        Ttask_list get_task_list();            // template because maybe I want to change the type of 'task_list'
+
 
     private :
         const DirectoryConverter directory_converter;
@@ -59,7 +63,7 @@ class MainBackupLoop
         const path purge_removed_path;
         const path purge_path;
         const path purge_datetime_path;         
-        std::deque<GenericTask*> task_list;
+        Ttask_list task_list;
 
         vector<path> excluded_paths;
         void DealWithFile(const path file_path) ;

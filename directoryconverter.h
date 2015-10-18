@@ -34,22 +34,26 @@ using namespace boost::filesystem;
 // An instance of this class is created buy the main backup loop and then given to the main purge loop.
 class DirectoryConverter
 {
-    private :
+    private :                       // if one add some paths here, one has to update 'are_all_paths_ok' and maybe also 'create_purge_directories'.
+        const path home_path;
         const path purge_path;
-        const path backup_path;
         const path purge_modified_path;
         const path purge_removed_path;
         const path purge_datetime_path;
-        const path home_path;
     public:
+        const path backup_path;
         DirectoryConverter();
         DirectoryConverter(const path,const path);       // backup path, purge_path
-        path purge_to_purge_datetime(path);
-        path purge_to_purge_modified(path);
-        path purge_to_purge_removed(path);
-        path local_to_backup(const path local_path) const;
-        path local_to_modified_purge(const path local_path) const;            
-}
+        void create_purge_directories() const;
+        path purge_to_purge_datetime(path) const;
+        path purge_to_modified_purge(path) const;
+        path purge_to_removed_purge(path) const;
+        path backup_to_removed_purge(path) const;
+        path backup_to_home(path) const;
+        path home_to_backup(const path) const;
+        path home_to_modified_purge(const path) const;            
+        bool are_all_paths_ok() const;                         // check if all the necessary directories exist.
+};
 
 
 #endif      //__DIRECTORY_CONVERTER_H__
