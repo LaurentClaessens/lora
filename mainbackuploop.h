@@ -54,7 +54,6 @@ class MainBackupLoop
         Ttask_list get_task_list();            // template because maybe I want to change the type of 'task_list'
         void full_process();
 
-
     private :
         const DirectoryConverter directory_converter;
         const path starting_path;

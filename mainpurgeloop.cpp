@@ -45,7 +45,7 @@ template <class Ttask_list>void MainPurgeLoop<Ttask_list>::DealWithDirectory(con
     for(  directory_iterator itr(backup_path); itr!=end_itr;++itr  )
     {
         path truc=directory_converter.backup_to_home(itr->path());
-        std::cout<<"(purge) Le truc "<<backup_path<<"correspond à "<<home_rep_path<<std::endl;
+        std::cout<<"(purge) Le truc "<<truc<<"correspond à "<<home_rep_path<<std::endl;
     }
 }
 

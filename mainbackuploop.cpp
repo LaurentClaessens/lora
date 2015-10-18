@@ -122,12 +122,12 @@ template <class Ttask_list> bool MainBackupLoop<Ttask_list>::is_excluded(const p
 } 
 
 template <class Ttask_list> void MainBackupLoop<Ttask_list>::MakeBackup()
-    { 
-        create_tree(directory_converter.home_to_backup(starting_path));
-        DealWithRepertory(starting_path); 
-        FinalTask*  etask= new FinalTask();
-        task_list.push_back(etask);
-    }
+{ 
+    create_tree(directory_converter.home_to_backup(starting_path));
+    DealWithRepertory(starting_path); 
+    FinalTask*  etask= new FinalTask();
+    task_list.push_back(etask);
+}
 
 template <class Ttask_list> MainPurgeLoop<Ttask_list> MainBackupLoop<Ttask_list>::purge_loop() const
 {

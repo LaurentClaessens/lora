@@ -28,6 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "newbaka.h"
 #include "tasks.h"
 #include "mainbackuploop.h"
+#include "mainpurgeloop.h"
 
 using namespace boost::filesystem;
 using namespace std;
