@@ -29,11 +29,12 @@ using namespace std;
 
 bool do_we_purge(const path bak_path,const path orig_path);         // if orig_path does not existe, return true because it assumes that the file has been removed since last backup cession.
 
+template <class Ttask_list>
 class MainPurgeLoop
 {
     public:
         const DirectoryConverter directory_converter;
-        std::deque<GenericTask*> task_list;         // The task list is shared with the backup loop
+        Ttask_list task_list;         // The task list is shared with the backup loop
 
         MainPurgeLoop();
         MainPurgeLoop(const path,const path,const path,const DirectoryConverter);   // The arguments are : starting_path (in home), backup_path, purge_path
@@ -42,10 +43,9 @@ class MainPurgeLoop
                                                                                 // as the one of the backup main loop.a
 
         void MakePurge();
-        template <typename T> T get_taks_list();            // template because maybe I want to change the type of 'task_list'
+        Ttask_list get_taks_list();            // template because maybe I want to change the type of 'task_list'
 
     private :
-        std::deque<GenericTask*> get_taks_list();
         path backup_to_home(const path backup_path) const;
         void DealWithFile(const path file_path) ;
         void DealWithDirectory(const path rep_path) ;

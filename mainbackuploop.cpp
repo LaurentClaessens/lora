@@ -129,9 +129,9 @@ template <class Ttask_list> void MainBackupLoop<Ttask_list>::MakeBackup()
         task_list.push_back(etask);
     }
 
-template <class Ttask_list> MainPurgeLoop MainBackupLoop<Ttask_list>::purge_loop() const
+template <class Ttask_list> MainPurgeLoop<Ttask_list> MainBackupLoop<Ttask_list>::purge_loop() const
 {
-    MainPurgeLoop a( starting_path,backup_path,purge_path,directory_converter );
+    MainPurgeLoop<Ttask_list> a( starting_path,backup_path,purge_path,directory_converter );
     a.task_list=task_list;
     return a;
 }

@@ -113,7 +113,7 @@ template <class Ttask_list>bool run_next(Ttask_list &task_list)
     return ret;
 }
 
-template <typename T,class Ttask_list> void make_the_work(T loop)
+template <class Ttask_list,typename T> void make_the_work(T loop)
 {   
     Ttask_list task_list=loop.get_task_list();
     bool still=true;
@@ -129,18 +129,19 @@ template <typename T,class Ttask_list> void make_the_work(T loop)
     }
 }
 
+// the type deque<GenericTask*> is still hard-coded 4 times, but only in main
+//
 int main(int argc, char *argv[])
 {
 try
     {    
     path starting_path=get_starting_path(argc,argv);
-    // the type deque<GenericTask*> is stille hard-coded two times.
     MainBackupLoop<deque<GenericTask*>> backup_loop=read_configuration_file<deque<GenericTask*>>("backup.cfg");          // There is the file 'newbaka.cfg' as example.
 
     backup_loop.MakeBackup();
-    MainPurgeLoop purge_loop=backup_loop.purge_loop();
+    MainPurgeLoop<deque<GenericTask*>> purge_loop=backup_loop.purge_loop();
     //launching the thread that runs the tasks
-    make_the_work(backup_loop);
+    make_the_work<deque<GenericTask*>>(backup_loop);
     //boost::thread scheduler( make_the_work, backup_loop );
     //scheduler.join();
     purge_loop.MakePurge();

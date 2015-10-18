@@ -23,20 +23,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "tasks.h"
 
 
-MainPurgeLoop::MainPurgeLoop(){}
+template <class Ttask_list> MainPurgeLoop<Ttask_list>::MainPurgeLoop(){}
 
-MainPurgeLoop::MainPurgeLoop(const path starting_path,const path backup_path,const path purge_path,const DirectoryConverter directory_converter) : directory_converter(directory_converter)
+template <class Ttask_list> MainPurgeLoop<Ttask_list>::MainPurgeLoop(const path starting_path,const path backup_path,const path purge_path,const DirectoryConverter directory_converter) : directory_converter(directory_converter)
     {
         directory_converter.create_purge_directories();
         assert( directory_converter.are_all_paths_ok() );
     }
 
-void MainPurgeLoop::MakePurge()
+template <class Ttask_list> void MainPurgeLoop<Ttask_list>::MakePurge()
 {
     DealWithDirectory(directory_converter.backup_path);
 }
 
-void MainPurgeLoop::DealWithDirectory(const path backup_path)
+template <class Ttask_list>void MainPurgeLoop<Ttask_list>::DealWithDirectory(const path backup_path)
 {
     assert(is_directory(backup_path));
     const path home_rep_path=backup_to_home(backup_path);
@@ -49,7 +49,7 @@ void MainPurgeLoop::DealWithDirectory(const path backup_path)
     }
 }
 
-template <typename T> T MainBackupLoop::get_task_list()
+template <typename Ttask_list> Ttask_list MainBackupLoop<Ttask_list>::get_task_list()
 {
     return task_list;
 }
