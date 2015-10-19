@@ -70,4 +70,7 @@ class MainBackupLoop
         void DealWithRepertory(const path rep_path) ;
 };
 
+
+#include "mainbackuploop.cpp"
+
 #endif  // __BACKUP_LOOP_H_INCLUDED__

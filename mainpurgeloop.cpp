@@ -39,7 +39,7 @@ template <class Ttask_list> void MainPurgeLoop<Ttask_list>::MakePurge()
 template <class Ttask_list>void MainPurgeLoop<Ttask_list>::DealWithDirectory(const path backup_path)
 {
     assert(is_directory(backup_path));
-    const path home_rep_path=backup_to_home(backup_path);
+    const path home_rep_path=directory_converter.backup_to_home(backup_path);
     std::cout<<"(purge) Le répertoire "<<backup_path<<"correspond à "<<home_rep_path<<std::endl;
     directory_iterator end_itr;
     for(  directory_iterator itr(backup_path); itr!=end_itr;++itr  )
@@ -49,7 +49,7 @@ template <class Ttask_list>void MainPurgeLoop<Ttask_list>::DealWithDirectory(con
     }
 }
 
-template <typename Ttask_list> Ttask_list MainBackupLoop<Ttask_list>::get_task_list()
+template <typename Ttask_list> Ttask_list MainPurgeLoop<Ttask_list>::get_task_list()
 {
     return task_list;
 }

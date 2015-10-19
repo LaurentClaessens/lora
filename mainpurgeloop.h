@@ -43,12 +43,14 @@ class MainPurgeLoop
                                                                                 // as the one of the backup main loop.a
 
         void MakePurge();
-        Ttask_list get_taks_list();            // template because maybe I want to change the type of 'task_list'
+        Ttask_list get_task_list();            // template because maybe I want to change the type of 'task_list'
 
     private :
         path backup_to_home(const path backup_path) const;
         void DealWithFile(const path file_path) ;
         void DealWithDirectory(const path rep_path) ;
 };
+
+#include "mainpurgeloop.cpp"
 
 #endif  // __PURGE_LOOP_H_INCLUDED__
