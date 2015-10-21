@@ -37,16 +37,12 @@ class MainPurgeLoop
         Ttask_list task_list;         // The task list is shared with the backup loop
 
         MainPurgeLoop();
-        MainPurgeLoop(const path,const path,const path,const DirectoryConverter);   // The arguments are : starting_path (in home), backup_path, purge_path
-                                                                                    // the directory starting_backup_path is then computed from starting_path
-                                                                                // The point of passing the directory converter is that we want to use the same
-                                                                                // as the one of the backup main loop.a
+        MainPurgeLoop(const DirectoryConverter);   
 
         void MakePurge();
         Ttask_list get_task_list();            // template because maybe I want to change the type of 'task_list'
 
     private :
-        path backup_to_home(const path backup_path) const;
         void DealWithFile(const path file_path) ;
         void DealWithDirectory(const path rep_path) ;
 };

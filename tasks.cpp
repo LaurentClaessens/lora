@@ -23,12 +23,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <boost/filesystem.hpp>
 #include "tasks.h"
 
-bool create_tree(path rep_path)
+bool create_tree(const path rep_path)
 {
     path parent_path=rep_path.parent_path();
     if (is_directory( parent_path ) ) {}
     else { create_tree(parent_path);  } 
     create_directory(rep_path); 
+    assert( is_directory(rep_path) );
 }
 
 void my_copy_file(path from_path,path to_path)

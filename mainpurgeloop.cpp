@@ -25,7 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 template <class Ttask_list> MainPurgeLoop<Ttask_list>::MainPurgeLoop(){}
 
-template <class Ttask_list> MainPurgeLoop<Ttask_list>::MainPurgeLoop(const path starting_path,const path backup_path,const path purge_path,const DirectoryConverter directory_converter) : directory_converter(directory_converter)
+template <class Ttask_list> MainPurgeLoop<Ttask_list>::MainPurgeLoop(const DirectoryConverter directory_converter) : 
+    directory_converter(directory_converter)
     {
         directory_converter.create_purge_directories();
         assert( directory_converter.are_all_paths_ok() );

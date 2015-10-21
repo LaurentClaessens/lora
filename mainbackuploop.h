@@ -57,12 +57,6 @@ class MainBackupLoop
     private :
         const DirectoryConverter directory_converter;
         const path starting_path;
-        const path backup_path;
-        const path home_path;
-        const path purge_modified_path;
-        const path purge_removed_path;
-        const path purge_path;
-        const path purge_datetime_path;         
         Ttask_list task_list;
 
         vector<path> excluded_paths;

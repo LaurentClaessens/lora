@@ -32,6 +32,8 @@ using namespace boost::filesystem;
 // It creates the needed directories.
 //
 // An instance of this class is created buy the main backup loop and then given to the main purge loop.
+//
+// One has to create an object of this class using the fonction 'create_converter'. The reason is that only the backup and purge paths have to be passed while the other paths can be deduced. But since the other path are 'const', they have to be list-initialized while computation is such an initialisation seem to be messy (I failed to make it work).
 class DirectoryConverter
 {
     private :                       // if one add some paths here, one has to update 'are_all_paths_ok' and maybe also 'create_purge_directories'.
@@ -41,9 +43,9 @@ class DirectoryConverter
         const path purge_removed_path;
         const path purge_datetime_path;
     public:
+        DirectoryConverter() {};
+        DirectoryConverter(const path home_path, const path backup_path, const path purge_path,const path purge_datetime_path,const path purge_modified_path,const path purge_removed_path );
         const path backup_path;
-        DirectoryConverter();
-        DirectoryConverter(const path,const path);       // backup path, purge_path
         void create_purge_directories() const;
         path purge_to_purge_datetime(path) const;
         path purge_to_modified_purge(path) const;
@@ -55,5 +57,6 @@ class DirectoryConverter
         bool are_all_paths_ok() const;                         // check if all the necessary directories exist.
 };
 
+DirectoryConverter create_converter(const path backup_path,const path purge_path);
 
 #endif      //__DIRECTORY_CONVERTER_H__

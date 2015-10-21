@@ -44,17 +44,13 @@ template <class Ttask_list> MainBackupLoop<Ttask_list>::MainBackupLoop(){}
 
 // the main backup loop is not intended to be constructed "by hand".
 // It is constructed and returned by the 'read_configuration_file' function. This is because it has to posses a DirectoryConverter which has to be constructed separately.
-template  <class Ttask_list> MainBackupLoop<Ttask_list>::MainBackupLoop(const path starting_path,const DirectoryConverter directory_converter) : starting_path(starting_path)
+template  <class Ttask_list> MainBackupLoop<Ttask_list>::MainBackupLoop(const path starting_path,const DirectoryConverter directory_converter) : 
+    starting_path(starting_path),
+    directory_converter(directory_converter)
 {
     assert(  is_directory(starting_path) );
-    assert(  is_directory(backup_path) );
-    assert(  is_directory(purge_path) );
 
-    create_tree(purge_modified_path);
-    create_tree(purge_removed_path);
-
-    assert( is_directory(purge_modified_path) );
-    assert( is_directory(purge_removed_path) );
+    assert(directory_converter.are_all_paths_ok());
 }
 
 template <class Ttask_list> void MainBackupLoop<Ttask_list>::add_exclude_path(const path ex)
@@ -131,7 +127,7 @@ template <class Ttask_list> void MainBackupLoop<Ttask_list>::MakeBackup()
 
 template <class Ttask_list> MainPurgeLoop<Ttask_list> MainBackupLoop<Ttask_list>::purge_loop() const
 {
-    MainPurgeLoop<Ttask_list> a( starting_path,backup_path,purge_path,directory_converter );
+    MainPurgeLoop<Ttask_list> a( directory_converter );
     a.task_list=task_list;
     return a;
 }

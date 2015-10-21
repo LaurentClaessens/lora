@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
+#include <iostream>
 #include <string>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -27,6 +28,8 @@ using namespace std;
 
 path purge_path_to_purge_datetime(const path purge_path)
 {
+    assert(is_directory(purge_path));
+
     // std::to_string requires c++11. This is why we compile with g++ -std=c++11
     time_t tt;
     time(&tt);
@@ -41,20 +44,18 @@ path purge_path_to_purge_datetime(const path purge_path)
     string s_time=s_hour+"h"+s_min;
 
     return purge_path/s_date/s_time;
-}
+}   
 
-DirectoryConverter::DirectoryConverter(){};
-
-DirectoryConverter::DirectoryConverter(const path backup_path,const path purge_path):backup_path(backup_path),purge_path(purge_path),purge_datetime_path(purge_path_to_purge_datetime(purge_path)),purge_modified_path(purge_datetime_path/"modified"),purge_removed_path(purge_datetime_path/"removed"),home_path(getenv("HOME"))     // purge_path  
+DirectoryConverter::DirectoryConverter(const path home_path, const path backup_path, const path purge_path,const path purge_datetime_path,const path purge_modified_path,const path purge_removed_path ):
+    home_path(home_path),
+    backup_path(backup_path),
+    purge_path(purge_path),
+    purge_datetime_path(purge_datetime_path),
+    purge_modified_path(purge_modified_path),
+    purge_removed_path(purge_removed_path)
 {
-    assert(is_directory(purge_path));
-    assert(is_directory(home_path));
-
-    create_tree(purge_modified_path);
-    create_tree(purge_removed_path);
-
-    assert(is_directory(purge_modified_path));
-    assert(is_directory(purge_removed_path));
+    create_purge_directories();
+    assert(are_all_paths_ok());
 }
 
 path DirectoryConverter::home_to_backup(const path local_path) const
@@ -99,7 +100,6 @@ path DirectoryConverter::backup_to_home(const path pathname) const
     s_return.replace(0,s_purge_path.size(),s_home);
     return path(s_return);
 }
-
         
 void DirectoryConverter::create_purge_directories() const
 {
@@ -109,11 +109,33 @@ void DirectoryConverter::create_purge_directories() const
 
 bool DirectoryConverter::are_all_paths_ok() const
 {
-    if (!is_directory(purge_path)){return false;}
-    if (!is_directory(backup_path)){return false;}
-    if (!is_directory(purge_modified_path)){return false;}
-    if (!is_directory(purge_removed_path)){return false;}
-    if (!is_directory(purge_datetime_path)){return false;}
+    cout<<"Path existence verification"<<endl;
     if (!is_directory(home_path)){return false;}
+    cout<<"home is ok"<<endl;
+    if (!is_directory(purge_path)){return false;}
+    cout<<"purge is ok"<<endl;
+    if (!is_directory(backup_path)){return false;}
+    cout<<"backup is ok"<<endl;
+    if (!is_directory(purge_datetime_path)){return false;}
+    cout<<"datetime is ok"<<endl;
+    if (!is_directory(purge_modified_path)){return false;}
+    cout<<"modified is ok"<<endl;
+    if (!is_directory(purge_removed_path)){return false;}
+    cout<<"removed is ok"<<endl;
     return true;
+}
+
+DirectoryConverter create_converter(const path bp,const path pp)
+{
+
+    assert(is_directory(bp));
+    assert(is_directory(pp));
+
+    path h_path=getenv("HOME");
+    path p_datetime_path=purge_path_to_purge_datetime(pp);
+    path p_modified_path=p_datetime_path/"modified";
+    path p_removed_path=p_datetime_path/"removed";
+
+
+    return DirectoryConverter( h_path,bp,pp,p_datetime_path,p_modified_path,p_removed_path );
 }

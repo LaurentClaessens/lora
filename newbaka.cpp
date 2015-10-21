@@ -73,7 +73,9 @@ template <class Ttask_list> MainBackupLoop<Ttask_list> read_configuration_file(c
     assert(is_directory(pp));
     assert(is_directory(sp));
 
-    DirectoryConverter converter(bp,pp);       //  the purge directories are created here.
+    cout<<"backup sera"<<bp<<endl;
+    cout<<"purge sera"<<pp<<endl;
+    DirectoryConverter converter=create_converter(bp,pp);       //  the purge directories are created here.
 
     MainBackupLoop<Ttask_list> backup_loop=MainBackupLoop<Ttask_list>(sp,converter);
     backup_loop.add_exclude_path(exclude);
@@ -142,11 +144,17 @@ try
     backup_loop.MakeBackup();
     MainPurgeLoop<deque<GenericTask*>> purge_loop=backup_loop.purge_loop();
     //launching the thread that runs the tasks
+    
     make_the_work<deque<GenericTask*>>(backup_loop);
-    //boost::thread scheduler( make_the_work, backup_loop );
+
+    //boost::thread scheduler( make_the_work<deque<GenericTask*>>, backup_loop );
     //scheduler.join();
     purge_loop.MakePurge();
 
     }
 catch (string err) { cout<<string("I got a bad news : ")<<err<<endl; }
+catch (std::length_error &err) { 
+    cerr<<"Caught : "<<err.what()<<endl;
+    cerr<<"Type : "<<typeid(err).name()<<endl;
+}
 }
