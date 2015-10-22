@@ -95,7 +95,6 @@ template <class Ttask_list> void MainBackupLoop<Ttask_list>::DealWithRepertory(c
                     path bak_rep=directory_converter.home_to_backup(pathname);
                     if (!is_directory(bak_rep))
                     {
-
                         RepertoryCopyTask*  dtask= new RepertoryCopyTask(pathname,bak_rep);
                         task_list.push_back(dtask);
                     }

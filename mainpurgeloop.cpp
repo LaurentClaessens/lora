@@ -39,31 +39,44 @@ template <class Ttask_list> void MainPurgeLoop<Ttask_list>::MakePurge()
 
 template <class Ttask_list>void MainPurgeLoop<Ttask_list>::DealWithFile(const path pathname)
 {
-
-}<++>
+    if(!is_regular_file(   directory_converter.backup_to_home(pathname)   ))
+    {
+        cout<<"En voila un fichier qu'il faudra virer du backup : "<<pathname<<endl;
+        cout<<"On va déplacer "<<pathname<<" vers "<<directory_converter.backup_to_removed_purge(pathname)<<endl;
+        FileMoveTask*  mtask= new FileMoveTask(pathname, directory_converter.backup_to_removed_purge(pathname)  );
+        task_list.push_back(mtask);
+    }
+}
 
 template <class Ttask_list>void MainPurgeLoop<Ttask_list>::DealWithDirectory(const path backup_path)
 {
     assert(is_directory(backup_path));
     path corresponding_home=directory_converter.backup_to_home(backup_path);
-    cout<<"Le répertoire "<<backup_path<<" correspond à "<<corresponding_home<<endl;
 
-    directory_iterator end_itr;
-    for(  directory_iterator itr(backup_path); itr!=end_itr;++itr  )
+    if (!is_directory( directory_converter.backup_to_home(backup_path)  ))
     {
-        path pathname=itr->path();
-        if (is_directory( pathname  )){
-            cout<<"Cela est un répertoire; j'entre."<<endl;
-            DealWithDirectory(pathname);
-        }
-        else if (is_regular_file(pathname))
+        cout<<"Il faudra supprimer du backup le répertoire :"<<backup_path<<endl;
+        DirectoryMoveTask*  dtask= new DirectoryMoveTask(backup_path, directory_converter.backup_to_removed_purge(backup_path)  );
+        task_list.push_back(dtask);
+    }
+    else 
+    {
+        directory_iterator end_itr;
+        for(  directory_iterator itr(backup_path); itr!=end_itr;++itr  )
         {
-            cout<<"Cela est un fichier. Je passe."<<endl;
-            DealWithFile(pathname);
+            path pathname=itr->path();
+            if (is_directory( pathname  )){
+                DealWithDirectory(pathname);
+            }
+            else if (is_regular_file(pathname))
+            {
+                DealWithFile(pathname);
+            }
+            else {
+                throw string("**  What the f*ck is "+pathname.string()+" ??? ");
+            }
         }
-        else {
-            throw string("**  What the f*ck is "+pathname.string()+" ??? ");
-        }
+
     }
 }
 

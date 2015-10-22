@@ -132,7 +132,6 @@ bool DirectoryConverter::are_all_paths_ok() const
         cout<<"removed is ok"<<endl;
         verified_paths=true;
     }
-    else {cout<<"Je ne refais pas";}
     return true;
 }
 path DirectoryConverter::get_backup_path() const

@@ -85,6 +85,7 @@ FileCopyTask::FileCopyTask(pathTriple triple):GenericTask()
         this->bak_path=triple.bak;
         this->purge_modified_path=triple.purge;
     }
+
 bool FileCopyTask::run() const
 {
         assert(is_regular_file(orig_path));
@@ -125,9 +126,31 @@ bool RepertoryCopyTask::run() const
         return true;
     }
 
-FinalTask::FinalTask(){}
-bool FinalTask::run() const
-    {
-        return false;
-    }
+FileMoveTask::FileMoveTask(const path orig,const path destination): orig_path(orig), destination_path(destination) { }
 
+bool FileMoveTask::run() const{
+    assert( is_regular_file(orig_path) );
+    assert( !is_regular_file(destination_path) );
+
+    rename(orig_path,destination_path);
+
+    assert( !is_regular_file(orig_path) );
+    assert( is_regular_file(destination_path) );
+    return true;
+}
+DirectoryMoveTask::DirectoryMoveTask(const path orig,const path destination): orig_path(orig), destination_path(destination) { }
+
+bool DirectoryMoveTask::run() const{
+    assert( is_directory(orig_path) );
+    assert( !is_directory(destination_path) );
+
+    rename(orig_path,destination_path);
+
+    assert( !is_directory(orig_path) );
+    assert( is_directory(destination_path) );
+    return true;
+}
+
+
+FinalTask::FinalTask(){}
+bool FinalTask::run() const { return false; }

@@ -110,6 +110,7 @@ template <class Ttask_list>bool run_next(Ttask_list &task_list)
 {
     bool ret;
     ret=task_list.front()->run();       // equivalent to   (*task_list.front()).run()
+    delete task_list.front();
     task_list.pop_front();
     cout<<task_list.size()<<" tasks remaining"<<endl;
     return ret;
@@ -143,11 +144,13 @@ try
     MainPurgeLoop<deque<GenericTask*>> purge_loop=backup_loop.purge_loop();
     //launching the thread that runs the tasks
     
-    make_the_work<deque<GenericTask*>>(backup_loop);
+    //make_the_work<deque<GenericTask*>>(backup_loop);
 
-    //boost::thread scheduler( make_the_work<deque<GenericTask*>>, backup_loop );
-    //scheduler.join();
+
+    boost::thread scheduler( make_the_work<deque<GenericTask*>,MainBackupLoop<deque<GenericTask*>>>, backup_loop );
     purge_loop.MakePurge();
+
+    scheduler.join();
 
     }
 catch (string err) { cout<<string("I got a bad news : ")<<err<<endl; }

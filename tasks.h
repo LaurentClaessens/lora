@@ -80,6 +80,23 @@ class RepertoryCopyTask : public GenericTask{
         RepertoryCopyTask(const boost::filesystem::path orig_path,const boost::filesystem::path bak_path);
     bool run() const;
 };
+class FileMoveTask: public GenericTask{
+    private:
+        const boost::filesystem::path orig_path;
+        const boost::filesystem::path destination_path;
+    public:
+        FileMoveTask(const path orig,const path destination);
+        bool run() const;
+};
+class DirectoryMoveTask: public GenericTask{
+    private:
+        const boost::filesystem::path orig_path;
+        const boost::filesystem::path destination_path;
+    public:
+        DirectoryMoveTask(const path orig,const path destination);
+        bool run() const;
+};
+
 
 class FinalTask : public GenericTask{
     public:
