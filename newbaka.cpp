@@ -33,7 +33,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace boost::filesystem;
 using namespace std;
 
-// The line 'exclude=foo/bar' exclude the directory $HOME/foo/bar
 template <class Ttask_list> MainBackupLoop<Ttask_list> read_configuration_file(const path cfg_path)
 {
     assert(is_regular_file(cfg_path));
@@ -75,7 +74,7 @@ template <class Ttask_list> MainBackupLoop<Ttask_list> read_configuration_file(c
 
     cout<<"backup sera"<<bp<<endl;
     cout<<"purge sera"<<pp<<endl;
-    DirectoryConverter converter=create_converter(bp,pp);       //  the purge directories are created here.
+    DirectoryConverter converter=DirectoryConverter(bp,pp);       //  the purge directories are created here.
 
     MainBackupLoop<Ttask_list> backup_loop=MainBackupLoop<Ttask_list>(sp,converter);
     backup_loop.add_exclude_path(exclude);
@@ -133,7 +132,6 @@ template <class Ttask_list,typename T> void make_the_work(T loop)
 }
 
 // the type deque<GenericTask*> is still hard-coded 4 times, but only in main
-//
 int main(int argc, char *argv[])
 {
 try

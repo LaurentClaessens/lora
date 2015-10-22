@@ -34,19 +34,36 @@ template <class Ttask_list> MainPurgeLoop<Ttask_list>::MainPurgeLoop(const Direc
 
 template <class Ttask_list> void MainPurgeLoop<Ttask_list>::MakePurge()
 {
-    DealWithDirectory(directory_converter.backup_path);
+    DealWithDirectory(directory_converter.get_backup_path());
 }
+
+template <class Ttask_list>void MainPurgeLoop<Ttask_list>::DealWithFile(const path pathname)
+{
+
+}<++>
 
 template <class Ttask_list>void MainPurgeLoop<Ttask_list>::DealWithDirectory(const path backup_path)
 {
     assert(is_directory(backup_path));
-    const path home_rep_path=directory_converter.backup_to_home(backup_path);
-    std::cout<<"(purge) Le répertoire "<<backup_path<<"correspond à "<<home_rep_path<<std::endl;
+    path corresponding_home=directory_converter.backup_to_home(backup_path);
+    cout<<"Le répertoire "<<backup_path<<" correspond à "<<corresponding_home<<endl;
+
     directory_iterator end_itr;
     for(  directory_iterator itr(backup_path); itr!=end_itr;++itr  )
     {
-        path truc=directory_converter.backup_to_home(itr->path());
-        std::cout<<"(purge) Le truc "<<truc<<"correspond à "<<home_rep_path<<std::endl;
+        path pathname=itr->path();
+        if (is_directory( pathname  )){
+            cout<<"Cela est un répertoire; j'entre."<<endl;
+            DealWithDirectory(pathname);
+        }
+        else if (is_regular_file(pathname))
+        {
+            cout<<"Cela est un fichier. Je passe."<<endl;
+            DealWithFile(pathname);
+        }
+        else {
+            throw string("**  What the f*ck is "+pathname.string()+" ??? ");
+        }
     }
 }
 

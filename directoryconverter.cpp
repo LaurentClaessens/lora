@@ -46,16 +46,17 @@ path purge_path_to_purge_datetime(const path purge_path)
     return purge_path/s_date/s_time;
 }   
 
-DirectoryConverter::DirectoryConverter(const path home_path, const path backup_path, const path purge_path,const path purge_datetime_path,const path purge_modified_path,const path purge_removed_path ):
-    home_path(home_path),
-    backup_path(backup_path),
-    purge_path(purge_path),
-    purge_datetime_path(purge_datetime_path),
-    purge_modified_path(purge_modified_path),
-    purge_removed_path(purge_removed_path)
+
+DirectoryConverter::DirectoryConverter(const path bp,const path pp):
+    home_path(getenv("HOME")),
+    backup_path(bp),
+    purge_path(pp),
+    purge_datetime_path(purge_path_to_purge_datetime(pp)),
+    purge_modified_path(purge_datetime_path/"modified"),
+    purge_removed_path(purge_datetime_path/"removed")
 {
     create_purge_directories();
-    assert(are_all_paths_ok());
+    assert(  are_all_paths_ok() );
 }
 
 path DirectoryConverter::home_to_backup(const path local_path) const
@@ -93,11 +94,14 @@ path DirectoryConverter::backup_to_removed_purge(const path pathname) const
 
 path DirectoryConverter::backup_to_home(const path pathname) const
 {
-    string s_backup_path=pathname.string();
-    string s_purge_path=purge_path.string();
+    assert(  boost::algorithm::starts_with(pathname,backup_path) );
+
+    string s_backup_path=backup_path.string();
     string s_home=home_path.string();
-    string s_return=backup_path.string();
-    s_return.replace(0,s_purge_path.size(),s_home);
+    string s_return=pathname.string();
+
+    s_return.replace(0,s_backup_path.size(),s_home);
+    assert(  boost::algorithm::starts_with(s_return,s_home) );
     return path(s_return);
 }
         
@@ -107,35 +111,31 @@ void DirectoryConverter::create_purge_directories() const
      create_tree(purge_removed_path);
 }
 
+bool DirectoryConverter::verified_paths=false;
+
 bool DirectoryConverter::are_all_paths_ok() const
 {
-    cout<<"Path existence verification"<<endl;
-    if (!is_directory(home_path)){return false;}
-    cout<<"home is ok"<<endl;
-    if (!is_directory(purge_path)){return false;}
-    cout<<"purge is ok"<<endl;
-    if (!is_directory(backup_path)){return false;}
-    cout<<"backup is ok"<<endl;
-    if (!is_directory(purge_datetime_path)){return false;}
-    cout<<"datetime is ok"<<endl;
-    if (!is_directory(purge_modified_path)){return false;}
-    cout<<"modified is ok"<<endl;
-    if (!is_directory(purge_removed_path)){return false;}
-    cout<<"removed is ok"<<endl;
+    if (!verified_paths)
+    {
+        cout<<"Path existence verification"<<endl;
+        if (!is_directory(home_path)){return false;}
+        cout<<"home is ok"<<endl;
+        if (!is_directory(purge_path)){return false;}
+        cout<<"purge is ok"<<endl;
+        if (!is_directory(backup_path)){return false;}
+        cout<<"backup is ok"<<endl;
+        if (!is_directory(purge_datetime_path)){return false;}
+        cout<<"datetime is ok"<<endl;
+        if (!is_directory(purge_modified_path)){return false;}
+        cout<<"modified is ok"<<endl;
+        if (!is_directory(purge_removed_path)){return false;}
+        cout<<"removed is ok"<<endl;
+        verified_paths=true;
+    }
+    else {cout<<"Je ne refais pas";}
     return true;
 }
-
-DirectoryConverter create_converter(const path bp,const path pp)
+path DirectoryConverter::get_backup_path() const
 {
-
-    assert(is_directory(bp));
-    assert(is_directory(pp));
-
-    path h_path=getenv("HOME");
-    path p_datetime_path=purge_path_to_purge_datetime(pp);
-    path p_modified_path=p_datetime_path/"modified";
-    path p_removed_path=p_datetime_path/"removed";
-
-
-    return DirectoryConverter( h_path,bp,pp,p_datetime_path,p_modified_path,p_removed_path );
+    return backup_path;
 }
