@@ -69,8 +69,8 @@ template <class Ttask_list> void MainBackupLoop<Ttask_list>::add_exclude_path(st
 template <class Ttask_list> void MainBackupLoop<Ttask_list>::DealWithFile(const path file_path) 
     {
         assert( is_regular_file(file_path) );
-        const path bak_path=directory_converter.home_to_backup(file_path);
-        const path purge_modified_path=directory_converter.home_to_modified_purge(file_path);
+        const path bak_path=get_converter().home_to_backup(file_path);
+        const path purge_modified_path=get_converter().home_to_modified_purge(file_path);
         if (do_we_backup(file_path,bak_path))
         {
             assert( !boost::algorithm::starts_with(bak_path,starting_path ) );
@@ -92,7 +92,7 @@ template <class Ttask_list> void MainBackupLoop<Ttask_list>::DealWithRepertory(c
                 path pathname=itr->path();
                 if (is_directory(pathname))
                 {
-                    path bak_rep=directory_converter.home_to_backup(pathname);
+                    path bak_rep=get_converter().home_to_backup(pathname);
                     if (!is_directory(bak_rep))
                     {
                         RepertoryCopyTask*  dtask= new RepertoryCopyTask(pathname,bak_rep);
@@ -118,7 +118,8 @@ template <class Ttask_list> bool MainBackupLoop<Ttask_list>::is_excluded(const p
 
 template <class Ttask_list> void MainBackupLoop<Ttask_list>::MakeBackup()
 { 
-    create_tree(directory_converter.home_to_backup(starting_path));
+    cout<<"Purge: adresse de ma liste "<<&task_list<<endl;
+    create_tree(get_converter().home_to_backup(starting_path));
     DealWithRepertory(starting_path); 
 }
 
@@ -127,10 +128,9 @@ template <class Ttask_list> MainPurgeLoop<Ttask_list> MainBackupLoop<Ttask_list>
     return MainPurgeLoop<Ttask_list>( directory_converter,task_list );
 }
 
-template <class Ttask_list> Ttask_list MainBackupLoop<Ttask_list>::get_task_list() const
-{
-    return task_list;
-}
+template <class Ttask_list> Ttask_list MainBackupLoop<Ttask_list>::get_task_list() const { return task_list; }
+template <class Ttask_list> Ttask_list* MainBackupLoop<Ttask_list>::get_task_list_ptr() { return &task_list; }
+
 template <class Ttask_list> DirectoryConverter MainBackupLoop<Ttask_list>::get_converter() const
 {
     return directory_converter;

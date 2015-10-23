@@ -118,18 +118,18 @@ template <class Ttask_list>bool run_next(Ttask_list &task_list)
     return ret;
 }
 
-template <class Ttask_list,typename T> void make_the_work(T loop)
+template <class Ttask_list> void make_the_work(Ttask_list* tl_ptr)
 {   
-    Ttask_list task_list=loop.get_task_list();
+    cout<<"Adresse de la liste dans le work : "<<tl_ptr<<endl;
     bool still=true;
     while (still)
     {
-        if (task_list.size() != 0)
+        if (tl_ptr->size() != 0)
         {
             cout<<"liste pas vide"<<endl;
             try{
                 cout<<"Entre dans try"<<endl;
-             still=run_next(task_list);
+             still=run_next(*tl_ptr);
                }
             catch (string err) { cout<<string("**** I got a bad news : ")<<err<<endl; }
         }
@@ -148,7 +148,7 @@ try
     backup_loop.MakeBackup();
     
     //launching the thread that runs the tasks
-    boost::thread scheduler( make_the_work<deque<GenericTask*>,MainBackupLoop<deque<GenericTask*>>>, backup_loop );
+    boost::thread scheduler( make_the_work<deque<GenericTask*>>, backup_loop.get_task_list_ptr() );
 
     MainPurgeLoop<deque<GenericTask*>> purge_loop=backup_loop.purge_loop();
     purge_loop.MakePurge();

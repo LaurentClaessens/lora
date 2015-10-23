@@ -52,6 +52,7 @@ class MainBackupLoop
         void MakeBackup();
         MainPurgeLoop<Ttask_list> purge_loop();    // not 'const' because it
         Ttask_list get_task_list() const;            // template because maybe I want to change the type of 'task_list'
+        Ttask_list* get_task_list_ptr();            // template because maybe I want to change the type of 'task_list'
         DirectoryConverter get_converter() const;
         void full_process();
     private :

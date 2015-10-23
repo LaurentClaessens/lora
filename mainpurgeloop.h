@@ -41,6 +41,7 @@ class MainPurgeLoop
         MainPurgeLoop(const DirectoryConverter &converter,Ttask_list &task_list);
 
         Ttask_list get_task_list() const;      
+        Ttask_list* get_task_list_ptr() const;      
         DirectoryConverter get_converter() const;
         void MakePurge();
     private :
