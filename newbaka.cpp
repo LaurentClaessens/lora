@@ -109,8 +109,10 @@ path get_starting_path(int argc, char *argv[])
 template <class Ttask_list>bool run_next(Ttask_list &task_list)
 {
     bool ret;
+    cout<<"Launching a run"<<endl;
     ret=task_list.front()->run();       // equivalent to   (*task_list.front()).run()
-    delete task_list.front();
+    cout<<"run finished"<<endl;
+    //delete task_list.front();
     task_list.pop_front();
     cout<<task_list.size()<<" tasks remaining"<<endl;
     return ret;
@@ -124,31 +126,36 @@ template <class Ttask_list,typename T> void make_the_work(T loop)
     {
         if (task_list.size() != 0)
         {
+            cout<<"liste pas vide"<<endl;
             try{
+                cout<<"Entre dans try"<<endl;
              still=run_next(task_list);
                }
             catch (string err) { cout<<string("**** I got a bad news : ")<<err<<endl; }
         }
+        //cout<<"liste vide. Attend";
     }
+    cout<<"Je sors du 'make_the_work'"<<endl;
 }
 
-// the type deque<GenericTask*> is still hard-coded 4 times, but only in main
+// the type deque<GenericTask*> is still hard coded quite many times, but only in main
 int main(int argc, char *argv[])
 {
 try
     {    
     path starting_path=get_starting_path(argc,argv);
     MainBackupLoop<deque<GenericTask*>> backup_loop=read_configuration_file<deque<GenericTask*>>("backup.cfg");          // There is the file 'newbaka.cfg' as example.
-
     backup_loop.MakeBackup();
-    MainPurgeLoop<deque<GenericTask*>> purge_loop=backup_loop.purge_loop();
-    //launching the thread that runs the tasks
     
-    //make_the_work<deque<GenericTask*>>(backup_loop);
-
-
+    //launching the thread that runs the tasks
     boost::thread scheduler( make_the_work<deque<GenericTask*>,MainBackupLoop<deque<GenericTask*>>>, backup_loop );
+
+    MainPurgeLoop<deque<GenericTask*>> purge_loop=backup_loop.purge_loop();
     purge_loop.MakePurge();
+
+    cout<<"la liste des tâches backup : "<<backup_loop.get_task_list().size()<<endl;
+    cout<<"la liste des tâches purge : "<<purge_loop.get_task_list().size()<<endl;
+    cout<<"Maintenant nous avons fini la purge, nous attendons la fin du scheduler"<<endl;
 
     scheduler.join();
 

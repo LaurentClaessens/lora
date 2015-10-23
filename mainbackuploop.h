@@ -50,15 +50,14 @@ class MainBackupLoop
         void add_exclude_path(vector<path>);         // exclude the given vector of paths 
         bool is_excluded(const path);               // says if that path is excluded from the backup
         void MakeBackup();
-        MainPurgeLoop<Ttask_list> purge_loop() const;
-        Ttask_list get_task_list();            // template because maybe I want to change the type of 'task_list'
+        MainPurgeLoop<Ttask_list> purge_loop();    // not 'const' because it
+        Ttask_list get_task_list() const;            // template because maybe I want to change the type of 'task_list'
+        DirectoryConverter get_converter() const;
         void full_process();
-
     private :
         const DirectoryConverter directory_converter;
         const path starting_path;
         Ttask_list task_list;
-
         vector<path> excluded_paths;
         void DealWithFile(const path file_path) ;
         void DealWithRepertory(const path rep_path) ;

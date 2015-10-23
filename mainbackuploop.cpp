@@ -120,18 +120,18 @@ template <class Ttask_list> void MainBackupLoop<Ttask_list>::MakeBackup()
 { 
     create_tree(directory_converter.home_to_backup(starting_path));
     DealWithRepertory(starting_path); 
-    FinalTask*  etask= new FinalTask();
-    task_list.push_back(etask);
 }
 
-template <class Ttask_list> MainPurgeLoop<Ttask_list> MainBackupLoop<Ttask_list>::purge_loop() const
+template <class Ttask_list> MainPurgeLoop<Ttask_list> MainBackupLoop<Ttask_list>::purge_loop() 
 {
-    MainPurgeLoop<Ttask_list> a( directory_converter );
-    a.task_list=task_list;
-    return a;
+    return MainPurgeLoop<Ttask_list>( directory_converter,task_list );
 }
 
-template <class Ttask_list> Ttask_list MainBackupLoop<Ttask_list>::get_task_list()
+template <class Ttask_list> Ttask_list MainBackupLoop<Ttask_list>::get_task_list() const
 {
     return task_list;
+}
+template <class Ttask_list> DirectoryConverter MainBackupLoop<Ttask_list>::get_converter() const
+{
+    return directory_converter;
 }

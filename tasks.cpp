@@ -126,9 +126,10 @@ bool RepertoryCopyTask::run() const
         return true;
     }
 
-FileMoveTask::FileMoveTask(const path orig,const path destination): orig_path(orig), destination_path(destination) { }
+FileMoveTask::FileMoveTask(const path orig,const path destination): orig_path(orig), destination_path(destination) { std::cout<<"création d'une tâche FileMove"<<std::endl; }
 
 bool FileMoveTask::run() const{
+    std::cout<<"(purge) "<<orig_path<<" --> "<<destination_path<<std::endl;
     assert( is_regular_file(orig_path) );
     assert( !is_regular_file(destination_path) );
 
@@ -138,9 +139,10 @@ bool FileMoveTask::run() const{
     assert( is_regular_file(destination_path) );
     return true;
 }
-DirectoryMoveTask::DirectoryMoveTask(const path orig,const path destination): orig_path(orig), destination_path(destination) { }
+DirectoryMoveTask::DirectoryMoveTask(const path orig,const path destination): orig_path(orig), destination_path(destination) {  std::cout<<"création d'une tâche DirectoryMove"<<std::endl; }
 
 bool DirectoryMoveTask::run() const{
+    std::cout<<"(purge) "<<orig_path<<" --> "<<destination_path<<std::endl;
     assert( is_directory(orig_path) );
     assert( !is_directory(destination_path) );
 

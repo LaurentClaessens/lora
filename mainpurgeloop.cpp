@@ -25,39 +25,50 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 template <class Ttask_list> MainPurgeLoop<Ttask_list>::MainPurgeLoop(){}
 
-template <class Ttask_list> MainPurgeLoop<Ttask_list>::MainPurgeLoop(const DirectoryConverter directory_converter) : 
-    directory_converter(directory_converter)
+template <class Ttask_list> MainPurgeLoop<Ttask_list>::MainPurgeLoop(const DirectoryConverter &directory_converter, Ttask_list &task_list) 
     {
+        ptr_converter=&directory_converter;
+        ptr_task_list=&task_list;
         directory_converter.create_purge_directories();
         assert( directory_converter.are_all_paths_ok() );
     }
 
+template <class Ttask_list> DirectoryConverter MainPurgeLoop<Ttask_list>::get_converter() const
+{
+    return *ptr_converter;
+}
+template <class Ttask_list> Ttask_list MainPurgeLoop<Ttask_list>::get_task_list() const
+{
+    return *ptr_task_list;
+}
+
 template <class Ttask_list> void MainPurgeLoop<Ttask_list>::MakePurge()
 {
     DealWithDirectory(directory_converter.get_backup_path());
+    cout<<"Je crée et place la tâche finale -- "<<get_task_list().size()<<endl;
+    FinalTask*  etask= new FinalTask();
+    get_task_list().push_back(etask);
 }
 
 template <class Ttask_list>void MainPurgeLoop<Ttask_list>::DealWithFile(const path pathname)
 {
     if(!is_regular_file(   directory_converter.backup_to_home(pathname)   ))
     {
-        cout<<"En voila un fichier qu'il faudra virer du backup : "<<pathname<<endl;
-        cout<<"On va déplacer "<<pathname<<" vers "<<directory_converter.backup_to_removed_purge(pathname)<<endl;
         FileMoveTask*  mtask= new FileMoveTask(pathname, directory_converter.backup_to_removed_purge(pathname)  );
-        task_list.push_back(mtask);
+        get_task_list().push_back(mtask);
     }
 }
 
 template <class Ttask_list>void MainPurgeLoop<Ttask_list>::DealWithDirectory(const path backup_path)
 {
+    cout<<backup_path<<endl:
     assert(is_directory(backup_path));
     path corresponding_home=directory_converter.backup_to_home(backup_path);
 
     if (!is_directory( directory_converter.backup_to_home(backup_path)  ))
     {
-        cout<<"Il faudra supprimer du backup le répertoire :"<<backup_path<<endl;
         DirectoryMoveTask*  dtask= new DirectoryMoveTask(backup_path, directory_converter.backup_to_removed_purge(backup_path)  );
-        task_list.push_back(dtask);
+        get_task_list().push_back(dtask);
     }
     else 
     {
@@ -78,9 +89,4 @@ template <class Ttask_list>void MainPurgeLoop<Ttask_list>::DealWithDirectory(con
         }
 
     }
-}
-
-template <typename Ttask_list> Ttask_list MainPurgeLoop<Ttask_list>::get_task_list()
-{
-    return task_list;
 }
