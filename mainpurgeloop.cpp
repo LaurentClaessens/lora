@@ -46,7 +46,7 @@ template <class Ttask_list> void MainPurgeLoop<Ttask_list>::MakePurge()
     DealWithDirectory(get_converter().get_backup_path());
     cout<<"Je crée et place la tâche finale -- "<<get_task_list().size()<<endl;
     FinalTask*  etask= new FinalTask();
-    get_task_list().push_back(etask);
+    get_task_list_ptr()->push_back(etask);
 }
 
 template <class Ttask_list>void MainPurgeLoop<Ttask_list>::DealWithFile(const path pathname)
@@ -54,7 +54,7 @@ template <class Ttask_list>void MainPurgeLoop<Ttask_list>::DealWithFile(const pa
     if(!is_regular_file(   get_converter().backup_to_home(pathname)   ))
     {
         FileMoveTask*  mtask= new FileMoveTask(pathname, get_converter().backup_to_removed_purge(pathname)  );
-        get_task_list().push_back(mtask);
+        get_task_list_ptr()->push_back(mtask);
     }
 }
 
