@@ -167,3 +167,8 @@ bool DirectoryMoveTask::run() const{
 
 FinalTask::FinalTask(){}
 bool FinalTask::run() const { return false; }
+
+void TaskList::push_back(GenericTask* gt) { queue.push_back(gt); }
+GenericTask* TaskList::front() { return queue.front(); }
+GenericTask* TaskList::pop_front() {queue.pop_front();}
+int TaskList::size() const { return queue.size(); }

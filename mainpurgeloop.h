@@ -33,20 +33,19 @@ bool do_we_purge(const path bak_path,const path orig_path);         // if orig_p
 // task_list and directory_converter are privately pointers because they are shared with the backup loop.
 // This is not absolutely necessary for the directory converter while it is necessary for the task list : the (infinite) loop 'make_the_work' have to run the backup tasks as well as the purge ones.
 
-template <class Ttask_list>
 class MainPurgeLoop
 {
     public:
         MainPurgeLoop();
-        MainPurgeLoop(const DirectoryConverter &converter,Ttask_list &task_list);
+        MainPurgeLoop(const DirectoryConverter &converter, TaskList &task_list);
 
-        Ttask_list get_task_list() const;      
-        Ttask_list* get_task_list_ptr() const;      
+        TaskList get_task_list() const;      
+        TaskList* get_task_list_ptr() const;      
         DirectoryConverter get_converter() const;
         void MakePurge();
     private :
         const DirectoryConverter directory_converter;
-        Ttask_list* ptr_task_list;
+        TaskList* ptr_task_list;
         const DirectoryConverter* ptr_converter;
         void DealWithFile(const path file_path) ;
         void DealWithDirectory(const path rep_path) ;

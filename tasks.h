@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define __INCLUDE_TASKS_H__
 
 
+#include <deque>
 #include <boost/filesystem.hpp>
 
 using boost::filesystem::path;
@@ -102,11 +103,20 @@ class DirectoryMoveTask: public GenericTask{
         bool run() const;
 };
 
-
 class FinalTask : public GenericTask{
     public:
         FinalTask() ;
         bool run() const;
+};
+
+class TaskList{
+    private:
+        std::deque<GenericTask*>  queue;
+    public:
+        void push_back(GenericTask*);
+        GenericTask* front();
+        GenericTask* pop_front();
+        int size() const;
 };
 
 

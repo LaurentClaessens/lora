@@ -20,7 +20,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <deque>
 #include <boost/filesystem.hpp>             // the file filesystem.hpp is itself protected by #ifndef... #endif thus this is not included twice (by #include "newbaka.h")
 #include <boost/thread.hpp>
 #include <boost/algorithm/string.hpp>
@@ -33,7 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace boost::filesystem;
 using namespace std;
 
-template <class Ttask_list> MainBackupLoop<Ttask_list> read_configuration_file(const path cfg_path)
+MainBackupLoop read_configuration_file(const path cfg_path)
 {
     assert(is_regular_file(cfg_path));
     ifstream cfg_file(cfg_path.c_str());
@@ -76,7 +75,7 @@ template <class Ttask_list> MainBackupLoop<Ttask_list> read_configuration_file(c
     cout<<"purge will be done in  "<<pp<<endl;
     DirectoryConverter converter=DirectoryConverter(bp,pp);       //  the purge directories are created here.
 
-    MainBackupLoop<Ttask_list> backup_loop=MainBackupLoop<Ttask_list>(sp,converter);
+    MainBackupLoop backup_loop=MainBackupLoop(sp,converter);
     backup_loop.add_exclude_path(exclude);
 
     return backup_loop;
@@ -106,17 +105,16 @@ path get_starting_path(int argc, char *argv[])
     return full_path;
 }
 
-template <class Ttask_list>bool run_next(Ttask_list &task_list)
+bool run_next(TaskList &task_list)
 {
     bool ret;
     ret=task_list.front()->run();       // equivalent to   (*task_list.front()).run()
-    //delete task_list.front();
     task_list.pop_front();
     cout<<task_list.size()<<" tasks remaining"<<endl;
     return ret;
 }
 
-template <class Ttask_list> void make_the_work(Ttask_list* tl_ptr)
+void make_the_work(TaskList* tl_ptr)
 {   
     bool still=true;
     while (still)
@@ -133,19 +131,18 @@ template <class Ttask_list> void make_the_work(Ttask_list* tl_ptr)
     cout<<"The work seems to be done. Leaving the 'make_the_work' thread."<<endl;
 }
 
-// the type deque<GenericTask*> is still hard coded quite many times, but only in main
 int main(int argc, char *argv[])
 {
 try
     {    
     path starting_path=get_starting_path(argc,argv);
-    MainBackupLoop<deque<GenericTask*>> backup_loop=read_configuration_file<deque<GenericTask*>>("backup.cfg");          // There is the file 'newbaka.cfg' as example.
+    MainBackupLoop backup_loop=read_configuration_file("backup.cfg");          // There is the file 'newbaka.cfg' as example.
     backup_loop.MakeBackup();
     
     //launching the thread that runs the tasks
-    boost::thread scheduler( make_the_work<deque<GenericTask*>>, backup_loop.get_task_list_ptr() );
+    boost::thread scheduler( make_the_work, backup_loop.get_task_list_ptr() );
 
-    MainPurgeLoop<deque<GenericTask*>> purge_loop=backup_loop.purge_loop();
+    MainPurgeLoop purge_loop=backup_loop.purge_loop();
     purge_loop.MakePurge();
 
     cout<<"Let's wait the end of the tasks..."<<endl;

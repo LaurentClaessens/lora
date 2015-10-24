@@ -39,7 +39,6 @@ bool do_we_backup(const path orig_path,const path bak_path);         // Says if 
 // * purge_path is the generic purge path; ex : /mnt/part-backup
 // but the argument for the 3-parameters constructor is purge_path; ex : /mnt/part_backup
 
-template <class Ttask_list>
 class MainBackupLoop
 {
     public:
@@ -50,15 +49,15 @@ class MainBackupLoop
         void add_exclude_path(vector<path>);         // exclude the given vector of paths 
         bool is_excluded(const path);               // says if that path is excluded from the backup
         void MakeBackup();
-        MainPurgeLoop<Ttask_list> purge_loop();    // not 'const' because it
-        Ttask_list get_task_list() const;            // template because maybe I want to change the type of 'task_list'
-        Ttask_list* get_task_list_ptr();            // template because maybe I want to change the type of 'task_list'
+        MainPurgeLoop purge_loop();    // not 'const' because it
+        TaskList get_task_list() const;           
+        TaskList* get_task_list_ptr();           
         DirectoryConverter get_converter() const;
         void full_process();
     private :
         const DirectoryConverter directory_converter;
         const path starting_path;
-        Ttask_list task_list;
+        TaskList task_list;
         vector<path> excluded_paths;
         void DealWithFile(const path file_path) ;
         void DealWithRepertory(const path rep_path) ;

@@ -22,21 +22,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define __NEWBAKA_H_INCLUDED__
 
 #include <boost/filesystem.hpp>
-#include <deque>
 #include "tasks.h"
 #include "mainbackuploop.h"
 
 using namespace boost::filesystem;
 using namespace std;
 
-template <class Ttask_list> bool run_next(Ttask_list &task_list);             // run the next task in 'task_list' and remove him from the list
+bool run_next(TaskList &task_list);             // run the next task in 'task_list' and remove him from the list
                                                                 // return false if this was the ending task and true if one has to continue.
 // The path to be backuped is the one passed as argument. This function return that path, normalised and absolute.
 path get_starting_path(int argc, char *argv[]);
 
 // Read the file 'cfg_path' and return an object of type 'MainBackupLoop' that is ready to perform a backup.
 // - starting path, backup_path, purge_modified_path
-template <class Ttask_list> MainBackupLoop<Ttask_list> read_configuration_file(const path cfg_path);
+MainBackupLoop read_configuration_file(const path cfg_path);
 
 
 #endif     // __NEWBAKA_H_INCLUDED__
