@@ -20,11 +20,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <boost/filesystem.hpp>             // the file filesystem.hpp is itself protected by #ifndef... #endif thus this is not included twice (by #include "newbaka.h")
+#include <boost/filesystem.hpp>
 #include <boost/thread.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include "newbaka.h"
+#include "lora.h"
 #include "tasks.h"
 #include "mainbackuploop.h"
 #include "mainpurgeloop.h"
@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
 try
     {    
     path starting_path=get_starting_path(argc,argv);
-    MainBackupLoop backup_loop=read_configuration_file("backup.cfg");          // There is the file 'newbaka.cfg' as example.
+    MainBackupLoop backup_loop=read_configuration_file("backup.cfg");          // There is the file 'lora.cfg' as example.
     backup_loop.MakeBackup();
     
     //launching the thread that runs the tasks

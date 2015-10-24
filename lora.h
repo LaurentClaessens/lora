@@ -2,7 +2,7 @@
 Copyright 2015 Laurent Claessens
 contact : moky.math@gmail.com
 
-This is part of 'newbaka': you can redistribute it and/or modify
+This is part of 'lora': you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
@@ -18,8 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 // header technique from http://www.cplusplus.com/forum/articles/10627/
-#ifndef __NEWBAKA_H_INCLUDED__
-#define __NEWBAKA_H_INCLUDED__
+#ifndef __LORA_H_INCLUDED__
+#define __LORA_H_INCLUDED__
 
 #include <boost/filesystem.hpp>
 #include "tasks.h"
@@ -38,4 +38,4 @@ path get_starting_path(int argc, char *argv[]);
 MainBackupLoop read_configuration_file(const path cfg_path);
 
 
-#endif     // __NEWBAKA_H_INCLUDED__
+#endif     // __LORA_H_INCLUDED__

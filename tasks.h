@@ -3,7 +3,7 @@ Copyright 2015 Laurent Claessens
 contact : moky.math@gmail.com
 
 
-This is part of 'newbaka': you can redistribute it and/or modify
+This is part of 'lora': you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
@@ -29,7 +29,7 @@ using boost::filesystem::path;
 
 
 
-// 'newbaka' has a loop over all the files/directories to be backuped and creates a list of taskes ('task_list'). That list is read by a thread which lanch the 'run' method over the elements of the task list.
+// 'lora' has a loop over all the files/directories to be backuped and creates a list of taskes ('task_list'). That list is read by a thread which lanch the 'run' method over the elements of the task list.
 // There are the following types of taskes :
 // - FileCopyTask describe the operations to backup a file
 // - DirectoryCopyTask describe the operations to backup a directory 
