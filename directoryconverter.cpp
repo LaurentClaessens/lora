@@ -107,8 +107,8 @@ path DirectoryConverter::backup_to_home(const path pathname) const
         
 void DirectoryConverter::create_purge_directories() const
 {
-     create_tree(purge_modified_path);
-     create_tree(purge_removed_path);
+     create_directory_tree(purge_modified_path);
+     create_directory_tree(purge_removed_path);
 }
 
 bool DirectoryConverter::verified_paths=false;
@@ -118,18 +118,24 @@ bool DirectoryConverter::are_all_paths_ok() const
     if (!verified_paths)
     {
         cout<<"Path existence verification"<<endl;
-        if (!is_directory(home_path)){return false;}
-        cout<<"home is ok"<<endl;
-        if (!is_directory(purge_path)){return false;}
-        cout<<"purge is ok"<<endl;
-        if (!is_directory(backup_path)){return false;}
-        cout<<"backup is ok"<<endl;
-        if (!is_directory(purge_datetime_path)){return false;}
-        cout<<"datetime is ok"<<endl;
-        if (!is_directory(purge_modified_path)){return false;}
-        cout<<"modified is ok"<<endl;
-        if (!is_directory(purge_removed_path)){return false;}
-        cout<<"removed is ok"<<endl;
+        if (!is_directory(home_path)){
+            throw string( home_path.string()+" does not exist." ); 
+            return false;}
+        if (!is_directory(purge_path)){
+            throw string( purge_path.string()+" does not exist." ); 
+            return false;}
+        if (!is_directory(backup_path)){
+            throw string( backup_path.string()+" does not exist." ); 
+            return false;}
+        if (!is_directory(purge_datetime_path)){
+            throw string( purge_datetime_path.string()+" does not exist." ); 
+            return false;}
+        if (!is_directory(purge_modified_path)){
+            throw string( purge_modified_path.string()+" does not exist." ); 
+            return false;}
+        if (!is_directory(purge_removed_path)){
+            throw string( purge_removed_path.string()+" does not exist." ); 
+            return false;}
         verified_paths=true;
     }
     return true;

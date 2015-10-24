@@ -42,9 +42,7 @@ template <class Ttask_list> Ttask_list* MainPurgeLoop<Ttask_list>::get_task_list
 
 template <class Ttask_list> void MainPurgeLoop<Ttask_list>::MakePurge()
 {
-    cout<<"Purge: adresse de ma liste "<<ptr_task_list<<endl;
     DealWithDirectory(get_converter().get_backup_path());
-    cout<<"Je crée et place la tâche finale -- "<<get_task_list().size()<<endl;
     FinalTask*  etask= new FinalTask();
     get_task_list_ptr()->push_back(etask);
 }
@@ -66,10 +64,7 @@ template <class Ttask_list>void MainPurgeLoop<Ttask_list>::DealWithDirectory(con
     if (!is_directory( get_converter().backup_to_home(backup_path)  ))
     {
         DirectoryMoveTask*  dtask= new DirectoryMoveTask(backup_path, get_converter().backup_to_removed_purge(backup_path)  );
-        cout<<"je crée une tâche pour"<<backup_path<<endl;
-        cout<<"taille : "<<get_task_list().size();
-        get_task_list().push_back(dtask);
-        cout<<"taille : "<<get_task_list().size();
+        get_task_list_ptr()->push_back(dtask);
     }
     else 
     {

@@ -23,13 +23,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <boost/filesystem.hpp>
 #include "tasks.h"
 
-bool create_tree(const path rep_path)
+// Create the tree up to the directory to which 'rep_path' belongs to.
+// create_directory_tree("/home/foo/bar/lol.txt") creates /home/foo/bar
+bool create_directory_tree(const path rep_path)
 {
-    path parent_path=rep_path.parent_path();
+    const path parent_path=rep_path.parent_path();
     if (is_directory( parent_path ) ) {}
-    else { create_tree(parent_path);  } 
+    else { create_directory_tree(parent_path);  } 
     create_directory(rep_path); 
     assert( is_directory(rep_path) );
+}
+// Create the tree up to the directory containing the given file name.
+bool create_file_tree(const path file_path)
+{
+    const path parent_path=file_path.parent_path();
+    if (is_directory( parent_path ) ) {}
+    else { create_directory_tree(parent_path);  } 
+    assert( is_directory(parent_path) );
 }
 
 void my_copy_file(path from_path,path to_path)
@@ -92,7 +102,7 @@ bool FileCopyTask::run() const
 
         if (is_regular_file(bak_path))
         {
-            create_tree(purge_modified_path.parent_path());
+            create_directory_tree(purge_modified_path.parent_path());
             rename( bak_path,purge_modified_path );
             assert( is_regular_file(purge_modified_path) );
         }
@@ -126,12 +136,13 @@ bool RepertoryCopyTask::run() const
         return true;
     }
 
-FileMoveTask::FileMoveTask(const path orig,const path destination): orig_path(orig), destination_path(destination) { std::cout<<"création d'une tâche FileMove"<<std::endl; }
+FileMoveTask::FileMoveTask(const path orig,const path destination): orig_path(orig), destination_path(destination) {}
 
 bool FileMoveTask::run() const{
-    std::cout<<"(purge) "<<orig_path<<" --> "<<destination_path<<std::endl;
     assert( is_regular_file(orig_path) );
     assert( !is_regular_file(destination_path) );
+    std::cout<<"(purge) "<<orig_path<<" --> "<<destination_path<<std::endl;
+    create_file_tree(destination_path);
 
     rename(orig_path,destination_path);
 
@@ -139,7 +150,7 @@ bool FileMoveTask::run() const{
     assert( is_regular_file(destination_path) );
     return true;
 }
-DirectoryMoveTask::DirectoryMoveTask(const path orig,const path destination): orig_path(orig), destination_path(destination) {  std::cout<<"création d'une tâche DirectoryMove"<<std::endl; }
+DirectoryMoveTask::DirectoryMoveTask(const path orig,const path destination): orig_path(orig), destination_path(destination) {}
 
 bool DirectoryMoveTask::run() const{
     std::cout<<"(purge) "<<orig_path<<" --> "<<destination_path<<std::endl;

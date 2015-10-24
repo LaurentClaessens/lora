@@ -118,8 +118,7 @@ template <class Ttask_list> bool MainBackupLoop<Ttask_list>::is_excluded(const p
 
 template <class Ttask_list> void MainBackupLoop<Ttask_list>::MakeBackup()
 { 
-    cout<<"Purge: adresse de ma liste "<<&task_list<<endl;
-    create_tree(get_converter().home_to_backup(starting_path));
+    create_directory_tree(get_converter().home_to_backup(starting_path));
     DealWithRepertory(starting_path); 
 }
 

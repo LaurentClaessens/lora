@@ -72,8 +72,8 @@ template <class Ttask_list> MainBackupLoop<Ttask_list> read_configuration_file(c
     assert(is_directory(pp));
     assert(is_directory(sp));
 
-    cout<<"backup sera"<<bp<<endl;
-    cout<<"purge sera"<<pp<<endl;
+    cout<<"backup will be done in "<<bp<<endl;
+    cout<<"purge will be done in  "<<pp<<endl;
     DirectoryConverter converter=DirectoryConverter(bp,pp);       //  the purge directories are created here.
 
     MainBackupLoop<Ttask_list> backup_loop=MainBackupLoop<Ttask_list>(sp,converter);
@@ -109,9 +109,7 @@ path get_starting_path(int argc, char *argv[])
 template <class Ttask_list>bool run_next(Ttask_list &task_list)
 {
     bool ret;
-    cout<<"Launching a run"<<endl;
     ret=task_list.front()->run();       // equivalent to   (*task_list.front()).run()
-    cout<<"run finished"<<endl;
     //delete task_list.front();
     task_list.pop_front();
     cout<<task_list.size()<<" tasks remaining"<<endl;
@@ -120,22 +118,19 @@ template <class Ttask_list>bool run_next(Ttask_list &task_list)
 
 template <class Ttask_list> void make_the_work(Ttask_list* tl_ptr)
 {   
-    cout<<"Adresse de la liste dans le work : "<<tl_ptr<<endl;
     bool still=true;
     while (still)
     {
         if (tl_ptr->size() != 0)
         {
-            cout<<"liste pas vide"<<endl;
             try{
-                cout<<"Entre dans try"<<endl;
              still=run_next(*tl_ptr);
                }
             catch (string err) { cout<<string("**** I got a bad news : ")<<err<<endl; }
         }
         //cout<<"liste vide. Attend";
     }
-    cout<<"Je sors du 'make_the_work'"<<endl;
+    cout<<"The work seems to be done. Leaving the 'make_the_work' thread."<<endl;
 }
 
 // the type deque<GenericTask*> is still hard coded quite many times, but only in main
@@ -153,9 +148,7 @@ try
     MainPurgeLoop<deque<GenericTask*>> purge_loop=backup_loop.purge_loop();
     purge_loop.MakePurge();
 
-    cout<<"la liste des tâches backup : "<<backup_loop.get_task_list().size()<<endl;
-    cout<<"la liste des tâches purge : "<<purge_loop.get_task_list().size()<<endl;
-    cout<<"Maintenant nous avons fini la purge, nous attendons la fin du scheduler"<<endl;
+    cout<<"Let's wait the end of the tasks..."<<endl;
 
     scheduler.join();
 

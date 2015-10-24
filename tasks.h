@@ -38,7 +38,12 @@ using boost::filesystem::path;
 // The return value of 'run' (boolean) says if one has to continue or bot with the next task. In a normal execution the only task returning 'false' is the final one created right after the main loop.
 
 
-bool create_tree(const path);             // recursively creates the directory tree up to the given directory.
+
+        // since "/home/foo/bar/something" can be a file as well as a directory (and the system cannot guess since the point of 'create_*_tree' is to create), 
+        // we have two functions.
+bool create_directory_tree(const path);             // recursively creates the directory tree up to the given directory.
+bool create_file_tree(const path);                 // recursively creates the directory tree up to the directory of the given *file* name.
+
 void my_copy_file(const path ,const path );      // copy but keeping the same last_write_time attribute.
 void copy_tree(const path,const path);
 
