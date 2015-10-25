@@ -111,7 +111,7 @@ class FinalTask : public GenericTask{
 
 class TaskList{
     private:
-        std::deque<GenericTask*>  queue;
+        std::deque<GenericTask*> queue;
     public:
         void push_back(GenericTask*);
         GenericTask* front();

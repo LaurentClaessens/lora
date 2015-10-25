@@ -23,35 +23,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "tasks.h"
 
 
-MainPurgeLoop::MainPurgeLoop(){}
+//MainPurgeLoop::MainPurgeLoop(){}
 
-MainPurgeLoop::MainPurgeLoop(const DirectoryConverter &directory_converter, TaskList &task_list) 
+MainPurgeLoop::MainPurgeLoop(DirectoryConverter* const dc_ptr,TaskList* const tl_ptr) :
+    converter_ptr(dc_ptr),
+    task_list_ptr(tl_ptr)
     {
-        ptr_converter=&directory_converter;
-        ptr_task_list=&task_list;
-        directory_converter.create_purge_directories();
-        assert( directory_converter.are_all_paths_ok() );
+        converter_ptr->create_purge_directories();
+        assert( converter_ptr->are_all_paths_ok() );
     }
 
-DirectoryConverter MainPurgeLoop::get_converter() const
+const DirectoryConverter* const MainPurgeLoop::get_converter_ptr() const
 {
-    return *ptr_converter;
+    return converter_ptr;
 }
-TaskList MainPurgeLoop::get_task_list() const { return *ptr_task_list; }
-TaskList* MainPurgeLoop::get_task_list_ptr() const { return ptr_task_list; }
+TaskList* const MainPurgeLoop::get_task_list_ptr() const { return task_list_ptr; }
 
 void MainPurgeLoop::MakePurge()
 {
-    DealWithDirectory(get_converter().get_backup_path());
+    DealWithDirectory(get_converter_ptr()->get_backup_path());
     FinalTask*  etask= new FinalTask();
     get_task_list_ptr()->push_back(etask);
 }
 
 void MainPurgeLoop::DealWithFile(const path pathname)
 {
-    if(!is_regular_file(   get_converter().backup_to_home(pathname)   ))
+    if(!is_regular_file(   get_converter_ptr()->backup_to_home(pathname)   ))
     {
-        FileMoveTask*  mtask= new FileMoveTask(pathname, get_converter().backup_to_removed_purge(pathname)  );
+        FileMoveTask*  mtask= new FileMoveTask(pathname, get_converter_ptr()->backup_to_removed_purge(pathname)  );
         get_task_list_ptr()->push_back(mtask);
     }
 }
@@ -59,11 +58,11 @@ void MainPurgeLoop::DealWithFile(const path pathname)
 void MainPurgeLoop::DealWithDirectory(const path backup_path)
 {
     assert(is_directory(backup_path));
-    path corresponding_home=get_converter().backup_to_home(backup_path);
+    path corresponding_home=get_converter_ptr()->backup_to_home(backup_path);
 
-    if (!is_directory( get_converter().backup_to_home(backup_path)  ))
+    if (!is_directory( get_converter_ptr()->backup_to_home(backup_path)  ))
     {
-        DirectoryMoveTask*  dtask= new DirectoryMoveTask(backup_path, get_converter().backup_to_removed_purge(backup_path)  );
+        DirectoryMoveTask*  dtask= new DirectoryMoveTask(backup_path, get_converter_ptr()->backup_to_removed_purge(backup_path)  );
         get_task_list_ptr()->push_back(dtask);
     }
     else 

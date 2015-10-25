@@ -40,17 +40,17 @@ bool do_we_backup(path orig_path,path bak_path)
     return false;
 }
 
-MainBackupLoop::MainBackupLoop(){}
+// MainBackupLoop::MainBackupLoop(){}        //One cannot use that constructor because it causes a non initialized const pointer.
 
 // the main backup loop is not intended to be constructed "by hand".
 // It is constructed and returned by the 'read_configuration_file' function. This is because it has to posses a DirectoryConverter which has to be constructed separately.
-MainBackupLoop::MainBackupLoop(const path starting_path,const DirectoryConverter directory_converter) : 
+MainBackupLoop::MainBackupLoop(const path starting_path,const DirectoryConverter* const dc_ptr,TaskList* const tl_ptr) : 
     starting_path(starting_path),
-    directory_converter(directory_converter)
+    task_list_ptr(tl_ptr),
+    converter_ptr(dc_ptr)
 {
-    assert(  is_directory(starting_path) );
-
-    assert(directory_converter.are_all_paths_ok());
+    assert( is_directory(starting_path) );
+    assert(converter_ptr->are_all_paths_ok());
 }
 
 void MainBackupLoop::add_exclude_path(const path ex)
@@ -69,8 +69,8 @@ void MainBackupLoop::add_exclude_path(std::vector<path> vp)
 void MainBackupLoop::DealWithFile(const path file_path) 
     {
         assert( is_regular_file(file_path) );
-        const path bak_path=get_converter().home_to_backup(file_path);
-        const path purge_modified_path=get_converter().home_to_modified_purge(file_path);
+        const path bak_path=get_converter_ptr()->home_to_backup(file_path);
+        const path purge_modified_path=get_converter_ptr()->home_to_modified_purge(file_path);
         if (do_we_backup(file_path,bak_path))
         {
             assert( !boost::algorithm::starts_with(bak_path,starting_path ) );
@@ -79,7 +79,7 @@ void MainBackupLoop::DealWithFile(const path file_path)
             triple.bak=bak_path;
             triple.purge=purge_modified_path;
             FileCopyTask*  ftask= new FileCopyTask(triple);
-            task_list.push_back(ftask);
+            get_task_list_ptr()->push_back(ftask);
         }
     }
 
@@ -92,11 +92,11 @@ void MainBackupLoop::DealWithRepertory(const path rep_path) {
                 path pathname=itr->path();
                 if (is_directory(pathname))
                 {
-                    path bak_rep=get_converter().home_to_backup(pathname);
+                    path bak_rep=get_converter_ptr()->home_to_backup(pathname);
                     if (!is_directory(bak_rep))
                     {
                         RepertoryCopyTask*  dtask= new RepertoryCopyTask(pathname,bak_rep);
-                        task_list.push_back(dtask);
+                        get_task_list_ptr()->push_back(dtask);
                     }
                     else { DealWithRepertory(pathname); }
                 }
@@ -107,7 +107,7 @@ void MainBackupLoop::DealWithRepertory(const path rep_path) {
         }
     }
 
-bool MainBackupLoop::is_excluded(const path pathname)
+bool MainBackupLoop::is_excluded(const path pathname) const
 {
     for (  std::vector<path>::iterator iter=excluded_paths.begin();iter!=excluded_paths.end();++iter  )
     {
@@ -118,13 +118,12 @@ bool MainBackupLoop::is_excluded(const path pathname)
 
 void MainBackupLoop::MakeBackup()
 { 
-    create_directory_tree(get_converter().home_to_backup(starting_path));
+    create_directory_tree(get_converter_ptr()->home_to_backup(starting_path));
     DealWithRepertory(starting_path); 
 }
 
-MainPurgeLoop MainBackupLoop::purge_loop() { return MainPurgeLoop( directory_converter,task_list ); }
+MainPurgeLoop MainBackupLoop::purge_loop() { return MainPurgeLoop( converter_ptr,task_list_ptr ); }
 
-TaskList MainBackupLoop::get_task_list() const { return task_list; }
-TaskList* MainBackupLoop::get_task_list_ptr() { return &task_list; }
+TaskList* const MainBackupLoop::get_task_list_ptr() const { return task_list_ptr; }
 
-DirectoryConverter MainBackupLoop::get_converter() const { return directory_converter; }
+const DirectoryConverter* const MainBackupLoop::get_converter_ptr() const { return converter_ptr; }

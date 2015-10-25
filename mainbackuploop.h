@@ -43,21 +43,20 @@ class MainBackupLoop
 {
     public:
         MainBackupLoop();
-        MainBackupLoop(const path,const DirectoryConverter);        // The arguments are : starting, directory_converter.  The latter contains the purge, home and backup paths.
+        MainBackupLoop(const path,const DirectoryConverter* const,TaskList* const);        // The arguments are : starting, directory_converter.  The latter contains the purge, home and backup paths.
 
         void add_exclude_path(const path);                 // exclude the given path
         void add_exclude_path(vector<path>);         // exclude the given vector of paths 
-        bool is_excluded(const path);               // says if that path is excluded from the backup
+        bool is_excluded(const path) const;               // says if that path is excluded from the backup
         void MakeBackup();
-        MainPurgeLoop purge_loop();    // not 'const' because it
-        TaskList get_task_list() const;           
-        TaskList* get_task_list_ptr();           
-        DirectoryConverter get_converter() const;
+        TaskList* const get_task_list_ptr() const;   
+        const DirectoryConverter* const get_converter_ptr() const;
+        MainPurgeLoop purge_loop();   
         void full_process();
     private :
-        const DirectoryConverter directory_converter;
+        const DirectoryConverter* const converter_ptr;
         const path starting_path;
-        TaskList task_list;
+        TaskList* const task_list_ptr;
         vector<path> excluded_paths;
         void DealWithFile(const path file_path) ;
         void DealWithRepertory(const path rep_path) ;

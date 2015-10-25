@@ -6,4 +6,3 @@ directoryconverter.o:directoryconverter.h directoryconverter.cpp
 	LC_ALL=C g++ -std=c++11  -g -rdynamic -c -o directoryconverter.o -lboost_filesystem -lboost_system  directoryconverter.cpp
 clean:
 	rm *.o
-	rm core

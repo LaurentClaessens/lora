@@ -73,9 +73,10 @@ MainBackupLoop read_configuration_file(const path cfg_path)
 
     cout<<"backup will be done in "<<bp<<endl;
     cout<<"purge will be done in  "<<pp<<endl;
-    DirectoryConverter converter=DirectoryConverter(bp,pp);       //  the purge directories are created here.
+    const DirectoryConverter converter=DirectoryConverter(bp,pp);       //  the purge directories are created here.
 
-    MainBackupLoop backup_loop=MainBackupLoop(sp,converter);
+    TaskList task_list;
+    MainBackupLoop backup_loop=MainBackupLoop(sp,&converter,&task_list);
     backup_loop.add_exclude_path(exclude);
 
     return backup_loop;
