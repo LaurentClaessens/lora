@@ -37,7 +37,7 @@ class MainPurgeLoop
 {
     public:
         MainPurgeLoop();
-        MainPurgeLoop(DirectoryConverter* const dc_ptr,TaskList* const tl_ptr);
+        MainPurgeLoop(const DirectoryConverter* const dc_ptr,TaskList* const tl_ptr);
 
         TaskList* const get_task_list_ptr() const;      
         const DirectoryConverter* const get_converter_ptr() const;

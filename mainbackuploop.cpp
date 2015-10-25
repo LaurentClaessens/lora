@@ -109,7 +109,7 @@ void MainBackupLoop::DealWithRepertory(const path rep_path) {
 
 bool MainBackupLoop::is_excluded(const path pathname) const
 {
-    for (  std::vector<path>::iterator iter=excluded_paths.begin();iter!=excluded_paths.end();++iter  )
+    for (  std::vector<path>::const_iterator iter=excluded_paths.begin();iter!=excluded_paths.end();++iter  )
     {
         if (*iter==pathname) {return true;}
     }

@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 //MainPurgeLoop::MainPurgeLoop(){}
 
-MainPurgeLoop::MainPurgeLoop(DirectoryConverter* const dc_ptr,TaskList* const tl_ptr) :
+MainPurgeLoop::MainPurgeLoop(const DirectoryConverter* const dc_ptr,TaskList* const tl_ptr) :
     converter_ptr(dc_ptr),
     task_list_ptr(tl_ptr)
     {
