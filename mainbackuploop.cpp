@@ -78,7 +78,7 @@ void MainBackupLoop::DealWithFile(const path file_path)
             triple.orig=file_path;
             triple.bak=bak_path;
             triple.purge=purge_modified_path;
-            FileCopyTask*  ftask= new FileCopyTask(triple);
+            FileCopyTask* ftask= new FileCopyTask(triple);
             get_task_list_ptr()->push_back(ftask);
         }
     }
@@ -118,6 +118,7 @@ bool MainBackupLoop::is_excluded(const path pathname) const
 
 void MainBackupLoop::MakeBackup()
 { 
+    cout<<"Au début de MakeBackup"<<get_converter_ptr()->get_home_path()<<endl;
     create_directory_tree(get_converter_ptr()->home_to_backup(starting_path));
     DealWithRepertory(starting_path); 
 }

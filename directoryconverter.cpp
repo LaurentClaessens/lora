@@ -46,7 +46,6 @@ path purge_path_to_purge_datetime(const path purge_path)
     return purge_path/s_date/s_time;
 }   
 
-
 DirectoryConverter::DirectoryConverter(const path bp,const path pp):
     home_path(getenv("HOME")),
     backup_path(bp),
@@ -56,12 +55,16 @@ DirectoryConverter::DirectoryConverter(const path bp,const path pp):
     purge_removed_path(purge_datetime_path/"removed")
 {
     create_purge_directories();
-    assert(  are_all_paths_ok() );
+    cout<<"La home détectée :"<<home_path<<endl;
+    assert( are_all_paths_ok() );
 }
 
 path DirectoryConverter::home_to_backup(const path local_path) const
 {
-    assert(  boost::algorithm::starts_with(local_path,home_path) );
+    cout<<"ici ?"<<endl;
+    cout<<"avec get :"<<get_home_path()<<endl<<endl;
+    cout<<"sans get :"<<home_path<<endl<<endl;
+    if(!boost::algorithm::starts_with(local_path,home_path) ) {throw string( "File '"+local_path.string()+"' does not belong to '"+home_path.string()+"'");}
     const string s_home=home_path.string();
     const string s_backup=backup_path.string();
     string s_return=local_path.string();
@@ -118,6 +121,7 @@ bool DirectoryConverter::are_all_paths_ok() const
     if (!verified_paths)
     {
         cout<<"Path existence verification"<<endl;
+        cout<<home_path<<endl;
         if (!is_directory(home_path)){
             throw string( home_path.string()+" does not exist." ); 
             return false;}
@@ -143,4 +147,9 @@ bool DirectoryConverter::are_all_paths_ok() const
 path DirectoryConverter::get_backup_path() const
 {
     return backup_path;
+}
+path DirectoryConverter::get_home_path() const
+{
+    cout<<"dans le get "<<home_path<<endl;
+    return home_path;
 }
