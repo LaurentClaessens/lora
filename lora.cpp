@@ -74,18 +74,11 @@ MainBackupLoop read_configuration_file(const path cfg_path)
     cout<<"backup will be done in "<<bp<<endl;
     cout<<"purge will be done in  "<<pp<<endl;
     const DirectoryConverter* const converter_ptr=new DirectoryConverter(bp,pp);       //  the purge directories are created here.
-    cout<<"Just après création : avec get "<<converter_ptr->get_home_path()<<endl;
-    cout<<"une ligne "<<endl;
 
-    TaskList task_list;
-    MainBackupLoop backup_loop=MainBackupLoop(sp,converter_ptr,&task_list);
-    cout<<converter_ptr<<endl;
-    cout<<backup_loop.get_converter_ptr()<<endl;
-    cout<<"dans le loop qui l'a pris :"<<backup_loop.get_converter_ptr()->get_home_path()<<endl;
-    cout<<"dans le loop qui l'a pris :"<<backup_loop.get_converter_ptr()->get_home_path()<<endl;
+    TaskList* tl_ptr=new TaskList();
+    MainBackupLoop backup_loop=MainBackupLoop(sp,converter_ptr,tl_ptr);
     backup_loop.add_exclude_path(exclude);
 
-    cout<<"dans le loop qui l'a pris :"<<backup_loop.get_converter_ptr()->get_home_path()<<endl;
     return backup_loop;
 }
 
@@ -129,12 +122,8 @@ void make_the_work(TaskList* tl_ptr)
     {
         if (tl_ptr->size() != 0)
         {
-            try{
-             still=run_next(*tl_ptr);
-               }
-            catch (string err) { cout<<string("**** I got a bad news : ")<<err<<endl; }
+            still=run_next(*tl_ptr);
         }
-        //cout<<"liste vide. Attend";
     }
     cout<<"The work seems to be done. Leaving the 'make_the_work' thread."<<endl;
 }
@@ -145,14 +134,15 @@ try
     {    
     path starting_path=get_starting_path(argc,argv);
     MainBackupLoop backup_loop=read_configuration_file("backup.cfg");          // There is the file 'lora.cfg' as example.
-    cout<<"après return..."<<endl;
-    cout<<backup_loop.get_converter_ptr()<<endl;
-    cout<<"dans le loop retourné sans get:"<<backup_loop.get_converter_ptr()->home_path<<endl;
-    cout<<"dans le loop retourné:"<<backup_loop.get_converter_ptr()->get_home_path()<<endl;
-    backup_loop.MakeBackup();
-    
+
+    cout<<"Je vais lancer le thread"<<endl;
+    cout<<"La taille est déjà :"<<backup_loop.get_task_list_ptr()->size()<<endl;
+    cout<<"Adresse : "<<backup_loop.get_task_list_ptr()<<endl;
     //launching the thread that runs the tasks
     boost::thread scheduler( make_the_work, backup_loop.get_task_list_ptr() );
+
+    backup_loop.MakeBackup();
+    
 
     MainPurgeLoop purge_loop=backup_loop.purge_loop();
     purge_loop.MakePurge();
