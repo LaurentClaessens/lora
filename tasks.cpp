@@ -141,7 +141,7 @@ FileMoveTask::FileMoveTask(const path orig,const path destination): orig_path(or
 bool FileMoveTask::run() const{
     assert( is_regular_file(orig_path) );
     assert( !is_regular_file(destination_path) );
-    std::cout<<"(purge) "<<orig_path<<" --> "<<destination_path<<std::endl;
+    std::cout<<"(purge file) "<<orig_path<<" --> "<<destination_path<<std::endl;
     create_file_tree(destination_path);
 
     rename(orig_path,destination_path);
@@ -153,10 +153,11 @@ bool FileMoveTask::run() const{
 DirectoryMoveTask::DirectoryMoveTask(const path orig,const path destination): orig_path(orig), destination_path(destination) {}
 
 bool DirectoryMoveTask::run() const{
-    std::cout<<"(purge) "<<orig_path<<" --> "<<destination_path<<std::endl;
+    std::cout<<"(purge rep) "<<orig_path<<" --> "<<destination_path<<std::endl;
     assert( is_directory(orig_path) );
     assert( !is_directory(destination_path) );
 
+    create_directory_tree(destination_path);
     rename(orig_path,destination_path);
 
     assert( !is_directory(orig_path) );

@@ -109,7 +109,8 @@ path get_starting_path(int argc, char *argv[])
 bool run_next(TaskList &task_list)
 {
     bool ret;
-    ret=task_list.front()->run();       // equivalent to   (*task_list.front()).run()
+    ret=task_list.front()->run();
+    delete task_list.front();
     task_list.pop_front();
     cout<<task_list.size()<<" tasks remaining"<<endl;
     return ret;
@@ -135,15 +136,12 @@ try
     path starting_path=get_starting_path(argc,argv);
     MainBackupLoop backup_loop=read_configuration_file("backup.cfg");          // There is the file 'lora.cfg' as example.
 
-    cout<<"Je vais lancer le thread"<<endl;
-    cout<<"La taille est déjà :"<<backup_loop.get_task_list_ptr()->size()<<endl;
-    cout<<"Adresse : "<<backup_loop.get_task_list_ptr()<<endl;
     //launching the thread that runs the tasks
     boost::thread scheduler( make_the_work, backup_loop.get_task_list_ptr() );
 
     backup_loop.MakeBackup();
     
-
+    cout<<"Lauching the purge process ..."<<endl;
     MainPurgeLoop purge_loop=backup_loop.purge_loop();
     purge_loop.MakePurge();
 
