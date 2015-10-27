@@ -24,6 +24,10 @@ When making the backup if /home/daniel/bar/foo.txt,
 
 Thus the backup is incremental in the sense that the old version of a modified files is still available in a directory whose name is the date and the hour of the backup.
 
+
+The directories given in 'priority' are done first (if they are in the starting path), even if they are inside an excluded directory.
+
+
 ATTENTION : There is no mechanism to suppress (really) old file. Thus the size of directory /mnt/backup is always increasing. This is by purpose : I prefer not have an automated way to suppress data.
 
 

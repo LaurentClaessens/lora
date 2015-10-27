@@ -49,7 +49,7 @@ void my_copy_file(path from_path,path to_path)
 
     time_t t_ori=last_write_time(from_path);
 
-    std::cout<<"Copy "<<from_path<<" --> "<<to_path<<std::endl;
+    std::cout<<"Copy "<<from_path<<" --> "<<to_path;    // no end-line here because the size of the task list will be displayed by the 'run_next' function.
 
     copy_file(from_path,to_path);
     last_write_time( to_path,t_ori );

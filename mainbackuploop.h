@@ -28,7 +28,8 @@ using namespace boost::filesystem;
 using namespace std;
 
 bool do_we_backup(const path orig_path,const path bak_path);         // Says if one has to perform the proposed backup.
-
+bool is_strict_subdirectory(const path p1,const path p2);              // says if p1 is a strict subdirectory of p2. This means that p1 begins by p2 and p1!=p2.
+                                                                      // the non equality condition is to avoid an infinite loop when dealing with the priority directories.
 
 // Constructors for 'MainBackupLoop'
 // 3 arguments : starting path, backup and purge paths.
@@ -44,8 +45,12 @@ class MainBackupLoop
     public:
         MainBackupLoop();
         MainBackupLoop(const path,const DirectoryConverter* const,TaskList* const);     
+
         void add_exclude_path(const path);                 // exclude the given path
-        void add_exclude_path(vector<path>);         // exclude the given vector of paths 
+        void add_exclude_path(const vector<path>);         // exclude the given vector of paths 
+        void add_priority_path(const path);           
+        void add_priority_path(const vector<path>);
+
         bool is_excluded(const path) const;               // says if that path is excluded from the backup
         void MakeBackup();
         TaskList* const get_task_list_ptr() const;   
@@ -57,8 +62,9 @@ class MainBackupLoop
         const path starting_path;
         TaskList* const task_list_ptr;
         vector<path> excluded_paths;
+        vector<path> priority_paths;
         void DealWithFile(const path file_path) ;
-        void DealWithRepertory(const path rep_path) ;
+        void DealWithRepertory(const path rep_path,const bool inside_priority) ;
 };
 
 

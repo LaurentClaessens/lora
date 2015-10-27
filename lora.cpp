@@ -40,6 +40,7 @@ MainBackupLoop read_configuration_file(const path cfg_path,const path starting_p
     const path home_path=path(getenv("HOME"));
     vector<string> parts;
     vector<path> exclude;
+    vector<path> priority;
     while (  std::getline(cfg_file,line) )
     {
         split( parts,line,boost::is_any_of("=") );
@@ -58,9 +59,12 @@ MainBackupLoop read_configuration_file(const path cfg_path,const path starting_p
             else if (parts[0]=="exclude") 
             {   
                 if (one.is_absolute()){ exclude.push_back(one) ;}
-                else { 
-                    exclude.push_back(  home_path/one  ) ;
-                    }
+                else { exclude.push_back(  home_path/one  ) ; }
+            }
+            else if (parts[0]=="priority") 
+            {   
+                if (one.is_absolute()){ priority.push_back(one) ;}
+                else { priority.push_back(  home_path/one  ) ; }
             }
             else { throw string("Unknown entry in the configuration file :"+parts[0]); }
             break;
@@ -79,6 +83,7 @@ MainBackupLoop read_configuration_file(const path cfg_path,const path starting_p
     TaskList* tl_ptr=new TaskList();
     MainBackupLoop backup_loop=MainBackupLoop(sp,converter_ptr,tl_ptr);
     backup_loop.add_exclude_path(exclude);
+    backup_loop.add_priority_path(priority);
 
     return backup_loop;
 }
@@ -101,7 +106,7 @@ bool run_next(TaskList &task_list)
     ret=task_list.front()->run();
     delete task_list.front();
     task_list.pop_front();
-    cout<<task_list.size()<<" tasks remaining"<<endl;
+    cout<<"["<<task_list.size()<<"]"<<endl;
     return ret;
 }
 
@@ -120,7 +125,6 @@ void make_the_work(TaskList* tl_ptr)
 
 int main(int argc, char *argv[])
 {
-    cout<<"je suis là";
 try
     {    
     path starting_path=get_starting_path(argc,argv);
@@ -131,7 +135,7 @@ try
 
     backup_loop.MakeBackup();
     
-    cout<<"Lauching the purge process ..."<<endl;
+    cout<<endl<<"Launching the purge process ..."<<endl;
     MainPurgeLoop purge_loop=backup_loop.purge_loop();
     purge_loop.MakePurge();
 

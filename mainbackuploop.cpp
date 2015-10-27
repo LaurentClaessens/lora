@@ -53,17 +53,16 @@ MainBackupLoop::MainBackupLoop(const path starting_path,const DirectoryConverter
     assert(converter_ptr->are_all_paths_ok());
 }
 
-void MainBackupLoop::add_exclude_path(const path ex)
+void MainBackupLoop::add_exclude_path(const path ex) { excluded_paths.push_back(ex); }
+void MainBackupLoop::add_exclude_path(const std::vector<path> vp)
 {
-    excluded_paths.push_back(ex);
+    for (  std::vector<path>::const_iterator it=vp.begin();it!=vp.end();++it  ) { add_exclude_path(*it); }
 }
 
-void MainBackupLoop::add_exclude_path(std::vector<path> vp)
+void MainBackupLoop::add_priority_path(const path ex) { priority_paths.push_back(ex); }
+void MainBackupLoop::add_priority_path(const std::vector<path> vp)
 {
-    for (  std::vector<path>::iterator it=vp.begin();it!=vp.end();++it  )
-    {
-        add_exclude_path(*it);
-    }
+    for (  std::vector<path>::const_iterator it=vp.begin();it!=vp.end();++it  ) { add_priority_path(*it); }
 }
 
 void MainBackupLoop::DealWithFile(const path file_path) 
@@ -83,30 +82,42 @@ void MainBackupLoop::DealWithFile(const path file_path)
         }
     }
 
-void MainBackupLoop::DealWithRepertory(const path rep_path) {
-        if (!is_excluded(rep_path))
+
+bool is_strict_subdirectory(const path p1,const path p2)
+{
+    if(p1==p2){return false;}
+    if (boost::algorithm::starts_with(p1,p2)){return true;}
+    return false;
+}
+
+void MainBackupLoop::DealWithRepertory(const path rep_path,const bool inside_priority=false) {
+    if (!inside_priority){
+        for ( std::vector<path>::const_iterator itr=priority_paths.begin();itr!=priority_paths.end();++itr )
+       {
+            if( is_strict_subdirectory(*itr,rep_path) ){
+                DealWithRepertory(*itr,true);
+                add_exclude_path(*itr);
+           }
+        }
+    }
+    if (!is_excluded(rep_path))
+    {
+        directory_iterator end_itr;
+        for(  directory_iterator itr(rep_path); itr!=end_itr;++itr  )
         {
-            directory_iterator end_itr;
-            for(  directory_iterator itr(rep_path); itr!=end_itr;++itr  )
+            path pathname=itr->path();
+            if (is_directory(pathname))
             {
-                path pathname=itr->path();
-                if (is_directory(pathname))
-                {
-                    path bak_rep=get_converter_ptr()->home_to_backup(pathname);
-                    if (!is_directory(bak_rep))
-                    {
-                        //RepertoryCopyTask* dtask= new RepertoryCopyTask(pathname,bak_rep);
-                        //get_task_list_ptr()->push_back(dtask);
-                        create_directory_tree(bak_rep);
-                    }
-                    DealWithRepertory(pathname); 
-                }
-                else if(is_regular_file(pathname)) { DealWithFile(pathname); }
-                else { throw string("What the hell represents the path "+pathname.string()+" ?");
-                }
+                path bak_rep=get_converter_ptr()->home_to_backup(pathname);
+                if (!is_directory(bak_rep)) { create_directory_tree(bak_rep); }
+                DealWithRepertory(pathname,inside_priority); 
+            }
+            else if(is_regular_file(pathname)) { DealWithFile(pathname); }
+            else { throw string("What the hell represents the path "+pathname.string()+" ?");
             }
         }
     }
+}
 
 bool MainBackupLoop::is_excluded(const path pathname) const
 {
