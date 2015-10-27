@@ -62,6 +62,7 @@ void my_copy_file(path from_path,path to_path)
 
 void copy_tree(path orig_path,path bak_path)
 {
+    throw std::string("'copy_tree' should no more be used.");
     std::cout<<"(rep) Copy "<<orig_path<<" --> "<<bak_path<<std::endl;
     create_directory(bak_path);
     boost::filesystem::directory_iterator end_itr;
@@ -100,6 +101,10 @@ bool FileCopyTask::run() const
 {
         assert(is_regular_file(orig_path));
 
+        std::vector<path> test_list;
+        test_list.push_back( orig_path );
+        test_list.push_back( bak_path );
+
         if (is_regular_file(bak_path))
         {
             create_directory_tree(purge_modified_path.parent_path());
@@ -108,18 +113,6 @@ bool FileCopyTask::run() const
         }
         my_copy_file(  orig_path,bak_path  );
 
-
-        std::vector<path> test_list;
-        test_list.push_back( orig_path );
-        test_list.push_back( bak_path );
-        test_list.push_back( purge_modified_path );
-
-        for (int i=0;i<test_list.size();++i)
-        {
-            if (!is_regular_file(test_list[i])){ 
-                std::string st="The file"+test_list[i].string()+" has not been created.";
-                throw st;  }
-        }
         assert( is_regular_file(orig_path) );
         assert( is_regular_file(bak_path) );
         return true;
@@ -127,6 +120,7 @@ bool FileCopyTask::run() const
 
 RepertoryCopyTask::RepertoryCopyTask(path orig_path,path bak_path):GenericTask()
     {
+        throw std::string("*** This task should no more be used");
         this->orig_path=orig_path;
         this->bak_path=bak_path;
     }
@@ -138,7 +132,8 @@ bool RepertoryCopyTask::run() const
 
 FileMoveTask::FileMoveTask(const path orig,const path destination): orig_path(orig), destination_path(destination) {}
 
-bool FileMoveTask::run() const{
+bool FileMoveTask::run() const
+{
     assert( is_regular_file(orig_path) );
     assert( !is_regular_file(destination_path) );
     std::cout<<"(purge file) "<<orig_path<<" --> "<<destination_path<<std::endl;

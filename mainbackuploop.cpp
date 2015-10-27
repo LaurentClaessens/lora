@@ -95,10 +95,11 @@ void MainBackupLoop::DealWithRepertory(const path rep_path) {
                     path bak_rep=get_converter_ptr()->home_to_backup(pathname);
                     if (!is_directory(bak_rep))
                     {
-                        RepertoryCopyTask*  dtask= new RepertoryCopyTask(pathname,bak_rep);
-                        get_task_list_ptr()->push_back(dtask);
+                        //RepertoryCopyTask* dtask= new RepertoryCopyTask(pathname,bak_rep);
+                        //get_task_list_ptr()->push_back(dtask);
+                        create_directory_tree(bak_rep);
                     }
-                    else { DealWithRepertory(pathname); }
+                    DealWithRepertory(pathname); 
                 }
                 else if(is_regular_file(pathname)) { DealWithFile(pathname); }
                 else { throw string("What the hell represents the path "+pathname.string()+" ?");
