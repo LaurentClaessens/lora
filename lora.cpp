@@ -31,7 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace boost::filesystem;
 using namespace std;
 
-MainBackupLoop read_configuration_file(const path cfg_path)
+MainBackupLoop read_configuration_file(const path cfg_path,const path starting_path="")
 {
     assert(is_regular_file(cfg_path));
     ifstream cfg_file(cfg_path.c_str());
@@ -66,12 +66,14 @@ MainBackupLoop read_configuration_file(const path cfg_path)
             break;
         }
     }
+    if (starting_path.string()!=""){sp=starting_path;}
     assert(is_directory(bp));
     assert(is_directory(pp));
     assert(is_directory(sp));
 
     cout<<"backup will be done in "<<bp<<endl;
     cout<<"purge will be done in  "<<pp<<endl;
+    cout<<"starting directory is "<<sp<<endl;
     const DirectoryConverter* const converter_ptr=new DirectoryConverter(bp,pp);       //  the purge directories are created here.
 
     TaskList* tl_ptr=new TaskList();
@@ -83,7 +85,7 @@ MainBackupLoop read_configuration_file(const path cfg_path)
 
 path get_starting_path(int argc, char *argv[])
 {
-    path starting_path;
+    const path starting_path=path(argv[1]);
     path full_path;
     if (argc != 2)
     {
@@ -91,7 +93,6 @@ path get_starting_path(int argc, char *argv[])
     }
     else
     {
-        starting_path=path(argv[1]);
         if (starting_path.is_relative())
         {
             full_path=absolute(starting_path);
@@ -133,7 +134,7 @@ int main(int argc, char *argv[])
 try
     {    
     path starting_path=get_starting_path(argc,argv);
-    MainBackupLoop backup_loop=read_configuration_file("backup.cfg");          // There is the file 'lora.cfg' as example.
+    MainBackupLoop backup_loop=read_configuration_file("backup.cfg",starting_path);          // There is the file 'lora.cfg' as example.
 
     //launching the thread that runs the tasks
     boost::thread scheduler( make_the_work, backup_loop.get_task_list_ptr() );

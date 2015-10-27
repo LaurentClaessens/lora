@@ -49,7 +49,7 @@ void my_copy_file(path from_path,path to_path)
 
     time_t t_ori=last_write_time(from_path);
 
-    std::cout<<"Copy file "<<from_path<<"--> "<<to_path<<std::endl;
+    std::cout<<"Copy "<<from_path<<" --> "<<to_path<<std::endl;
 
     copy_file(from_path,to_path);
     last_write_time( to_path,t_ori );
@@ -58,29 +58,6 @@ void my_copy_file(path from_path,path to_path)
     {
         throw std::string("The last_write_time did not copy well for "+from_path.string());
     };
-}
-
-void copy_tree(path orig_path,path bak_path)
-{
-    throw std::string("'copy_tree' should no more be used.");
-    std::cout<<"(rep) Copy "<<orig_path<<" --> "<<bak_path<<std::endl;
-    create_directory(bak_path);
-    boost::filesystem::directory_iterator end_itr;
-    for(  boost::filesystem::directory_iterator itr(orig_path); itr!=end_itr;++itr  )
-    {
-        path pathname=itr->path();
-        path bak_sub=bak_path/pathname.filename();
-        if (is_directory(pathname))
-        {  
-            create_directory(bak_sub);
-            copy_tree(pathname,bak_sub);
-        }
-        else if (is_regular_file(pathname))
-        {
-            my_copy_file(pathname,bak_sub);
-        }
-    }
-    std::cout<<"done (rep "<<orig_path<<")"<<std::endl;
 }
 
 GenericTask::GenericTask(){ };
@@ -117,19 +94,6 @@ bool FileCopyTask::run() const
         assert( is_regular_file(bak_path) );
         return true;
 }
-
-RepertoryCopyTask::RepertoryCopyTask(path orig_path,path bak_path):GenericTask()
-    {
-        throw std::string("*** This task should no more be used");
-        this->orig_path=orig_path;
-        this->bak_path=bak_path;
-    }
-bool RepertoryCopyTask::run() const
-    {
-        copy_tree(orig_path,bak_path);
-        return true;
-    }
-
 FileMoveTask::FileMoveTask(const path orig,const path destination): orig_path(orig), destination_path(destination) {}
 
 bool FileMoveTask::run() const
