@@ -85,22 +85,11 @@ MainBackupLoop read_configuration_file(const path cfg_path,const path starting_p
 
 path get_starting_path(int argc, char *argv[])
 {
+    if (argc==1){return "";}
     const path starting_path=path(argv[1]);
     path full_path;
-    if (argc != 2)
-    {
-        throw string("You have to pass a repertory name or path.");
-    }
-    else
-    {
-        if (starting_path.is_relative())
-        {
-            full_path=absolute(starting_path);
-        }
-        else {
-            full_path=starting_path;
-        }
-    }
+    if (starting_path.is_relative()) { full_path=absolute(starting_path); }
+    else { full_path=starting_path; }
     full_path=canonical(full_path);
     cout<<"We are going to backup the repertory "<<full_path<<endl;
     return full_path;
@@ -131,6 +120,7 @@ void make_the_work(TaskList* tl_ptr)
 
 int main(int argc, char *argv[])
 {
+    cout<<"je suis là";
 try
     {    
     path starting_path=get_starting_path(argc,argv);
