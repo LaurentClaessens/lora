@@ -113,8 +113,7 @@ void MainBackupLoop::DealWithRepertory(const path rep_path,const bool inside_pri
                 DealWithRepertory(pathname,inside_priority); 
             }
             else if(is_regular_file(pathname)) { DealWithFile(pathname); }
-            else { throw string("What the hell represents the path "+pathname.string()+" ?");
-            }
+            else { cout<<endl<<endl<<"What the hell is the file "<<pathname<<" ??"<<endl; }
         }
     }
 }
@@ -134,7 +133,7 @@ void MainBackupLoop::MakeBackup()
     DealWithRepertory(starting_path); 
 }
 
-MainPurgeLoop MainBackupLoop::purge_loop() { return MainPurgeLoop( converter_ptr,task_list_ptr ); }
+MainPurgeLoop MainBackupLoop::purge_loop() { return MainPurgeLoop( starting_path,converter_ptr,task_list_ptr ); }
 
 TaskList* const MainBackupLoop::get_task_list_ptr() const { return task_list_ptr; }
 

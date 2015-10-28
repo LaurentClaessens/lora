@@ -144,7 +144,7 @@ try
     scheduler.join();
 
     }
-catch (string err) { cout<<string("I got a bad news : ")<<err<<endl; }
+catch (string err) { cout<<endl<<string("I got a bad news : ")<<err<<endl; }
 catch (std::length_error &err) { 
     cerr<<"Caught : "<<err.what()<<endl;
     cerr<<"Type : "<<typeid(err).name()<<endl;

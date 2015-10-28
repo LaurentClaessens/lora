@@ -25,12 +25,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 //MainPurgeLoop::MainPurgeLoop(){}
 
-MainPurgeLoop::MainPurgeLoop(const DirectoryConverter* const dc_ptr,TaskList* const tl_ptr) :
+MainPurgeLoop::MainPurgeLoop(const path starting_path,const DirectoryConverter* const dc_ptr,TaskList* const tl_ptr) :
     converter_ptr(dc_ptr),
-    task_list_ptr(tl_ptr)
+    task_list_ptr(tl_ptr),
+    starting_path(starting_path)
     {
         converter_ptr->create_purge_directories();
         assert( converter_ptr->are_all_paths_ok() );
+        assert( is_directory(starting_path) );
     }
 
 const DirectoryConverter* const MainPurgeLoop::get_converter_ptr() const
@@ -41,7 +43,8 @@ TaskList* const MainPurgeLoop::get_task_list_ptr() const { return task_list_ptr;
 
 void MainPurgeLoop::MakePurge()
 {
-    DealWithDirectory(get_converter_ptr()->get_backup_path());
+    //DealWithDirectory(get_converter_ptr()->get_backup_path());
+    DealWithDirectory( get_converter_ptr()->home_to_backup(starting_path));
     FinalTask*  etask= new FinalTask();
     get_task_list_ptr()->push_back(etask);
 }
