@@ -12,10 +12,10 @@ Typically /mnt/backup is the mount point of an encrypted external hard drive.
 
 FIRST PASS (backup)
 
-This software loop over the files and repertories of /home/daniel and creates a copy into
+This software loops over the files and repertories of /home/daniel and creates a copy into
 /mnt/backup/bakatot.lora
 
-When making the backup if /home/daniel/bar/foo.txt,
+When making the backup of /home/daniel/bar/foo.txt,
 * check if /mnt/backup/bakatot.lora/bar/foo.txt  exists
 * if not, create it with a simple copy (but the last write time attribute is conserved)
 * if /mnt/backup/bakatot.lora/bar/foo.txt exists,
@@ -33,7 +33,7 @@ ATTENTION : There is no mechanism to suppress (really) old file. Thus the size o
 
 SECOND PASS (purge)
 
-Newbaka loop over the directory /mnt/backup/bakatot.lora and check if these files correspond to files in /home/daniel.
+Lora loops over the directory /mnt/backup/bakatot.lora and checks if these files correspond to files in /home/daniel.
 When looking at /mnt/backup/bakatot.lora/blah/stuff.tex
 
 * check if /home/daniel/blah/stuff.tex exists
@@ -42,6 +42,6 @@ When looking at /mnt/backup/bakatot.lora/blah/stuff.tex
 /mnt/backup/bakatot.lora/blah/stuff.tex ---> /mnt/backup/bakapurge.lora/<today date>/<hour>/removed/blah/stuff.tex
 
 
-By the way, lora has very bad performance against renaming an intere directory : in the first pass, it copy everything and in the second pass, it move the whole to the purge directory.
+By the way, Lora has very bad performance against renaming an intere directory : in the first pass, it copy everything and in the second pass, it move the whole to the purge directory.
 
 
