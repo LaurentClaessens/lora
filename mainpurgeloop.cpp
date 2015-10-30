@@ -43,8 +43,7 @@ TaskList* const MainPurgeLoop::get_task_list_ptr() const { return task_list_ptr;
 
 void MainPurgeLoop::MakePurge()
 {
-    //DealWithDirectory(get_converter_ptr()->get_backup_path());
-    DealWithDirectory( get_converter_ptr()->home_to_backup(starting_path));
+    DealWithDirectory( get_converter_ptr()->home_to_backup(starting_path) );
     FinalTask*  etask= new FinalTask();
     get_task_list_ptr()->push_back(etask);
 }
