@@ -36,7 +36,15 @@ bool do_we_backup(path orig_path,path bak_path)
     time_t t_ori=last_write_time(orig_path);
     time_t t_bak=last_write_time(bak_path);
     if (t_ori>t_bak){return true;}
+
     if (t_ori<t_bak){throw string("The last_write_date of this file is f*cked up !"+orig_path.string()+" "+bak_path.string()+" ?");}
+    /*
+    if (t_ori<t_bak){
+        std::cout<<"Updating the date of "<<bak_path<<std::endl;
+        last_write_time( bak_path,t_ori );
+    }
+    //*/
+
     return false;
 }
 
