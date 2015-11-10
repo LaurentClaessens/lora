@@ -37,7 +37,7 @@ MainBackupLoop read_configuration_file(const path cfg_path,const path starting_p
     ifstream cfg_file(cfg_path.c_str());
     string line;
     path bp,pp,sp;
-    const path home_path=path(getenv("HOME"));
+    const path home_path=path(getenv("HOME"));      // TODO : guess from the starting_path ??
     vector<string> parts;
     vector<path> exclude;
     vector<path> priority;
@@ -121,6 +121,7 @@ void make_the_work(TaskList* tl_ptr)
         }
     }
     cout<<"The work seems to be done. Leaving the 'make_the_work' thread."<<endl;
+    delete tl_ptr;
 }
 
 int main(int argc, char *argv[])
