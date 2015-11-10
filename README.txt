@@ -1,0 +1,52 @@
+A backup program.
+
+Creates a copy of the home directory into a backup directory (typically on an encrypted external hard disk--to your own responsibility).
+
+The main feature is : the backup copy is only a copy. You can browse it with your favorite file browser and get a file back with a simple copy. You do not require a special software for getting back your data.
+
+Example. 
+We backup the repertory  /home/daniel  into  /mnt/backup.
+
+Typically /mnt/backup is the mount point of an encrypted external hard drive.
+
+
+FIRST PASS (backup)
+
+This software loops over the files and repertories of /home/daniel and creates a copy into
+/mnt/backup/bakatot.lora
+
+When making the backup of /home/daniel/bar/foo.txt,
+* check if /mnt/backup/bakatot.lora/bar/foo.txt  exists
+* if not, create it with a simple copy (but the last write time attribute is conserved)
+* if /mnt/backup/bakatot.lora/bar/foo.txt exists,
+    - move to /mnt/backup/bakapurge.lora/<today date>/<hour>/modified/bar/foo.txt   (keeping the time attribute)
+    - make the copy.
+
+Thus the backup is incremental in the sense that the old version of a modified files is still available in a directory whose name is the date and the hour of the backup.
+
+
+The directories given in 'priority' are done first (if they are in the starting path), even if they are inside an excluded directory.
+
+
+ATTENTION : There is no mechanism to suppress (really) old file. Thus the size of directory /mnt/backup is always increasing. This is by purpose : I prefer not have an automated way to suppress data.
+
+
+SECOND PASS (purge)
+
+Lora loops over the directory /mnt/backup/bakatot.lora and checks if these files correspond to files in /home/daniel.
+When looking at /mnt/backup/bakatot.lora/blah/stuff.tex
+
+* check if /home/daniel/blah/stuff.tex exists
+ - if yes, do nothing
+ - if not, assume that this file was removed in the home and then move
+/mnt/backup/bakatot.lora/blah/stuff.tex ---> /mnt/backup/bakapurge.lora/<today date>/<hour>/removed/blah/stuff.tex
+
+
+By the way, Lora has very bad performance against renaming an intere directory : in the first pass, it copy everything and in the second pass, it move the whole to the purge directory.
+
+TODO
+
+- Graphical interface.
+- the purge vector is parsed too many times
+- is deque the good choice ?
+
