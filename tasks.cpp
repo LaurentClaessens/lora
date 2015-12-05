@@ -50,14 +50,16 @@ void my_copy_file(path from_path,path to_path)
     time_t t_ori=last_write_time(from_path);
 
     std::cout<<"Copy "<<from_path<<" --> "<<to_path;    // no end-line here because the size of the task list will be displayed by the 'run_next' function.
-
     copy_file(from_path,to_path);
     last_write_time( to_path,t_ori );
-    
-    if( last_write_time(from_path)!=last_write_time(to_path) )
+    time_t t_done=last_write_time(to_path);
+
+    if( t_ori!=t_done )
     {
+        std::cout<<"The last_write_time did not copy well for "+from_path.string() <<std::endl;
         throw std::string("The last_write_time did not copy well for "+from_path.string());
     };
+    std::cout<<"Sortie de la fonction my_copy_file"<<std::endl;
 }
 
 GenericTask::GenericTask(){ };
