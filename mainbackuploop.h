@@ -46,12 +46,12 @@ class MainBackupLoop
         MainBackupLoop();
         MainBackupLoop(const path,const DirectoryConverter* const,TaskList* const);     
 
-        void add_exclude_path(const path);                 // exclude the given path
-        void add_exclude_path(const vector<path>);         // exclude the given vector of paths 
+        void add_exclude_path(const path);    // exclude the given path
+        void add_exclude_path(const vector<path>); 
         void add_priority_path(const path);           
         void add_priority_path(const vector<path>);
 
-        bool is_excluded(const path) const;               // says if that path is excluded from the backup
+        bool is_excluded(const path) const;       
         void MakeBackup();
         TaskList* const get_task_list_ptr() const;   
         const DirectoryConverter* const get_converter_ptr() const;
