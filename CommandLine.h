@@ -24,6 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <map>
 #include <boost/filesystem.hpp>
 
+#include "HashTable.h"
+
 using namespace boost::filesystem;
 using namespace std;
 
@@ -41,11 +43,17 @@ class CommandLine
         };
 
         std::string command;
-        path working_directory;
+        path working_directory=".";
         EnvironmentVariables environment_variables;
+        bool in_terminal=false;
+        string terminal_cl;  
+
+        string full_command_line() const;
     public:
         void setWorkingDirectory(path);
         void setEnvironmentVariable(string,string);
+        void setTerminal(string);       // the command will be launched in a new terminal. The given string is the command line that launch the terminal and expect for a command, e.g. "terminology -e" or "konsole -e".
+
         string toString() const;
         CommandLine();
         CommandLine(string);

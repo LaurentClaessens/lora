@@ -35,11 +35,24 @@ CommandLine::CommandLine(string s):command(s) {};
 
 string CommandLine::toString() const
 {
-    return environment_variables.toString();
+    return full_command_line();
 }
 
+void CommandLine::setTerminal(string t) { 
+    in_terminal=true;
+    terminal_cl=t ;
+};
 
+string CommandLine::full_command_line() const
+{
+    vector<string> cl;
+    cl.push_back( "cd "+working_directory.string()+"&&"  );
+    cl.push_back( environment_variables.toString() );
 
+    if (in_terminal) { cl.push_back(terminal_cl); }
+    cl.push_back(command);
+    return boost::algorithm::join(cl," ");
+}
 
 void CommandLine::EnvironmentVariables::setValue(const string key,string value)
 {
@@ -52,7 +65,7 @@ string CommandLine::EnvironmentVariables::getValue(const string key)
 string CommandLine::EnvironmentVariables::toString() const
 {
     vector<string> tmp;
-    for (auto itr=environment_variables.cbegin();itr!=environment_variables.cend();itr++)
+    for (auto itr=environment_variables.begin();itr!=environment_variables.end();itr++)
     {
         tmp.push_back( itr->first+"="+itr->second);
     }

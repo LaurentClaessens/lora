@@ -6,7 +6,7 @@ directoryconverter.o:directoryconverter.h directoryconverter.cpp
 	LC_ALL=C g++ -std=c++11  -g -rdynamic -c -o directoryconverter.o -lboost_filesystem -lboost_system  directoryconverter.cpp
 GitRepository.o: GitRepository.cpp GitRepository.h CommandLine.o
 	LC_ALL=C g++ -std=c++11  -g -rdynamic -c -o GitRepository.o GitRepository.cpp
-CommandLine.o:CommandLine.h CommandLine.cpp
+CommandLine.o:CommandLine.h CommandLine.cpp 
 	LC_ALL=C g++ -std=c++11  -g -rdynamic -c -o CommandLine.o -lboost_filesystem -lboost_system  CommandLine.cpp
 clean:
 	rm *.o

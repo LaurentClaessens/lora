@@ -12,6 +12,4 @@ int main()
     cl.setWorkingDirectory("..");
     string s=cl.toString();
     cout<<s<<endl;
-    assert(s=="LC_ALL=C BLA=foo");
 }
-

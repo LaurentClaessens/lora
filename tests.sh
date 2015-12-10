@@ -4,4 +4,5 @@
 make lora&& make CommandLine.o
 # 
 cd tests
-make && ./CommandLineTest
+make CommandLineTest && ./CommandLineTest
+make HashTableTest && ./HashTableTest
