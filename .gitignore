@@ -7,3 +7,4 @@ lora
 *~
 *.o
 core
+tests/CommandLineTest

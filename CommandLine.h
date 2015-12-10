@@ -16,3 +16,40 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
+
+#ifndef __COMMAND_LINE_H__
+#define __COMMAND_LINE_H__
+
+#include <string>
+#include <map>
+#include <boost/filesystem.hpp>
+
+using namespace boost::filesystem;
+using namespace std;
+
+class CommandLine
+{
+    private:
+        class EnvironmentVariables
+        {
+            private :
+                map<const string,string>  environment_variables;
+            public : 
+                void setValue(const string,string);
+                string getValue(const string);
+                string toString() const;
+        };
+
+        std::string command;
+        path working_directory;
+        EnvironmentVariables environment_variables;
+    public:
+        void setWorkingDirectory(path);
+        void setEnvironmentVariable(string,string);
+        string toString() const;
+        CommandLine();
+        CommandLine(string);
+};
+
+
+#endif // __COMMAND_LINE_H__
