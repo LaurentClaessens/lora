@@ -11,5 +11,6 @@ int main()
     cl.setEnvironmentVariable("BLA","foo");
     cl.setWorkingDirectory("..");
     string s=cl.toString();
-    cout<<s<<endl;
+    cout<<"s : "<<s<<endl;
+    assert(s=="LC_ALL=C BLA=foo cd ..&& cat lora.cpp");
 }
