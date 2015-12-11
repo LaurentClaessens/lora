@@ -35,7 +35,7 @@ class CommandLine
         class EnvironmentVariables
         {
             private :
-                map<const string,string>  environment_variables;
+                HashTable<string,string>  environment_variables;
             public : 
                 void setValue(const string,string);
                 string getValue(const string);

@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 INTRODUCTION
 
  We implement here an ordered dictionary. Some rationale :
@@ -29,6 +28,11 @@ INTRODUCTION
  When iterating, we get the values (not the keys);
 
 //*/
+
+#ifndef __HASH_TABLE_H__
+#define __HASH_TABLE_H__
+
+
 
 #include <iostream>
 #include <string>
@@ -87,12 +91,16 @@ HashTable<K,V>::node::node(const K k,V v): next(0),key(k),value(v)  { }
 // HASH TABLE
 
 template <class K,class V>
-HashTable<K,V>::HashTable(): first(0),last(0)  {}
+HashTable<K,V>::HashTable(): first(0),last(0)  {
+    std::cout<<"HashTable créée"<<std::endl;
+}
 template <class K,class V>
 void HashTable<K,V>::setValue(const K key,V value)
 { 
+    std::cout<<"on entre"<<std::endl;
     if (first) 
     {
+        std::cout<<"Ici, j'imagine que non"<<std::endl;
         for (HashTable<K,V>::iterator itr=begin();itr!=end();++itr)
         {
             if (K k=itr->key==key)
@@ -101,7 +109,9 @@ void HashTable<K,V>::setValue(const K key,V value)
             }
         }
     }
+    std::cout<<"On crée"<<std::endl;
     node* n=new node(key,value);
+    std::cout<<"C'est créé"<<std::endl;
     if (!first) 
     { 
         first=n;  
@@ -147,6 +157,10 @@ typename HashTable<K,V>::iterator HashTable<K,V>::begin() const
 template <class K,class V>
 typename HashTable<K,V>::iterator HashTable<K,V>::end() const  
 {
+    if(!last)
+    {
+        throw std::string("Are you trying to iterate over an empty HashTable ?");
+    }
     return iterator(last->next);
 }
 
@@ -180,3 +194,4 @@ bool HashTable<K,V>::iterator::operator!=(const HashTable<K,V>::iterator itr) co
     return !(*this==itr);
 }
 
+#endif          // __HASH_TABLE_H__

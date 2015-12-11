@@ -1,12 +1,26 @@
+
 #include  <iostream>
 #include <string>
-#include <assert.h>
 
-#include "../HashTable.h"
+#include "CommandLine.h"
+#include "HashTable.h"
 using namespace std;
 
 int main()
 {
+    CommandLine cl=CommandLine("cat lora.cpp");
+    cout<<"Initialisé"<<endl;
+    cl.setEnvironmentVariable("LC_ALL","C");
+    cout<<"un"<<endl;
+    cl.setEnvironmentVariable("BLA","foo");
+    cout<<"deux"<<endl;
+    cl.setWorkingDirectory("..");
+    cout<<"c'est parti pour toString"<<endl;
+    string s=cl.toString();
+    cout<<"s : "<<s<<endl;
+    assert(s=="LC_ALL=C BLA=foo cd ..&& cat lora.cpp");
+
+
     HashTable<int,string> my_hash;
     my_hash.setValue(4,"hello 4");
     my_hash.setValue(5,"hello 5");

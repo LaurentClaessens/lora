@@ -27,11 +27,14 @@ using namespace std;
 void CommandLine::setWorkingDirectory(path p) { working_directory=p; }
 void CommandLine::setEnvironmentVariable(const string key,string value)
 {
+    cout<<"attention ..."<<endl;
+    cout<<key<<" "<<value<<endl;
     environment_variables.setValue(key,value);
+    cout<<"fait ?"<<endl;
 }
 
 CommandLine::CommandLine(){};
-CommandLine::CommandLine(string s):command(s) {};
+CommandLine::CommandLine(string s):command(s),environment_variables() {};
 
 string CommandLine::toString() const
 {
@@ -65,9 +68,9 @@ string CommandLine::EnvironmentVariables::getValue(const string key)
 string CommandLine::EnvironmentVariables::toString() const
 {
     vector<string> tmp;
-    for (auto itr=environment_variables.begin();itr!=environment_variables.end();itr++)
+    for (HashTable<string,string>::iterator itr=environment_variables.begin();itr!=environment_variables.end();itr++)
     {
-        tmp.push_back( itr->first+"="+itr->second);
+        tmp.push_back(itr->key+"="+itr->value);
     }
     return boost::algorithm::join(tmp," ");
 }
