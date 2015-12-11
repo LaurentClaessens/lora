@@ -27,7 +27,11 @@ INTRODUCTION
  We add at the end and an iterator begins at the beginning.
  When iterating, we get the values (not the keys);
 
+ One can assign a second value to the same key. The previous one is lost.
+ BTW : this works pretty the same as a Python dictionary.
 //*/
+
+// Oh yeah! last but not least : this whole f***ing class with template and iterators is to add "LC_ALL=C" in front of "git status".
 
 #ifndef __HASH_TABLE_H__
 #define __HASH_TABLE_H__
@@ -54,7 +58,7 @@ class HashTable
         };
 
         node* first;
-        node* last;     // this is the last one, not the 'past-the-last'
+        node* last;     // this is really the last one. Nothing to do with "end".
 
     public:
         class iterator
@@ -91,36 +95,36 @@ HashTable<K,V>::node::node(const K k,V v): next(0),key(k),value(v)  { }
 // HASH TABLE
 
 template <class K,class V>
-HashTable<K,V>::HashTable(): first(0),last(0)  {
-    std::cout<<"HashTable créée"<<std::endl;
-}
+HashTable<K,V>::HashTable(): first(0),last(0)  { }
+
 template <class K,class V>
 void HashTable<K,V>::setValue(const K key,V value)
 { 
-    std::cout<<"on entre"<<std::endl;
+    bool found=false;
     if (first) 
     {
-        std::cout<<"Ici, j'imagine que non"<<std::endl;
         for (HashTable<K,V>::iterator itr=begin();itr!=end();++itr)
         {
-            if (K k=itr->key==key)
+            if (itr->key==key)
             {
-                throw std::string("You cannot assign a new value to a key");
+                itr->value=value;
+                found=true;
             }
         }
     }
-    std::cout<<"On crée"<<std::endl;
-    node* n=new node(key,value);
-    std::cout<<"C'est créé"<<std::endl;
-    if (!first) 
-    { 
-        first=n;  
-        last=n;
-    }
-    else
+    if (!found)
     {
-        last->next=n;
-        last=n;
+        node* n=new node(key,value);
+        if (!first) 
+        { 
+            first=n;  
+            last=n;
+        }
+        else
+        {
+            last->next=n;
+            last=n;
+        }
     }
 }
 
@@ -132,6 +136,11 @@ V& HashTable<K,V>::operator[](HashTable<K,V>::iterator itr )
 template <class K,class V>
 V& HashTable<K,V>::operator[](const K key) 
 {
+    if (!first)
+    {
+        setValue(key,V());       // This V() should never be seen to the user.
+        return last->value;
+    }
     for ( HashTable<K,V>::iterator itr=begin();itr!=end();++itr )
     {
         if (itr->key==key)
@@ -139,7 +148,9 @@ V& HashTable<K,V>::operator[](const K key)
             return itr->value;
         }
     }
-    throw std::string( "Illegal key value "+key);
+    // If you are here, the HashTable is not empthy, but has not yet the key 'key'.
+    setValue(key,V());   
+    return last->value;
 }
 
 // ITERATOR

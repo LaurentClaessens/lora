@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define __COMMAND_LINE_H__
 
 #include <string>
-#include <map>
+#include <stdio.h>
 #include <boost/filesystem.hpp>
 
 #include "HashTable.h"
@@ -57,6 +57,9 @@ class CommandLine
         string toString() const;
         CommandLine();
         CommandLine(string);
+        FILE* run();
+        string getOutput();
+        
 };
 
 

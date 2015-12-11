@@ -18,19 +18,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
 #include <string>
+#include <stdio.h>
 #include <boost/algorithm/string/join.hpp>
 #include "CommandLine.h"
 
 using namespace std;
 
 
+// COMMAND LINE
+
 void CommandLine::setWorkingDirectory(path p) { working_directory=p; }
 void CommandLine::setEnvironmentVariable(const string key,string value)
 {
-    cout<<"attention ..."<<endl;
-    cout<<key<<" "<<value<<endl;
     environment_variables.setValue(key,value);
-    cout<<"fait ?"<<endl;
 }
 
 CommandLine::CommandLine(){};
@@ -57,9 +57,36 @@ string CommandLine::full_command_line() const
     return boost::algorithm::join(cl," ");
 }
 
+FILE* CommandLine::run()
+{
+    const string cl=full_command_line();
+    FILE* in = popen(cl.c_str(), "r");
+    if (!in)
+    {
+        throw std::string("Something got wrong launching the command "+cl);
+    }
+    return in;
+}
+   
+string CommandLine::getOutput()
+{
+    char buff[512];
+    string s="";
+    FILE* in=run();
+    while(fgets(buff, sizeof(buff), in)!=NULL)
+    {
+        s=s+buff;
+    }
+    pclose(in);
+    return s;
+}
+   
+// ENVIRONNEMENT VARIABLE
+
+
 void CommandLine::EnvironmentVariables::setValue(const string key,string value)
 {
-    environment_variables[key]=value;
+    environment_variables.setValue(key,value);
 }
 string CommandLine::EnvironmentVariables::getValue(const string key) 
 {
