@@ -44,6 +44,15 @@ void test_cl2()
     assert(out2==sfile);
 }
 
+// Launching Vim in a terminal
+void test_cl3()
+{
+    CommandLine cl=CommandLine("vim");
+    cl.setWorkingDirectory("..");
+    cl.setTerminal("terminology -e");
+    cl.run();
+}
+
 // Iterators with HashTable
 void test_ht1()
 {
@@ -115,6 +124,10 @@ int main()
         std::cout<<"ok for test_cl1"<<endl;
         test_cl2();
         std::cout<<"ok for test_cl2"<<endl;
+
+        //test_cl3();
+        //std::cout<<"ok for test_cl3"<<endl;
+        std::cout<<"If you want to test Vim in a new terminal, you have to allow test_cl3."<<endl;
 
         // tests for HashTable
         test_ht1();

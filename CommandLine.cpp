@@ -94,6 +94,8 @@ string CommandLine::EnvironmentVariables::getValue(const string key)
 }
 string CommandLine::EnvironmentVariables::toString() const
 {
+    if (environment_variables.isEmpty()) { return ""; }
+
     vector<string> tmp;
     for (HashTable<string,string>::iterator itr=environment_variables.begin();itr!=environment_variables.end();itr++)
     {

@@ -77,6 +77,7 @@ class HashTable
         HashTable();
         void setValue(K ,V );
         bool isKey(K) const;     // return true if the given key exists.
+        bool isEmpty() const;
 
         iterator begin() const;
         iterator end() const;
@@ -126,6 +127,20 @@ void HashTable<K,V>::setValue(const K key,V value)
             last=n;
         }
     }
+}
+
+template <class K,class V>
+bool HashTable<K,V>::isEmpty() const  { return first==0;  }
+
+template <class K,class V>
+bool HashTable<K,V>::isKey(K key) const
+{ 
+    if (isEmpty()) {return false;}
+    for (HashTable<K,V>::iterator itr=begin();itr!=end();itr++) 
+    {
+        if (itr->key==key) {return true;}
+    }
+    return false;
 }
 
 template <class K,class V>
