@@ -132,26 +132,41 @@ void test_ht4()
             // assert( my_hash["foo"]==5.4 );       
 }
 
-GenericTestingFunction::GenericTestingFunction(string n,bool b):name(n),interavtive(b){}
+TestException::TestException(string m):message(m){}
+const char* TestException::what {return message;}
 
-GenericTestingFunction::run()
-{
-    try
-    {
-        test();
-        std::cout<<"Ok for test "+name;
-    }
-    catch (TestException t){ std::cout<<t.message<<std::endl;  }
-}
-
-GenericTestingFunction::run_interactive
+GenericTestingFunction::GenericTestingFunction(string n,bool b,string q):name(n),interavtive(b)
 {
     if (interactive)
     {
+        if (q=="")
+        {
+            throws string("When you are defining an interactive test, you have to pass a question.")
+        }
+        question=q;
+    }
+    // If not interactive, the question is useless.
+}
+
+GenericTestingFunction::run()
+{
+    bool do_it=false;
+    if (interactive)
+    {
         string yn="n";
-        std::cout<<"Do you want to see Vim in a new terminal ? (y/n)";
+        std::cout<<question+" (y/n)";
         std::cin>>yn;
-        if (yn=="y") { run(); }
+        if (yn=="y") { do_it=true; }
+    }
+    else { do_it=true; }
+    if (do_it)
+    {
+        try
+        {
+            test();
+            std::cout<<"Ok for test "+name;
+        }
+        catch (TestException t){ std::cout<<t.message<<std::endl;  }
     }
     else
     {
@@ -167,36 +182,12 @@ int main(int argc, char *argv[])
         if (argv[1]=="-y"){ interactive=true; }
     }
 
-    try{
-        // tests for CommandLine
-        test_cl1();
-        std::cout<<"ok for test_cl1"<<endl;
-        test_cl2();
-        std::cout<<"ok for test_cl2"<<endl;
+    GenericTestingFunction("test_cl1",false,test_cl1).run();
+    GenericTestingFunction("test_cl2",false,test_cl2).run();
+    GenericTestingFunction("test_cl3",true,test_cl3,"See Vim in a new terminal ?").run();
 
-
-        // tests for HashTable
-        test_ht1();
-        std::cout<<"ok for test_ht1"<<endl;
-        test_ht2();
-        std::cout<<"ok for test_ht2"<<endl;
-        test_ht3();
-        std::cout<<"ok for test_ht3"<<endl;
-        test_ht4();
-        std::cout<<"ok for test_ht4"<<endl;
-
-        // interactive tests
-        string yn="n";
-        std::cout<<"Do you want to see Vim in a new terminal ? (y/n)";
-        std::cin>>yn;
-        if (yn=="y")
-        {
-            test_cl3();
-            std::cout<<"ok for test_cl3"<<endl;
-        }
-    }
-    catch (string s)
-    {
-        std::cout<<"We got a problem : "<<s<<endl;
-    }
+    GenericTestingFunction("test_ht1",false,test_ht1).run();
+    GenericTestingFunction("test_ht2",false,test_ht2).run();
+    GenericTestingFunction("test_ht3",false,test_ht3).run();
+    GenericTestingFunction("test_ht4",false,test_ht5).run();
 }

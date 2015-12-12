@@ -21,19 +21,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 // This is only because I did not RTFM [2]
-// Thanks to [1] I'm not using function pointers :)
+// Thanks to [1] for the function pointer
 // [1]  http://www.cprogramming.com/tutorial/function-pointers.html
 // [2] http://cppunit.sourceforge.net/doc/lastest/cppunit_cookbook.html
+
+class TestException : public std::exception
+{
+    private:
+        string message;
+    public:
+        TestException(string);
+        const char* what();
+}
+
 class GenericTestingFunction
 {
     private:
         string name;
+        string question;
         bool interactive=false;
+        void (*test)();
     public :
-        GenericTestingFunction(string,bool);
+        GenericTestingFunction (const string name ,const bool interactive, void (*test)(),string question="" );
         void run();
-        void run_interactive();
-        virtual void test() =0 ;
 }
 
 #endif //__UNIT_TESTS__H
