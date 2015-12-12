@@ -8,7 +8,9 @@ GitRepository.o: GitRepository.cpp GitRepository.h CommandLine.o
 	LC_ALL=C g++ -std=c++11  -g -rdynamic -c -o GitRepository.o GitRepository.cpp
 CommandLine.o:CommandLine.h CommandLine.cpp HashTable.h
 	LC_ALL=C g++ -std=c++11  -g -rdynamic -c -o CommandLine.o -lboost_filesystem -lboost_system  CommandLine.cpp
-UnitTests:UnitTests.cpp HashTable.h CommandLine.o
-	LC_ALL=C g++  -std=c++11 UnitTests.cpp  -o UnitTests CommandLine.o   /usr/lib/i386-linux-gnu/libboost_filesystem.so -lboost_filesystem -lboost_system 
+UnitTests:UnitTests.cpp testing.o HashTable.h CommandLine.o
+	LC_ALL=C g++  -std=c++11 UnitTests.cpp  -o UnitTests CommandLine.o  testing.o /usr/lib/i386-linux-gnu/libboost_filesystem.so -lboost_filesystem -lboost_system 
+testing.o:testing.cpp testing.h
+	LC_ALL=C g++ -std=c++11  -g -rdynamic -c -o testing.o -lboost_filesystem -lboost_system  testing.cpp
 clean:
 	rm *.o

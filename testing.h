@@ -20,30 +20,37 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define __UNIT_TESTS__H
 
 
+#include <iostream>
+#include <string>
+#include <functional>
+
 // This is only because I did not RTFM [2]
 // Thanks to [1] for the function pointer
 // [1]  http://www.cprogramming.com/tutorial/function-pointers.html
 // [2] http://cppunit.sourceforge.net/doc/lastest/cppunit_cookbook.html
 
+void test_assert(bool,std::string);
+
 class TestException : public std::exception
 {
     private:
-        string message;
+        std::string message;
     public:
-        TestException(string);
+        TestException(std::string);
         const char* what();
-}
+};
 
+// The testing functions have to take no arguments and return void.
 class GenericTestingFunction
 {
     private:
-        string name;
-        string question;
+        std::string name;
+        std::string question;
         bool interactive=false;
-        void (*test)();
+        std::function<void()> test;
     public :
-        GenericTestingFunction (const string name ,const bool interactive, void (*test)(),string question="" );
+        GenericTestingFunction (const std::string name ,const bool interactive, std::function<void()>,std::string question="" );
         void run();
-}
+};
 
 #endif //__UNIT_TESTS__H

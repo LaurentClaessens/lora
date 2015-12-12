@@ -16,14 +16,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
-
-
-#include  <iostream>
-#include  <fstream>
+#include <iostream>
+#include <fstream>
 #include <string>
 
+#include "testing.h"
 #include "CommandLine.h"
 #include "HashTable.h"
+
 using namespace std;
     
 // A simple command line :
@@ -34,7 +34,7 @@ void test_cl1()
     cl1.setEnvironmentVariable("BLA","foo");
     cl1.setWorkingDirectory("..");
     string s=cl1.toString();
-    assert(s=="cd ..&& LC_ALL=C BLA=foo cat lora.cpp");
+    test_assert(s=="cd ..&& LC_ALL=C BLA=foo cat lora.cpp","Command line composition");
 }
 
 // This one uses "cat" to read a file and compare to the content of the file
@@ -57,7 +57,7 @@ void test_cl2()
     {
         sfile = sfile + x+"\n";
     }
-    assert(out2==sfile);
+    test_assert(out2==sfile,"get the output of 'cat UnitTests.cpp'");
 }
 
 // Launching Vim in a terminal
@@ -85,10 +85,10 @@ void test_ht1()
        s1=s1+my_hash[itr]; 
     }
     
-    assert(s1=="hello 4hello 5hello 1");
+    test_assert(s1=="hello 4hello 5hello 1","loop in HashTable with itr++");
     // iteration with ++itr. The result is the same
     for (HashTable<int,string>::iterator itr=my_hash.begin();itr!=my_hash.end();++itr) {s2=s2+my_hash[itr]; }
-    assert(s1==s2);
+    test_assert(s1==s2,"loop in HashTable with ++itr");
 }
 
 // We can change the value of a key-value pair.
@@ -98,7 +98,7 @@ void test_ht2()
     my_hash.setValue(1,"hello 1");
     my_hash.setValue(4,"hello 4");
     my_hash.setValue(4,"re-hello 4");
-    assert(my_hash[4]=="re-hello 4");
+    test_assert(my_hash[4]=="re-hello 4","Assigning a new value to a key in HashTable");
 }
 
 // Assigning by "calling"      This is the main ressemblance with the Python's dictionary
@@ -109,17 +109,17 @@ void test_ht3()
     my_hash[1]="hello 1";
     my_hash[2]="hello 2";
     my_hash[3]="hello 3";
-    assert(my_hash[1]=="hello 1");
-    assert(my_hash[2]=="hello 2");
-    assert(my_hash[3]=="hello 3");
+    test_assert(my_hash[1]=="hello 1","Creating a key by 'calling' it");
+    test_assert(my_hash[2]=="hello 2","Creating a key by 'calling' it");
+    test_assert(my_hash[3]=="hello 3","Creating a key by 'calling' it");
 
     // We can overwrite a value by "calling it"
     my_hash[2]="re-hello 2";
-    assert(my_hash[2]=="re-hello 2");
+    test_assert(my_hash[2]=="re-hello 2","Assigning a new value by calling");
 
     // We can create a new key-value pair by "calling" it
     my_hash[6]="hello 6";
-    assert(my_hash[6]=="hello 6");
+    test_assert(my_hash[6]=="hello 6","Assigning a new value by calling");
 }
 
 // a <string,float> example.
@@ -127,67 +127,20 @@ void test_ht4()
 {
     HashTable<string,float> my_hash;
     my_hash["foo"]=5.4;
-    assert( my_hash["foo"]==float(5.4) );       
+    test_assert( my_hash["foo"]==float(5.4),"Small test with <string,float>" );
             // The funny think with rounding is that the following does not work :
             // assert( my_hash["foo"]==5.4 );       
 }
 
-TestException::TestException(string m):message(m){}
-const char* TestException::what {return message;}
-
-GenericTestingFunction::GenericTestingFunction(string n,bool b,string q):name(n),interavtive(b)
+int main()
 {
-    if (interactive)
-    {
-        if (q=="")
-        {
-            throws string("When you are defining an interactive test, you have to pass a question.")
-        }
-        question=q;
-    }
-    // If not interactive, the question is useless.
-}
-
-GenericTestingFunction::run()
-{
-    bool do_it=false;
-    if (interactive)
-    {
-        string yn="n";
-        std::cout<<question+" (y/n)";
-        std::cin>>yn;
-        if (yn=="y") { do_it=true; }
-    }
-    else { do_it=true; }
-    if (do_it)
-    {
-        try
-        {
-            test();
-            std::cout<<"Ok for test "+name;
-        }
-        catch (TestException t){ std::cout<<t.message<<std::endl;  }
-    }
-    else
-    {
-        cout<<"Not done (no interactive mode) : "+name;
-    }
-}
-
-int main(int argc, char *argv[])
-{
-    bool interactive=false;
-    if (argc==2)
-    {
-        if (argv[1]=="-y"){ interactive=true; }
-    }
-
     GenericTestingFunction("test_cl1",false,test_cl1).run();
     GenericTestingFunction("test_cl2",false,test_cl2).run();
-    GenericTestingFunction("test_cl3",true,test_cl3,"See Vim in a new terminal ?").run();
 
     GenericTestingFunction("test_ht1",false,test_ht1).run();
     GenericTestingFunction("test_ht2",false,test_ht2).run();
     GenericTestingFunction("test_ht3",false,test_ht3).run();
-    GenericTestingFunction("test_ht4",false,test_ht5).run();
+    GenericTestingFunction("test_ht4",false,test_ht4).run();
+
+    GenericTestingFunction("test_cl3",true,test_cl3,"See Vim in a new terminal ?").run();
 }
