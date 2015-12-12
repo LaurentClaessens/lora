@@ -143,6 +143,13 @@ void test_gr1()
     commit=gr.getStatusMessage();
     std::cout<<commit<<std::endl;
 
+    vector<path> untracked_files=gr.getUntrackedFiles();
+    std::cout<<"Untracked files :"<<std::endl;
+    //for (auto itr=untracked_files.begin();itr!=untracked_files.end();++itr)
+    for (path& p:untracked_files)
+    {
+        std::cout<<p<<std::endl;
+    }
     if (gr.isClean())
     {
         std::cout<<"This repository is CLEAN."<<std::endl;

@@ -24,10 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 #include <functional>
 
-// This is only because I did not RTFM [2]
-// Thanks to [1] for the function pointer
-// [1]  http://www.cprogramming.com/tutorial/function-pointers.html
-// [2] http://cppunit.sourceforge.net/doc/lastest/cppunit_cookbook.html
+// This is only because I did not RTFM.
+// http://cppunit.sourceforge.net/doc/lastest/cppunit_cookbook.html
 
 void test_assert(bool,std::string);
 

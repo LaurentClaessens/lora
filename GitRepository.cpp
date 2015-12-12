@@ -31,16 +31,48 @@ string GitRepository::getStatusMessage()
 }
 
 path GitRepository::getPath() {return repo_path;}
-bool GitRepository::isClean() 
+
+vector<string> GitRepository::v_commit_message()
 {
     string commit=getStatusMessage();
     string line;
     vector<string> lines;
     boost::split(lines,commit,boost::is_any_of("\n"));
-    for ( vector<string>::iterator itr=lines.begin();itr!=lines.end();itr++ )
+    return lines;
+}
+
+bool GitRepository::isClean() 
+{
+    vector<string> lines=v_commit_message();
+    string line;
+    for (string& line:lines)
     {
-        line=*itr;
         if (line=="nothing to commit, working directory clean") {return true;}
     }
     return false;
+}
+
+// this is a big bunch of not so solid string manipulations.
+vector<path> GitRepository::getUntrackedFiles()
+{
+    vector<string> lines=v_commit_message();
+    vector<path> untracked_files;
+    bool yet=false;
+    string line;
+    for (string& line:lines)
+    {
+        if (line=="Untracked files:") { yet=true;  }
+        if (yet==true)
+        {
+            if ( boost::algorithm::starts_with(line,"\t")  ) 
+            {
+                string filename;
+                vector<string> aux;
+                boost::split(aux,line,boost::is_any_of("\t"));
+                filename=aux[1];
+                untracked_files.push_back(path(filename));
+            }
+        }
+    }
+    return untracked_files;
 }

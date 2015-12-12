@@ -25,7 +25,7 @@ class GitRepository
 {
     private :
         path repo_path;
-        string status;
+        vector<string> v_commit_message();
     public :
         GitRepository(path);
 
@@ -33,8 +33,7 @@ class GitRepository
         string getPathName();
         string getStatusMessage();
         bool isClean();
+        vector<path> getUntrackedFiles(); // the paths are relative to the repository path
 };
-
-
 
 #endif   //__GITREPOSITORY_H__
