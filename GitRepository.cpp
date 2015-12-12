@@ -52,7 +52,8 @@ bool GitRepository::isClean()
     return false;
 }
 
-// this is a big bunch of not so solid string manipulations.
+// this is a big bunch of not quite sordid string manipulations.
+// I don't even list the assumptions I made about the output of 'git status'
 vector<path> GitRepository::getUntrackedFiles()
 {
     vector<string> lines=v_commit_message();
@@ -75,4 +76,38 @@ vector<path> GitRepository::getUntrackedFiles()
         }
     }
     return untracked_files;
+}
+
+// this is again a counter maintanible string manipulations.
+vector<path> GitRepository::getUntrackedFiles()
+{
+    vector<string> lines=v_commit_message();
+    vector<path> untracked_files;
+    bool yet=false;
+    string line;
+    for (string& line:lines)
+    {
+        if (line=="Untracked files:") { yet=true;  }
+        if (yet==true)
+        {
+            if ( boost::algorithm::starts_with(line,"\t")  ) 
+            {
+                string filename;
+                vector<string> aux;
+                boost::split(aux,line,boost::is_any_of("\t"));
+                filename=aux[1];
+                untracked_files.push_back(path(filename));
+            }
+        }
+    }
+    return untracked_files;
+}
+
+
+void GitRepository::launchGitDiff()
+{
+    CommandLine cl=CommandLine("git diff");
+    cl.setWorkingDirectory(getPath());
+    cl.setTerminal("terminology -e");
+    cl.run();
 }

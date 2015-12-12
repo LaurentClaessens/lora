@@ -33,7 +33,11 @@ class GitRepository
         string getPathName();
         string getStatusMessage();
         bool isClean();
-        vector<path> getUntrackedFiles(); // the paths are relative to the repository path
+        void launchGitDiff();       // in a new terminal
+
+        // in the paths are relative to the repository path
+        vector<path> getUntrackedFiles(); 
+        vector<path> getModifiedFiles();
 };
 
 #endif   //__GITREPOSITORY_H__

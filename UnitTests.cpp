@@ -145,8 +145,13 @@ void test_gr1()
 
     vector<path> untracked_files=gr.getUntrackedFiles();
     std::cout<<"Untracked files :"<<std::endl;
-    //for (auto itr=untracked_files.begin();itr!=untracked_files.end();++itr)
     for (path& p:untracked_files)
+    {
+        std::cout<<p<<std::endl;
+    }
+    vector<path> modified_files=gr.getModifiedFiles();
+    std::cout<<"Modified files :"<<std::endl;
+    for (path& p:modified_files)
     {
         std::cout<<p<<std::endl;
     }
@@ -156,7 +161,10 @@ void test_gr1()
     }
     else
     {
+        bool yn=false;
         std::cout<<"This repository is NOT CLEAN."<<std::endl;
+        std::cout<<"Do you want to see the 'git diff' of this repository ?";
+        gr.launchGitDiff();
     }
 }
 
