@@ -59,7 +59,6 @@ void my_copy_file(path from_path,path to_path)
         std::cout<<"The last_write_time did not copy well for "+from_path.string() <<std::endl;
         throw std::string("The last_write_time did not copy well for "+from_path.string());
     };
-    std::cout<<"Exiting function my_copy_file"<<std::endl;
 }
 
 GenericTask::GenericTask(){ };

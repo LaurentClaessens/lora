@@ -1,6 +1,22 @@
+/*
+Copyright 2015 Laurent Claessens
+contact : moky.math@gmail.com
 
-// to be read :
-// http://cppunit.sourceforge.net/doc/lastest/cppunit_cookbook.html
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//*/
+
+
 
 #include  <iostream>
 #include  <fstream>
@@ -116,8 +132,41 @@ void test_ht4()
             // assert( my_hash["foo"]==5.4 );       
 }
 
-int main()
+GenericTestingFunction::GenericTestingFunction(string n,bool b):name(n),interavtive(b){}
+
+GenericTestingFunction::run()
 {
+    try
+    {
+        test();
+        std::cout<<"Ok for test "+name;
+    }
+    catch (TestException t){ std::cout<<t.message<<std::endl;  }
+}
+
+GenericTestingFunction::run_interactive
+{
+    if (interactive)
+    {
+        string yn="n";
+        std::cout<<"Do you want to see Vim in a new terminal ? (y/n)";
+        std::cin>>yn;
+        if (yn=="y") { run(); }
+    }
+    else
+    {
+        cout<<"Not done (no interactive mode) : "+name;
+    }
+}
+
+int main(int argc, char *argv[])
+{
+    bool interactive=false;
+    if (argc==2)
+    {
+        if (argv[1]=="-y"){ interactive=true; }
+    }
+
     try{
         // tests for CommandLine
         test_cl1();
@@ -125,9 +174,6 @@ int main()
         test_cl2();
         std::cout<<"ok for test_cl2"<<endl;
 
-        //test_cl3();
-        //std::cout<<"ok for test_cl3"<<endl;
-        std::cout<<"If you want to test Vim in a new terminal, you have to allow test_cl3."<<endl;
 
         // tests for HashTable
         test_ht1();
@@ -139,6 +185,15 @@ int main()
         test_ht4();
         std::cout<<"ok for test_ht4"<<endl;
 
+        // interactive tests
+        string yn="n";
+        std::cout<<"Do you want to see Vim in a new terminal ? (y/n)";
+        std::cin>>yn;
+        if (yn=="y")
+        {
+            test_cl3();
+            std::cout<<"ok for test_cl3"<<endl;
+        }
     }
     catch (string s)
     {
