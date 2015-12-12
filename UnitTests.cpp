@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "testing.h"
 #include "CommandLine.h"
 #include "HashTable.h"
+#include "GitRepository.h"
 
 using namespace std;
     
@@ -132,6 +133,26 @@ void test_ht4()
             // assert( my_hash["foo"]==5.4 );       
 }
 
+void test_gr1()
+{
+    std::string commit;
+    string repo;
+    std::cout<<"What directory do you want to see ? ";
+    std::cin>>repo;
+    GitRepository gr=GitRepository(repo);
+    commit=gr.getStatusMessage();
+    std::cout<<commit<<std::endl;
+
+    if (gr.isClean())
+    {
+        std::cout<<"This repository is CLEAN."<<std::endl;
+    }
+    else
+    {
+        std::cout<<"This repository is NOT CLEAN."<<std::endl;
+    }
+}
+
 int main()
 {
     GenericTestingFunction("test_cl1",false,test_cl1).run();
@@ -142,5 +163,6 @@ int main()
     GenericTestingFunction("test_ht3",false,test_ht3).run();
     GenericTestingFunction("test_ht4",false,test_ht4).run();
 
+    GenericTestingFunction("test_gr1",true,test_gr1,"See a status message ?").run();
     GenericTestingFunction("test_cl3",true,test_cl3,"See Vim in a new terminal ?").run();
 }

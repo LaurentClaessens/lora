@@ -16,15 +16,25 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
+#ifndef   __GITREPOSITORY_H__
+#define   __GITREPOSITORY_H__
+
+#include "CommandLine.h"
+
 class GitRepository
 {
     private :
         path repo_path;
         string status;
     public :
-        GitRepository(string);
         GitRepository(path);
 
         path  getPath();
         string getPathName();
-}
+        string getStatusMessage();
+        bool isClean();
+};
+
+
+
+#endif   //__GITREPOSITORY_H__

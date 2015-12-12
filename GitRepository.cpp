@@ -16,6 +16,31 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
-GitRepository::GitRepository(path p): repo_path(s) {}  
-GitRepository::GitRepository(String s):GitRepository(path(s)) {}
+#include <string>
+#include <boost/algorithm/string.hpp>
+#include "GitRepository.h"
 
+GitRepository::GitRepository(path p): repo_path(p) {}  
+
+string GitRepository::getStatusMessage()
+{
+    CommandLine cl=CommandLine("git status");
+    cl.setEnvironmentVariable("LC_ALL","C");
+    cl.setWorkingDirectory(getPath());
+    return cl.getOutput();
+}
+
+path GitRepository::getPath() {return repo_path;}
+bool GitRepository::isClean() 
+{
+    string commit=getStatusMessage();
+    string line;
+    vector<string> lines;
+    boost::split(lines,commit,boost::is_any_of("\n"));
+    for ( vector<string>::iterator itr=lines.begin();itr!=lines.end();itr++ )
+    {
+        line=*itr;
+        if (line=="nothing to commit, working directory clean") {return true;}
+    }
+    return false;
+}

@@ -59,7 +59,6 @@ class CommandLine
         CommandLine(string);
         FILE* run();
         string getOutput();
-        
 };
 
 
