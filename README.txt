@@ -1,5 +1,8 @@
 A backup program.
 
+// Compile with
+make -f Makefile lora
+
 Creates a copy of the home directory into a backup directory (typically on an encrypted external hard disk--to your own responsibility).
 
 The main feature is : the backup copy is only a copy. You can browse it with your favorite file browser and get a file back with a simple copy. You do not require a special software for getting back your data.
