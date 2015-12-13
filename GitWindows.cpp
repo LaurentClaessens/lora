@@ -16,17 +16,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
-#include <QApplication>
-#include <QPushButton>
+#include "GitWindows.h"
 
-// The Makefile is created by
-// qmake -project
-// qmake
-// and that's it.
+GitWindows::GitWindows(GitRepository repo):repo(repo){};
+
  
-void launchingGitWindows()
+void GitWindows::show()
 {
-    QApplication app(argc, argv);
+    //QApplication app(argc, argv);
  
     QPushButton bouton("Salut les Zéros, la forme ?");
     bouton.setText("Autre chose");
@@ -34,5 +31,4 @@ void launchingGitWindows()
 
     QPushButton bouton2("Deuxième");
     bouton2.show();
-
 }

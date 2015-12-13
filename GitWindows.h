@@ -16,4 +16,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
+#ifndef  __GIT_WINDOWS_H__
+#define  __GIT_WINDOWS_H__
 
+#include <QApplication>
+#include <QPushButton>
+
+class GitWindows
+{
+    private:
+        GitRepository repo;
+    public:
+        GitRepository(GitRepository repo);
+        void show();
+}
+
+#endif   // __GIT_WINDOWS_H__
