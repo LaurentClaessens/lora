@@ -60,7 +60,7 @@ struct pathTriple{
 class GenericTask{
     public:
         GenericTask();
-        virtual bool run() const;
+        virtual bool run() const =0;
 };
 
 // FileCopyTask do
