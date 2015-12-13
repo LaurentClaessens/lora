@@ -181,12 +181,11 @@ void test_gw1()
     GitRepository repo=GitRepository(directory);
     
     GitWindows gw=GitWindows(repo);
-    gw.show();
+    gw.launch();
 }
 
 int main(int argc,char* argv[])
 {
-    QApplication app(argc, argv);
 
     GenericTestingFunction("test_gw1",true,test_gw1,"See the git windows ?").run();
     GenericTestingFunction("test_cl1",false,test_cl1).run();

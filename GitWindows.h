@@ -30,7 +30,7 @@ class GitWindows
         GitRepository repo;
     public:
         GitWindows(GitRepository repo);
-        void show();
+        void launch();      // in a new thread.
 };
 
 #endif   // __GIT_WINDOWS_H__

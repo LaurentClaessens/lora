@@ -17,20 +17,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
 #include <QApplication>
+#include <QLabel>
 #include <QPushButton>
 #include "GitWindows.h"
 
 GitWindows::GitWindows(GitRepository repo):repo(repo){};
 
  
-void GitWindows::show()
+void GitWindows::launch()
 {
-    //QApplication app(argc, argv);
  
-    QPushButton bouton("Salut les Zéros, la forme ?");
-    bouton.setText("Autre chose");
-    bouton.show();
+    QApplication app(argc, argv);
 
-    QPushButton bouton2("Deuxième");
-    bouton2.show();
+    QLabel* label= new QLabel("Hello");
+    label->show();
+
+    app.exec();
 }
