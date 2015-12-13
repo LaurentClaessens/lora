@@ -20,10 +20,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <fstream>
 #include <string>
 
+
+#include <QApplication>
+#include <QPushButton>
+
 #include "testing.h"
 #include "CommandLine.h"
 #include "HashTable.h"
 #include "GitRepository.h"
+#include "GitWindows.h"
 
 using namespace std;
     
@@ -161,7 +166,6 @@ void test_gr1()
     }
     else
     {
-        bool yn=false;
         std::cout<<"This repository is NOT CLEAN."<<std::endl;
         std::cout<<"Do you want to see the 'git diff' of this repository ?";
         gr.launchGitDiff();
@@ -171,16 +175,16 @@ void test_gr1()
 void test_gw1()
 {
     std::string commit;
-    string repo;
+    string directory;
     std::cout<<"What directory do you want to see ? ";
-    std::cin>>repo;
-    GitRepository gr=GitRepository(repo);
+    std::cin>>directory;
+    GitRepository repo=GitRepository(directory);
     
     GitWindows gw=GitWindows(repo);
     gw.show();
 }
 
-int main(argc,argv)
+int main(int argc,char* argv[])
 {
     QApplication app(argc, argv);
 

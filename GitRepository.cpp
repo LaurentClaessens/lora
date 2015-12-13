@@ -78,29 +78,11 @@ vector<path> GitRepository::getUntrackedFiles()
     return untracked_files;
 }
 
-// this is again a counter maintanible string manipulations.
-vector<path> GitRepository::getUntrackedFiles()
+// this is again a counter maintainable string manipulations.
+vector<path> GitRepository::getModifiedFiles()
 {
-    vector<string> lines=v_commit_message();
-    vector<path> untracked_files;
-    bool yet=false;
-    string line;
-    for (string& line:lines)
-    {
-        if (line=="Untracked files:") { yet=true;  }
-        if (yet==true)
-        {
-            if ( boost::algorithm::starts_with(line,"\t")  ) 
-            {
-                string filename;
-                vector<string> aux;
-                boost::split(aux,line,boost::is_any_of("\t"));
-                filename=aux[1];
-                untracked_files.push_back(path(filename));
-            }
-        }
-    }
-    return untracked_files;
+    vector<path> modified_files;
+    return modified_files;
 }
 
 

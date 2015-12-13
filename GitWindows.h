@@ -22,13 +22,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QApplication>
 #include <QPushButton>
 
+#include "GitRepository.h"
+
 class GitWindows
 {
     private:
         GitRepository repo;
     public:
-        GitRepository(GitRepository repo);
+        GitWindows(GitRepository repo);
         void show();
-}
+};
 
 #endif   // __GIT_WINDOWS_H__
