@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
 #include <boost/filesystem.hpp>
-#include "directoryconverter.h"
+#include "DirectoryConverter.h"
 #include "tasks.h"
 
 // The aim of this class is to answer the questions which depend on the

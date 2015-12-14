@@ -47,7 +47,7 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = CommandLine.cpp \
-		directoryconverter.cpp \
+		DirectoryConverter.cpp \
 		GitRepository.cpp \
 		GitWindows.cpp \
 		lora.cpp \
@@ -55,7 +55,7 @@ SOURCES       = CommandLine.cpp \
 		testing.cpp \
 		UnitTests.cpp 
 OBJECTS       = CommandLine.o \
-		directoryconverter.o \
+		DirectoryConverter.o \
 		GitRepository.o \
 		GitWindows.o \
 		lora.o \
@@ -211,8 +211,8 @@ compiler_clean:
 
 ####### Compile
 lora: lora.cpp  \
-		directoryconverter.o tasks.o MainLoop.o Configuration.o
-	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora MainLoop.o  Configuration.o directoryconverter.o tasks.o   $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB)
+		DirectoryConverter.o tasks.o MainLoop.o Configuration.o
+	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora MainLoop.o  Configuration.o DirectoryConverter.o tasks.o   $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB)
 
 UnitTests: UnitTests.cpp testing.h CommandLine.h HashTable.h GitRepository.h \
 	GitRepository.o 	testing.o CommandLine.o GitWindows.o
@@ -231,9 +231,9 @@ CommandLine.o: CommandLine.cpp CommandLine.h \
 		HashTable.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o CommandLine.o $(BOOST_SYSTEM) CommandLine.cpp
 
-directoryconverter.o: directoryconverter.cpp directoryconverter.h \
+DirectoryConverter.o: DirectoryConverter.cpp DirectoryConverter.h \
 		tasks.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o directoryconverter.o directoryconverter.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o DirectoryConverter.o DirectoryConverter.cpp
 
 GitRepository.o: GitRepository.cpp GitRepository.h \
 		CommandLine.h \
