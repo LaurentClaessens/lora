@@ -30,7 +30,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class Configuration
 {
     private:
-        //const path starting_path;
         const path starting_path;
         const DirectoryConverter* const converter_ptr;
         TaskList* const task_list_ptr;
@@ -44,6 +43,7 @@ class Configuration
 
         void add_task(GenericTask*);
         bool is_excluded(const path) const;       
+        TaskList* const getTaskList() const;
 
         //path purge_to_purge_datetime(path) const;
         //path purge_to_modified_purge(path) const;
@@ -59,5 +59,6 @@ class Configuration
         bool are_all_paths_ok() const;             
 };
 
-
+path get_starting_path(int argc, char *argv[]);
+Configuration* read_configuration_file(const path cfg_path,const path);
 #endif     //__CONFIGURATION_H__

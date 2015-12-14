@@ -57,12 +57,12 @@ void MainLoop::loopOverDirectory(path sub_directory)
 
 // MAIN BACKUP LOOP ----
 
+MainBackupLoop::MainBackupLoop(Configuration* config_ptr) : MainLoop(config_ptr) {}
+
 bool MainBackupLoop::is_excluded(path dirname)
 {
     return configuration->is_excluded(dirname); 
 }
-
-
 
 void MainBackupLoop::DealWithDirectory(path rep_path)
 {
@@ -94,6 +94,8 @@ void MainBackupLoop::DealWithFile(path file_path)
 }
 
 // MAIN PURGE LOOP ----
+
+MainPurgeLoop::MainPurgeLoop(Configuration* config_ptr) : MainLoop(config_ptr) {}
 
 void MainPurgeLoop::run() 
 { 

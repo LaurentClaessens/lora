@@ -171,7 +171,7 @@ qmake:  FORCE
 
 dist: 
 	@$(CHK_DIR_EXISTS) .tmp/lora1.0.0 || $(MKDIR) .tmp/lora1.0.0 
-	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/lora1.0.0/ && $(COPY_FILE) --parents CommandLine.h directoryconverter.h GitRepository.h GitWindows.h HashTable.h lora.h   tasks.h testing.h  .tmp/lora1.0.0/ && $(COPY_FILE) --parents CommandLine.cpp directoryconverter.cpp GitRepository.cpp GitWindows.cpp lora.cpp tasks.cpp testing.cpp UnitTests.cpp .tmp/lora1.0.0/ && (cd `dirname .tmp/lora1.0.0` && $(TAR) lora1.0.0.tar lora1.0.0 && $(COMPRESS) lora1.0.0.tar) && $(MOVE) `dirname .tmp/lora1.0.0`/lora1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/lora1.0.0
+	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/lora1.0.0/ && $(COPY_FILE) --parents CommandLine.h directoryconverter.h GitRepository.h GitWindows.h HashTable.h tasks.h testing.h  .tmp/lora1.0.0/ && $(COPY_FILE) --parents CommandLine.cpp directoryconverter.cpp GitRepository.cpp GitWindows.cpp lora.cpp tasks.cpp testing.cpp UnitTests.cpp .tmp/lora1.0.0/ && (cd `dirname .tmp/lora1.0.0` && $(TAR) lora1.0.0.tar lora1.0.0 && $(COMPRESS) lora1.0.0.tar) && $(MOVE) `dirname .tmp/lora1.0.0`/lora1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/lora1.0.0
 
 
 clean:compiler_clean 
@@ -207,7 +207,7 @@ compiler_lex_clean:
 compiler_clean: 
 
 ####### Compile
-lora: lora.cpp lora.h \
+lora: lora.cpp  \
 		directoryconverter.o tasks.o MainLoop.o
 	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora MainLoop.o  directoryconverter.o tasks.o   $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB)
 

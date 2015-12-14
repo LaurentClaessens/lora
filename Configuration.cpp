@@ -64,6 +64,7 @@ bool Configuration::is_excluded(const path rep_path) const
 // CONFIGURATION -- task list
 
 void Configuration::add_task(GenericTask* gt) { task_list_ptr->push_back(gt);  }
+TaskList* const Configuration::getTaskList() const {return task_list_ptr;}
 
 // CREATING FUNCTIONS (not to be confused with the constructor)
 

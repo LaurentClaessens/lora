@@ -40,6 +40,7 @@ class MainLoop
 class MainBackupLoop: public MainLoop
 {
     public:
+        MainBackupLoop(Configuration*);
         bool is_excluded(path);
         void DealWithDirectory(path);
         void DealWithFile(path);
@@ -49,7 +50,7 @@ class MainBackupLoop: public MainLoop
 class MainPurgeLoop: public MainLoop
 {
     public:
-        MainPurgeLoop();
+        MainPurgeLoop(Configuration*);
         void DealWithDirectory(path);
         void DealWithFile(path);
         void run();
