@@ -27,7 +27,7 @@ class MainLoop
     private:
         const path starting_path;
     protected:
-        Configuration* const configuration;     // not const because one add tasks.
+        Configuration* const configuration;     // not const because one adds tasks.
     public :
         MainLoop(Configuration*);
         void loopOverDirectory(path sub_directory);

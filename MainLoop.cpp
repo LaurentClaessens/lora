@@ -28,6 +28,7 @@ MainLoop::MainLoop(Configuration* config_ptr) :
     starting_path(config_ptr->getStartingPath()),
     configuration(config_ptr)
 {
+    std::cout<<"starting path : "<<starting_path<<std::endl;
     assert( is_directory(starting_path) );
     configuration->create_purge_directories();
     assert( configuration->are_all_paths_ok() );

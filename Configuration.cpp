@@ -123,7 +123,7 @@ Configuration* read_configuration_file(const path cfg_path,const path starting_p
     const DirectoryConverter* const converter_ptr=new DirectoryConverter(bp,pp);
     TaskList* tl_ptr=new TaskList();
     
-    Configuration* config_ptr = new Configuration( starting_path,converter_ptr,tl_ptr  );
+    Configuration* config_ptr = new Configuration( sp,converter_ptr,tl_ptr  );
     config_ptr->add_exclude_path(exclude);
 
     return config_ptr;
