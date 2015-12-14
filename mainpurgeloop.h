@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace boost::filesystem;
 using namespace std;
 
-bool do_we_purge(const path bak_path,const path orig_path);         // if orig_path does not existe, return true because it assumes that the file has been removed since last backup cession.
+bool do_we_purge(const path bak_path,const path orig_path);         // if orig_path does not exist, return true because it assumes that the file has been removed since last backup cession.
 
 
 // task_list and directory_converter are privately pointers because they are shared with the backup loop.
@@ -50,7 +50,5 @@ class MainPurgeLoop
         void DealWithFile(const path file_path) ;
         void DealWithDirectory(const path rep_path) ;
 };
-
-#include "mainpurgeloop.cpp"
 
 #endif  // __PURGE_LOOP_H_INCLUDED__

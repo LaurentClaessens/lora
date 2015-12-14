@@ -34,7 +34,7 @@ bool create_directory_tree(const path rep_path)
     assert( is_directory(rep_path) );
 }
 // Create the tree up to the directory containing the given file name.
-bool create_file_tree(const path file_path)
+void create_file_tree(const path file_path)
 {
     const path parent_path=file_path.parent_path();
     if (is_directory( parent_path ) ) {}
@@ -62,10 +62,7 @@ void my_copy_file(path from_path,path to_path)
 }
 
 GenericTask::GenericTask(){ };
-bool GenericTask::run() const
-{ 
-    throw std::string("You tried to run a GenericTask"); 
-} 
+GenericTask::~GenericTask(){ };
 
 
 FileCopyTask::FileCopyTask(pathTriple triple):GenericTask()

@@ -61,7 +61,6 @@ MainBackupLoop::MainBackupLoop(const path starting_path,const DirectoryConverter
     assert(converter_ptr->are_all_paths_ok());
 }
 
-void MainBackupLoop::add_exclude_path(const path ex) { excluded_paths.push_back(ex); }
 void MainBackupLoop::add_exclude_path(const std::vector<path> vp)
 {
     for (  std::vector<path>::const_iterator it=vp.begin();it!=vp.end();++it  ) { add_exclude_path(*it); }
@@ -108,6 +107,7 @@ void MainBackupLoop::DealWithRepertory(const path rep_path,const bool inside_pri
            }
         }
     }
+
     if (!is_excluded(rep_path))
     {
         directory_iterator end_itr;
@@ -124,6 +124,7 @@ void MainBackupLoop::DealWithRepertory(const path rep_path,const bool inside_pri
             else { cout<<endl<<endl<<"What the hell is the file "<<pathname<<" ??"<<endl; }
         }
     }
+
 }
 
 bool MainBackupLoop::is_excluded(const path pathname) const

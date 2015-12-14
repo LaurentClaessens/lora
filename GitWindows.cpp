@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
+#include <string>
+#include <iostream>
 #include <QApplication>
 #include <QLabel>
 #include <QPushButton>
@@ -23,14 +25,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 GitWindows::GitWindows(GitRepository repo):repo(repo){};
 
- 
 void GitWindows::launch()
 {
- 
-    QApplication app(argc, argv);
-
-    QLabel* label= new QLabel("Hello");
+    std::cout<<repo.getPath()<<std::endl;
+    QLabel* label= new QLabel("Bonjour");
     label->show();
-
-    app.exec();
+    qApp->exec();
 }

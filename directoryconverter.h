@@ -37,14 +37,14 @@ using namespace boost::filesystem;
 class DirectoryConverter
 {
     private :                       // if one add some paths here, one has to update 'are_all_paths_ok' and maybe also 'create_purge_directories'.
+        const path home_path;
+        const path backup_path;
         const path purge_path;
         const path purge_datetime_path;
         const path purge_modified_path;
         const path purge_removed_path;
-        const path backup_path;
         static bool verified_paths;       // If one has already checked the paths.
     public:
-        const path home_path;
         DirectoryConverter(const path backup_path, const path purge_path );
         DirectoryConverter() {};
         path get_backup_path() const;

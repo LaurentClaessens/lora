@@ -89,7 +89,6 @@ DIST          = /usr/share/qt4/mkspecs/common/unix.conf \
 		lora.pro
 QMAKE_TARGET  = lora
 DESTDIR       = 
-TARGET        = lora
 
 first: all
 ####### Implicit rules
@@ -113,10 +112,6 @@ first: all
 
 ####### Build rules
 
-all: Makefile $(TARGET)
-
-$(TARGET):  $(OBJECTS)  
-	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: lora.pro  /usr/share/qt4/mkspecs/linux-g++/qmake.conf /usr/share/qt4/mkspecs/common/unix.conf \
 		/usr/share/qt4/mkspecs/common/linux.conf \
@@ -186,11 +181,6 @@ clean:compiler_clean
 
 ####### Sub-libraries
 
-distclean: clean
-	-$(DEL_FILE) $(TARGET) 
-	-$(DEL_FILE) Makefile
-
-
 check: first
 
 mocclean: compiler_moc_header_clean compiler_moc_source_clean
@@ -217,10 +207,19 @@ compiler_lex_clean:
 compiler_clean: 
 
 ####### Compile
+lora: lora.cpp lora.h \
+		mainbackuploop.o directoryconverter.o tasks.o mainpurgeloop.o
+	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora  mainbackuploop.o mainpurgeloop.o  directoryconverter.o tasks.o   $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB)
+
+mainbackuploop.o: mainbackuploop.cpp mainbackuploop.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainbackuploop.o  mainbackuploop.cpp
+
+mainpurgeloop.o: mainpurgeloop.cpp mainpurgeloop.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainpurgeloop.o  mainpurgeloop.cpp
 
 CommandLine.o: CommandLine.cpp CommandLine.h \
 		HashTable.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o CommandLine.o CommandLine.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o CommandLine.o $(BOOST_SYSTEM) CommandLine.cpp
 
 directoryconverter.o: directoryconverter.cpp directoryconverter.h \
 		tasks.h
@@ -234,17 +233,8 @@ GitRepository.o: GitRepository.cpp GitRepository.h \
 GitWindows.o: GitWindows.cpp GitWindows.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GitWindows.o  $(BOOST_SYSTEM)    GitWindows.cpp
 
-lora.o: lora.cpp lora.h \
-		tasks.h \
-		mainbackuploop.h \
-		mainpurgeloop.h \
-		directoryconverter.h \
-		mainpurgeloop.cpp \
-		mainbackuploop.cpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o lora.o lora.cpp
-
 tasks.o: tasks.cpp tasks.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o tasks.o tasks.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o tasks.o $(BOOST_SYSTEM)   tasks.cpp
 
 testing.o: testing.cpp testing.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o testing.o testing.cpp

@@ -24,13 +24,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "GitRepository.h"
 
-class GitWindows
+void the_windows(GitRepository repo);
+
+class GitWindows 
 {
     private:
         GitRepository repo;
     public:
         GitWindows(GitRepository repo);
-        void launch();      // in a new thread.
+        void launch();      // open a windows in a new thread.
 };
 
 #endif   // __GIT_WINDOWS_H__

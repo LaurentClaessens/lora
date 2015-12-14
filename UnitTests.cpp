@@ -178,15 +178,19 @@ void test_gw1()
     string directory;
     std::cout<<"What directory do you want to see ? ";
     std::cin>>directory;
+    std::cout<<"There will be two of them.";
     GitRepository repo=GitRepository(directory);
     
-    GitWindows gw=GitWindows(repo);
-    gw.launch();
+    GitWindows gw1=GitWindows(repo);
+    gw1.launch();
+
+    GitWindows gw2=GitWindows(repo);
+    gw2.launch();
 }
 
 int main(int argc,char* argv[])
 {
-
+    QApplication app(argc, argv);
     GenericTestingFunction("test_gw1",true,test_gw1,"See the git windows ?").run();
     GenericTestingFunction("test_cl1",false,test_cl1).run();
     GenericTestingFunction("test_cl2",false,test_cl2).run();

@@ -23,7 +23,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "tasks.h"
 
 
-//MainPurgeLoop::MainPurgeLoop(){}
 
 MainPurgeLoop::MainPurgeLoop(const path starting_path,const DirectoryConverter* const dc_ptr,TaskList* const tl_ptr) :
     converter_ptr(dc_ptr),
@@ -87,3 +86,4 @@ void MainPurgeLoop::DealWithDirectory(const path backup_path)
 
     }
 }
+

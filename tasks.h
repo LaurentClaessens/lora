@@ -43,7 +43,7 @@ using boost::filesystem::path;
         // since "/home/foo/bar/something" can be a file as well as a directory (and the system cannot guess since the point of 'create_*_tree' is to create), 
         // we have two functions.
 bool create_directory_tree(const path);             // recursively creates the directory tree up to the given directory.
-bool create_file_tree(const path);                 // recursively creates the directory tree up to the directory of the given *file* name.
+void create_file_tree(const path);                 // recursively creates the directory tree up to the directory of the given *file* name.
 
 void my_copy_file(const path ,const path );      // copy but keeping the same last_write_time attribute.
 void copy_tree(const path,const path);
@@ -60,7 +60,8 @@ struct pathTriple{
 class GenericTask{
     public:
         GenericTask();
-        virtual bool run() const;
+        virtual ~GenericTask();
+        virtual bool run() const =0;
 };
 
 // FileCopyTask do
