@@ -34,10 +34,41 @@ path purge_path_to_purge_datetime(const path purge_path)
     time(&tt);
     struct tm* timeinfo=localtime(&tt);
     string s_year=std::to_string(timeinfo->tm_year+1900);
-    string s_mon=std::to_string(timeinfo->tm_mon+1);
-    string s_mday=std::to_string(timeinfo->tm_mday+1);
+
+    string s_mon;
+    switch (timeinfo->tm_mon)
+    {
+        case 0:
+            s_mon="January";
+        case 1:
+            s_mon="February";
+        case 2:
+            s_mon="March";
+        case 3:
+            s_mon="April";
+        case 4:
+            s_mon="May";
+        case 5:
+            s_mon="June";
+        case 6:
+            s_mon="July";
+        case 7:
+            s_mon="August";
+        case 8:
+            s_mon="September";
+        case 9:
+            s_mon="October";
+        case 10:
+            s_mon="November";
+        case 11:
+            s_mon="December";
+    }
+
+    string s_mday=std::to_string(timeinfo->tm_mday);
     string s_hour=std::to_string(timeinfo->tm_hour);
     string s_min=std::to_string(timeinfo->tm_min);
+
+    if (timeinfo->tm_min<10 ){ s_min="0"+s_min; }
 
     string s_date=s_year+"-"+s_mon+"-"+s_mday;
     string s_time=s_hour+"h"+s_min;
