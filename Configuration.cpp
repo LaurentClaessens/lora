@@ -34,7 +34,11 @@ path Configuration::getStartingPath() const { return starting_path; }
 void Configuration::create_purge_directories() const { converter_ptr->create_purge_directories(); }
 bool Configuration::are_all_paths_ok() const { return converter_ptr->are_all_paths_ok(); }
 path Configuration::backup_to_removed_purge(const path rep) const { return converter_ptr->backup_to_removed_purge(rep); }
-path Configuration::backup_to_home(const path rep) const { return converter_ptr->backup_to_home(rep); }
+
+path Configuration::backup_to_home(const path rep) const
+{
+    return converter_ptr->backup_to_home(rep); 
+}
 path Configuration::home_to_backup(const path rep) const {return converter_ptr->home_to_backup(rep); }
 path Configuration::home_to_modified_purge(const path rep) const { return converter_ptr->home_to_modified_purge(rep); }
 
@@ -139,7 +143,7 @@ path get_starting_path(int argc, char *argv[])
 
 // OTHER UTILITIES FUNCTIONS
 
-bool Configuration::do_we_backup(path orig_path,path bak_path)
+bool Configuration::do_we_backup(const path orig_path,const path bak_path) const
 {
     assert(is_regular_file(orig_path));
     if (!is_regular_file(bak_path)){return true;}

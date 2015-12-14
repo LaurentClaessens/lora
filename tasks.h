@@ -42,7 +42,7 @@ using boost::filesystem::path;
 
         // since "/home/foo/bar/something" can be a file as well as a directory (and the system cannot guess since the point of 'create_*_tree' is to create), 
         // we have two functions.
-bool create_directory_tree(const path);             // recursively creates the directory tree up to the given directory.
+void create_directory_tree(const path);             // recursively creates the directory tree up to the given directory.
 void create_file_tree(const path);                 // recursively creates the directory tree up to the directory of the given *file* name.
 
 void my_copy_file(const path ,const path );      // copy but keeping the same last_write_time attribute.
@@ -116,7 +116,7 @@ class TaskList{
     public:
         void push_back(GenericTask*);
         GenericTask* front();
-        GenericTask* pop_front();
+        void pop_front();
         int size() const;
 };
 

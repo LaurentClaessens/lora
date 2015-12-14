@@ -61,7 +61,10 @@ OBJECTS       = CommandLine.o \
 		lora.o \
 		tasks.o \
 		testing.o \
-		UnitTests.o
+		UnitTests.o\
+		Configuration.o\
+	  	MainLoop.o\
+	  	mainpurgeloop.o
 DIST          = /usr/share/qt4/mkspecs/common/unix.conf \
 		/usr/share/qt4/mkspecs/common/linux.conf \
 		/usr/share/qt4/mkspecs/common/gcc-base.conf \
@@ -208,11 +211,15 @@ compiler_clean:
 
 ####### Compile
 lora: lora.cpp  \
-		directoryconverter.o tasks.o MainLoop.o
-	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora MainLoop.o  directoryconverter.o tasks.o   $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB)
+		directoryconverter.o tasks.o MainLoop.o Configuration.o
+	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora MainLoop.o  Configuration.o directoryconverter.o tasks.o   $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB)
+
+UnitTests: UnitTests.cpp testing.h CommandLine.h HashTable.h GitRepository.h \
+	GitRepository.o 	testing.o CommandLine.o GitWindows.o
+	$(CXX) $(LFLAGS)  $(CXXFLAGS) $(INCPATH) -o UnitTests GitRepository.o  testing.o $(BOOST_SYSTEM) CommandLine.o GitWindows.o UnitTests.cpp  $(LIBS) 
 
 MainLoop.o: MainLoop.cpp MainLoop.h Configuration.o
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainLoop.o Configuration.o  MainLoop.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainLoop.o MainLoop.cpp
 
 Configuration.o: Configuration.cpp Configuration.h tasks.o
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Configuration.o  Configuration.cpp
@@ -236,13 +243,9 @@ GitRepository.o: GitRepository.cpp GitRepository.h \
 GitWindows.o: GitWindows.cpp GitWindows.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GitWindows.o  $(BOOST_SYSTEM)    GitWindows.cpp
 
-
 testing.o: testing.cpp testing.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o testing.o testing.cpp
 
-UnitTests: UnitTests.cpp testing.h CommandLine.h HashTable.h GitRepository.h \
-	GitRepository.o 	testing.o CommandLine.o GitWindows.o
-	$(CXX) $(LFLAGS)  $(CXXFLAGS) $(INCPATH) -o UnitTests GitRepository.o  testing.o $(BOOST_SYSTEM) CommandLine.o GitWindows.o UnitTests.cpp  $(LIBS) 
 
 ####### Install
 

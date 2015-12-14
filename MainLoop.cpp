@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/predicate.hpp>     // starts_with
 #include "MainLoop.h"
+#include "Configuration.h"
 
 // MAIN LOOP ----
 
@@ -59,10 +60,15 @@ void MainLoop::loopOverDirectory(path sub_directory)
 
 MainBackupLoop::MainBackupLoop(Configuration* config_ptr) : MainLoop(config_ptr) {}
 
-bool MainBackupLoop::is_excluded(path dirname)
+void MainBackupLoop::run()
 {
-    return configuration->is_excluded(dirname); 
+    std::cout<<"Launching the backup loop."<<std::endl;
+    this->MainLoop::run();
+    std::cout<<"Backup loop ended."<<std::endl;
 }
+
+
+bool MainBackupLoop::is_excluded(path dirname) { return configuration->is_excluded(dirname); }
 
 void MainBackupLoop::DealWithDirectory(path rep_path)
 {
@@ -99,7 +105,9 @@ MainPurgeLoop::MainPurgeLoop(Configuration* config_ptr) : MainLoop(config_ptr) {
 
 void MainPurgeLoop::run() 
 { 
+    std::cout<<"Launching the purge loop."<<std::endl;
     this->MainLoop::run();
+    std::cout<<"Purge loop ended."<<std::endl;
     FinalTask* etask= new FinalTask();
     configuration->add_task(etask);
 }

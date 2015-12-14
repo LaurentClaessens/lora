@@ -45,15 +45,12 @@ class Configuration
         bool is_excluded(const path) const;       
         TaskList* const getTaskList() const;
 
-        //path purge_to_purge_datetime(path) const;
-        //path purge_to_modified_purge(path) const;
-        //path purge_to_removed_purge(path) const;
-        path backup_to_removed_purge(path) const;
-        path backup_to_home(path) const;
+        path backup_to_removed_purge(const path) const;
+        path backup_to_home(const path) const;
         path home_to_backup(const path) const;
         path home_to_modified_purge(const path) const;            
 
-        bool do_we_backup(path orig_path,path bak_path);
+        bool do_we_backup(const path orig_path,const path bak_path) const;
 
         void create_purge_directories() const;
         bool are_all_paths_ok() const;             

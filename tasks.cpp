@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // Create the tree up to the directory to which 'rep_path' belongs to.
 // create_directory_tree("/home/foo/bar/lol.txt") creates /home/foo/bar
-bool create_directory_tree(const path rep_path)
+void create_directory_tree(const path rep_path)
 {
     const path parent_path=rep_path.parent_path();
     if (is_directory( parent_path ) ) {}
@@ -128,5 +128,5 @@ bool FinalTask::run() const { return false; }
 
 void TaskList::push_back(GenericTask* gt) { queue.push_back(gt); }
 GenericTask* TaskList::front() { return queue.front(); }
-GenericTask* TaskList::pop_front() {queue.pop_front();}
+void TaskList::pop_front() {queue.pop_front();}
 int TaskList::size() const { return queue.size(); }
