@@ -38,6 +38,7 @@ path Configuration::backup_to_home(const path rep) const { return converter_ptr-
 path Configuration::home_to_backup(const path rep) const {return converter_ptr->home_to_backup(rep); }
 path Configuration::home_to_modified_purge(const path rep) const { return converter_ptr->home_to_modified_purge(rep); }
 
+path Configuration::getHomePath() const { return converter_ptr->getHomePath(); }
 
 // CONFIGURATION -- excluding paths
 
@@ -137,9 +138,7 @@ path get_starting_path(int argc, char *argv[])
 
 // OTHER UTILITIES FUNCTIONS
 
-
-
-bool do_we_backup(path orig_path,path bak_path)
+bool Configuration::do_we_backup(path orig_path,path bak_path)
 {
     assert(is_regular_file(orig_path));
     if (!is_regular_file(bak_path)){return true;}

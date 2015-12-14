@@ -52,6 +52,7 @@ class MainPurgeLoop: public MainLoop
         MainPurgeLoop();
         void DealWithDirectory(path);
         void DealWithFile(path);
+        void run();
 };
 
 

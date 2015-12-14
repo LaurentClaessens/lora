@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string/predicate.hpp>     // starts_with
 #include "MainLoop.h"
 
 // MAIN LOOP ----
@@ -78,10 +79,10 @@ void MainBackupLoop::DealWithFile(path file_path)
     assert( is_regular_file(file_path) );
     const path bak_path=configuration->home_to_backup(file_path);
     const path purge_modified_path=configuration->home_to_modified_purge(file_path);
-    if (do_we_backup(file_path,bak_path))
+    if (configuration->do_we_backup(file_path,bak_path))
     {
         // This assert checks that we will not write in the home directory.
-        assert( !boost::algorithm::starts_with(bak_path,configuration->home_path ) );
+        assert( !boost::algorithm::starts_with(bak_path,configuration->getHomePath() ) );
 
         pathTriple triple;
         triple.orig=file_path;
@@ -96,7 +97,7 @@ void MainBackupLoop::DealWithFile(path file_path)
 
 void MainPurgeLoop::run() 
 { 
-    MainLoop()::run();
+    this->MainLoop::run();
     FinalTask* etask= new FinalTask();
     configuration->add_task(etask);
 }

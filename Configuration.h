@@ -30,6 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class Configuration
 {
     private:
+        //const path starting_path;
         const path starting_path;
         const DirectoryConverter* const converter_ptr;
         TaskList* const task_list_ptr;
@@ -37,6 +38,7 @@ class Configuration
     public:
         Configuration(const path,const DirectoryConverter* const,TaskList* const);
         path getStartingPath() const;
+        path getHomePath() const;
         void add_exclude_path(const path);    
         void add_exclude_path(const std::vector<path>); 
 
@@ -50,6 +52,8 @@ class Configuration
         path backup_to_home(path) const;
         path home_to_backup(const path) const;
         path home_to_modified_purge(const path) const;            
+
+        bool do_we_backup(path orig_path,path bak_path);
 
         void create_purge_directories() const;
         bool are_all_paths_ok() const;             

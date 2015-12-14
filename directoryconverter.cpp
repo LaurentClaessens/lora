@@ -136,11 +136,5 @@ bool DirectoryConverter::are_all_paths_ok() const
     }
     return true;
 }
-path DirectoryConverter::get_backup_path() const
-{
-    return backup_path;
-}
-path DirectoryConverter::get_home_path() const
-{
-    return home_path;
-}
+path DirectoryConverter::getBackupPath() const { return backup_path; }
+path DirectoryConverter::getHomePath() const { return home_path; }

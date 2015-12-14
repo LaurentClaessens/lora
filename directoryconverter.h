@@ -47,8 +47,8 @@ class DirectoryConverter
     public:
         DirectoryConverter(const path backup_path, const path purge_path );
         DirectoryConverter() {};
-        path get_backup_path() const;
-        path get_home_path() const;
+        path getBackupPath() const;
+        path getHomePath() const;
         void create_purge_directories() const;
         //path purge_to_purge_datetime(const path) const;
         //path purge_to_modified_purge(const path) const;
