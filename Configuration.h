@@ -38,6 +38,7 @@ class Configuration
         Configuration(const path,const DirectoryConverter* const,TaskList* const);
         path getStartingBackupPath() const;
         path getHomePath() const;
+        path getBackupPath() const;
         path getPurgePath() const;
         void add_exclude_path(const path);    
         void add_exclude_path(const std::vector<path>); 

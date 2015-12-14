@@ -44,6 +44,7 @@ path Configuration::home_to_modified_purge(const path rep) const { return conver
 
 path Configuration::getHomePath() const { return converter_ptr->getHomePath(); }
 path Configuration::getPurgePath() const { return converter_ptr->getPurgePath(); }
+path Configuration::getBackupPath() const { return converter_ptr->getBackupPath(); }
 
 // CONFIGURATION -- excluding paths
 

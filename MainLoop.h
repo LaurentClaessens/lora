@@ -26,13 +26,12 @@ class MainLoop
 {
     protected:
         Configuration* const configuration;     // not const because one adds tasks.
-        const path starting_path; // not to be confused with starting_backup_path.
     public :
         MainLoop(Configuration*);
         void loopOverDirectory(path sub_directory);
+        virtual const path getStartingPath() const =0;
         virtual void DealWithDirectory(path)=0;
         virtual void DealWithFile(path)=0;
-        void create_purge_directories() const;
         virtual void run();
 };
 
@@ -43,6 +42,7 @@ class MainBackupLoop: public MainLoop
     public:
         MainBackupLoop(Configuration*);
         bool is_excluded(path);
+        const path getStartingPath() const;
         void DealWithDirectory(path);
         void DealWithFile(path);
         void run();
@@ -54,6 +54,7 @@ class MainPurgeLoop: public MainLoop
         const path starting_path;
     public:
         MainPurgeLoop(Configuration*);
+        const path getStartingPath() const;
         void DealWithDirectory(path);
         void DealWithFile(path);
         void run();

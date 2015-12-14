@@ -27,16 +27,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 MainLoop::MainLoop(Configuration* config_ptr) :
     configuration(config_ptr)
 {
-    std::cout<<"starting path : "<<starting_path<<std::endl;
-    assert( is_directory(starting_path) );
     configuration->create_purge_directories();
     assert( configuration->are_all_paths_ok() );
 }
 
 void MainLoop::run() 
 { 
-    configuration->create_purge_directories();
-    loopOverDirectory(starting_path); 
+    assert( is_directory(getStartingPath()) );
+    loopOverDirectory(getStartingPath()); 
 }
 
 void MainLoop::loopOverDirectory(path sub_directory)
@@ -51,14 +49,23 @@ void MainLoop::loopOverDirectory(path sub_directory)
         else if (is_regular_file(pathname)) { DealWithFile(pathname); }
         else
         {
-            throw std::string("**  What the hell is "+pathname.string()+" ??? ");
+            throw std::string("***  What the hell is "+pathname.string()+" ??? ");
         }
     }
 }
 
 // MAIN BACKUP LOOP ----
 
-MainBackupLoop::MainBackupLoop(Configuration* config_ptr) : MainLoop(config_ptr),starting_path(configuration->getStartingBackupPath()) {}
+MainBackupLoop::MainBackupLoop(Configuration* config_ptr) : 
+    MainLoop(config_ptr)
+{
+    std::cout<<"le backup loop a starting_path : "<<starting_path<<std::endl;
+}
+
+const path MainBackupLoop::getStartingPath() const
+{
+    return configuration->getStartingBackupPath();
+}
 
 void MainBackupLoop::run()
 {
@@ -110,6 +117,11 @@ void MainPurgeLoop::run()
     std::cout<<"Purge loop ended."<<std::endl;
     FinalTask* etask= new FinalTask();
     configuration->add_task(etask);
+}
+
+const path MainPurgeLoop::getStartingPath() const
+{
+    return configuration->getBackupPath();
 }
 
 void MainPurgeLoop::DealWithFile(const path pathname)
