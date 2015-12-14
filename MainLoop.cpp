@@ -22,18 +22,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // MAIN LOOP ----
 
+MainLoop::MainLoop(Configuration* config_ptr) :
+    starting_path(config_ptr->getStartintPath()),
+    configuration(config_prt)
+{
+    assert( is_directory(starting_path) );
+    configuration->create_purge_directories();
+    assert( configuration->are_all_paths_ok() );
+}
+
 void MainLoop::run() 
 { 
     configuration->create_purge_directories();
     loopOverDirectory(starting_path); 
-}
-
-MainLoop::MainLoop(Configuration* config_ptr) :
-    starting_path(config_ptr->getStartingPath()),
-{
-    configuration->create_purge_directories();
-    assert( configuration->are_all_paths_ok() );
-    assert( is_directory(starting_path) );
 }
 
 void MainLoop::loopOverDirectory(path sub_directory)

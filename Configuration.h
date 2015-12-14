@@ -41,9 +41,18 @@ class Configuration
         void add_exclude_path(const std::vector<path>); 
 
         void add_task(GenericTask*);
+        bool is_excluded(const path) const;       
+
+        //path purge_to_purge_datetime(path) const;
+        //path purge_to_modified_purge(path) const;
+        //path purge_to_removed_purge(path) const;
+        path backup_to_removed_purge(path) const;
+        path backup_to_home(path) const;
+        path home_to_backup(const path) const;
+        path home_to_modified_purge(const path) const;            
 
         void create_purge_directories() const;
-        bool is_excluded(const path) const;       
+        bool are_all_paths_ok() const;             
 };
 
 

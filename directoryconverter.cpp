@@ -30,7 +30,6 @@ path purge_path_to_purge_datetime(const path purge_path)
 {
     assert(is_directory(purge_path));
 
-    // std::to_string requires c++11. This is why we compile with g++ -std=c++11
     time_t tt;
     time(&tt);
     struct tm* timeinfo=localtime(&tt);

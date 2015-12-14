@@ -31,10 +31,13 @@ path Configuration::getStartingPath() const { return starting_path; }
 
 // CONFIGURATION -- directory converter
 
-void Configuration::create_purge_directories() const
-{
-    converter_ptr->create_purge_directories();
-}
+void Configuration::create_purge_directories() const { converter_ptr->create_purge_directories(); }
+bool Configuration::are_all_paths_ok() const { return converter_ptr->are_all_paths_ok(); }
+path Configuration::backup_to_removed_purge(const path rep) const { return converter_ptr->backup_to_removed_purge(rep); }
+path Configuration::backup_to_home(const path rep) const { return converter_ptr->backup_to_home(rep); }
+path Configuration::home_to_backup(const path rep) const {return converter_ptr->home_to_backup(rep); }
+path Configuration::home_to_modified_purge(const path rep) const { return converter_ptr->home_to_modified_purge(rep); }
+
 
 // CONFIGURATION -- excluding paths
 

@@ -9,7 +9,7 @@
 ####### Compiler, tools and options
 
 CC            = gcc
-CXX           = LC_ALL=C g++ -std=c++11
+CXX           = LC_ALL=C g++ -std=c++11    #c++11 for  std::to_string
 DEFINES       = -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED
 CFLAGS        = -pipe -O2 -Wall -W -D_REENTRANT $(DEFINES)
 CXXFLAGS      = -pipe -O2 -Wall -W -D_REENTRANT $(DEFINES)

@@ -50,11 +50,11 @@ class DirectoryConverter
         path get_backup_path() const;
         path get_home_path() const;
         void create_purge_directories() const;
-        path purge_to_purge_datetime(path) const;
-        path purge_to_modified_purge(path) const;
-        path purge_to_removed_purge(path) const;
-        path backup_to_removed_purge(path) const;
-        path backup_to_home(path) const;
+        //path purge_to_purge_datetime(const path) const;
+        //path purge_to_modified_purge(const path) const;
+        //path purge_to_removed_purge(const path) const;
+        path backup_to_removed_purge(const path) const;
+        path backup_to_home(const path) const;
         path home_to_backup(const path) const;
         path home_to_modified_purge(const path) const;            
         bool are_all_paths_ok() const;                         // check if all the necessary directories exist.

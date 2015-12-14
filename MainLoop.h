@@ -26,7 +26,7 @@ class MainLoop
 {
     private:
         const path starting_path;
-        const Configuration* const configuration;
+        Configuration* const configuration;     // not const because one add tasks.
     public :
         MainLoop(Configuration*);
         void loopOverDirectory(path sub_directory);
@@ -48,7 +48,7 @@ class MainBackupLoop: public MainLoop
 class MainPurgeLoop: public MainLoop
 {
     public:
-        void MainPurgeLoop();
+        MainPurgeLoop();
         void DealWithDirectory(path);
         void DealWithFile(path);
 };
