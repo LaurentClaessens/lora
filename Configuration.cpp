@@ -16,15 +16,21 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
-// CONFIGURATION
+// CONFIGURATION -- general
+
+Configuration::Configuration(path sp,DirectoryConverte* dc,TaskList* tl):
+    starting_path(sp),converter_ptr(dc),task_list_ptr(tl) {}
+
+path Configuration::getStartingPath() const { return starting_path }
+
+// CONFIGURATION -- directory converter
 
 void Configuration::create_purge_directories() const
 {
     converter_ptr->create_purge_directories();
 }
 
-Configuration::Configuration(path sp,DirectoryConverte* dc,TaskList* tl):
-    starting_path(sp),converter_ptr(dc),task_list_ptr(tl) {}
+// CONFIGURATION -- excluding paths
 
 void MainBackupLoop::add_exclude_path(const path ex) 
 { 
@@ -37,6 +43,10 @@ void Configuration::add_exclude_path(const std::vector<path> vp)
 }
 
 bool Configuration::is_excluded(const path rep_path)
+
+// CONFIGURATION -- task list
+
+void Configuration::add_task(GenericTask* gt) { task_list_ptr->push_back(gt);  }
 
 // CREATING FUNCTIONS (not to be confused with the constructor)
 

@@ -22,7 +22,7 @@ class MainLoop
         const path starting_path;
         const Configuration* const configuration;
     public :
-        MainLoop(const path starting_path, const DirectoryConverter* const dc_ptr,TaskList* const tl_ptr);
+        MainLoop(Configuration*);
         void loopOverDirectory(path sub_directory);
         virtual void DealWithDirectory(path)=0;
         virtual void DealWithFile(path)=0;
