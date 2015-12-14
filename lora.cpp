@@ -25,80 +25,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "lora.h"
 #include "tasks.h"
-#include "mainbackuploop.h"
-#include "mainpurgeloop.h"
+#include "MainLoop.h"
+#include "configuration.h"
 
 using namespace boost::filesystem;
 using namespace std;
-
-MainBackupLoop read_configuration_file(const path cfg_path,const path starting_path="")
-{
-    assert(is_regular_file(cfg_path));
-    ifstream cfg_file(cfg_path.c_str());
-    string line;
-    path bp,pp,sp;
-    const path home_path=path(getenv("HOME"));      // TODO : guess from the starting_path ??
-    vector<string> parts;
-    vector<path> exclude;
-    vector<path> priority;
-    while (  std::getline(cfg_file,line) )
-    {
-        split( parts,line,boost::is_any_of("=") );
-        switch (parts.size())
-        {
-         case 0 : 
-             throw string("Malformed configuration file : "+line); 
-             break;
-         case 1 :       // probably empty line
-             break;
-         case 2 :
-            path one=path(parts[1]);
-            if (parts[0]=="starting")  { sp=one; }
-            else if (parts[0]=="backup") { bp=one; }
-            else if (parts[0]=="purge") { pp=one; }
-            else if (parts[0]=="exclude") 
-            {   
-                if (one.is_absolute()){ exclude.push_back(one) ;}
-                else { exclude.push_back(  home_path/one  ) ; }
-            }
-            else if (parts[0]=="priority") 
-            {   
-                if (one.is_absolute()){ priority.push_back(one) ;}
-                else { priority.push_back(  home_path/one  ) ; }
-            }
-            else { throw string("Unknown entry in the configuration file :"+parts[0]); }
-            break;
-        }
-    }
-    if (starting_path.string()!=""){sp=starting_path;}
-    assert(is_directory(bp));
-    assert(is_directory(pp));
-    assert(is_directory(sp));
-
-    cout<<"backup will be done in "<<bp<<endl;
-    cout<<"purge will be done in  "<<pp<<endl;
-    cout<<"starting directory is "<<sp<<endl;
-    const DirectoryConverter* const converter_ptr=new DirectoryConverter(bp,pp);       //  the purge directories are created here.
-
-    TaskList* tl_ptr=new TaskList();
-    MainBackupLoop backup_loop=MainBackupLoop(sp,converter_ptr,tl_ptr);
-    backup_loop.add_exclude_path(exclude);
-    backup_loop.add_priority_path(priority);
-
-    return backup_loop;
-}
-
-path get_starting_path(int argc, char *argv[])
-{
-    if (argc==1){return "";}
-    const path starting_path=path(argv[1]);
-    path full_path;
-    if (starting_path.is_relative()) { full_path=absolute(starting_path); }
-    else { full_path=starting_path; }
-    full_path=canonical(full_path);
-    cout<<"We are going to backup the repertory "<<full_path<<endl;
-    return full_path;
-}
 
 bool run_next(TaskList &task_list)
 {
@@ -110,8 +41,9 @@ bool run_next(TaskList &task_list)
     return ret;
 }
 
-void make_the_work(TaskList* tl_ptr)
+void make_the_work(Configuration* config)
 {   
+    TaskList* tl_ptr=config->task_list_ptr;     // with the friendly autorisation of Configuration.
     bool still=true;
     while (still)
     {
@@ -121,7 +53,6 @@ void make_the_work(TaskList* tl_ptr)
         }
     }
     cout<<"The work seems to be done. Leaving the 'make_the_work' thread."<<endl;
-    delete tl_ptr;
 }
 
 int main(int argc, char *argv[])
@@ -129,10 +60,10 @@ int main(int argc, char *argv[])
 try
     {    
     path starting_path=get_starting_path(argc,argv);
-    MainBackupLoop backup_loop=read_configuration_file("backup.cfg",starting_path);          // There is the file 'lora.cfg' as example.
+    Configuration* config_ptr=read_configuration_file("backup.cfg",starting_path);          // There is the file 'lora.cfg' as example.
 
     //launching the thread that runs the tasks
-    boost::thread scheduler( make_the_work, backup_loop.get_task_list_ptr() );
+    boost::thread scheduler( make_the_work, config_ptr );
 
     backup_loop.MakeBackup();
     
@@ -150,4 +81,5 @@ catch (std::length_error &err) {
     cerr<<"Caught : "<<err.what()<<endl;
     cerr<<"Type : "<<typeid(err).name()<<endl;
 }
+    delete config_ptr;
 }

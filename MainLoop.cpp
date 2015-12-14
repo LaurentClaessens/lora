@@ -22,7 +22,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // MAIN LOOP ----
 
-void MainLoop::run() { loopOverDirectory(starting_path); }
+void MainLoop::run() 
+{ 
+    configuration->create_purge_directories();
+    loopOverDirectory(starting_path); 
+}
 
 MainLoop::MainLoop(const path starting_path,const DirectoryConverter* const dc_ptr,TaskList* const tl_ptr) :
     starting_path(starting_path),
@@ -53,8 +57,13 @@ void MainLoop::loopOverDirectory(path sub_directory)
 
 // MAIN BACKUP LOOP ----
 
+bool MainBackupLoop::is_excluded(path dirname)
+{
+    return configuration->is_excluded(dirname); 
+}
 
-void MainBackupLoop::add_exclude_path(const path ex) { excluded_paths.push_back(ex); }
+
+
 MainBackupLoop::DealWithDirectory(path rep_path)
 {
     if (!is_excluded(rep_path))

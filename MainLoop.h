@@ -20,25 +20,20 @@ class MainLoop
 {
     private:
         const path starting_path;
-        const DirectoryConverter* const converter_ptr;
-        TaskList* const converter_ptr;
+        const Configuration* const configuration;
     public :
         MainLoop(const path starting_path, const DirectoryConverter* const dc_ptr,TaskList* const tl_ptr);
         void loopOverDirectory(path sub_directory);
         virtual void DealWithDirectory(path)=0;
         virtual void DealWithFile(path)=0;
+        void create_purge_directories() const;
         virtual void run();
 };
 
 class MainBackupLoop: public MainLoop
 {
-    private:
-        vector<path> excluded_paths;
     public:
-        void add_exclude_path(const path);    
-        void add_exclude_path(const vector<path>); 
         bool is_excluded(const path) const;       
-
         void DealWithDirectory(path);
         void DealWithFile(path);
         void run();

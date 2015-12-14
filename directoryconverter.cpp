@@ -53,10 +53,7 @@ DirectoryConverter::DirectoryConverter(const path bp,const path pp):
     purge_datetime_path(purge_path_to_purge_datetime(pp)),
     purge_modified_path(purge_datetime_path/"modified"),
     purge_removed_path(purge_datetime_path/"removed")
-{
-    create_purge_directories();
-    assert( are_all_paths_ok() );
-}
+{}
 
 path DirectoryConverter::home_to_backup(const path local_path) const
 {
