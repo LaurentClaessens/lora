@@ -167,8 +167,10 @@ void test_gr1()
     else
     {
         std::cout<<"This repository is NOT CLEAN."<<std::endl;
+        std::string yn="n";
         std::cout<<"Do you want to see the 'git diff' of this repository ?";
-        gr.launchGitDiff();
+        std::cin>>yn;
+        if (yn=="y"){ gr.launchGitDiff(); }
     }
 }
 
