@@ -25,7 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // MAIN LOOP ----
 
 MainLoop::MainLoop(Configuration* config_ptr) :
-    starting_path(config_ptr->getStartingPath()),
     configuration(config_ptr)
 {
     std::cout<<"starting path : "<<starting_path<<std::endl;
@@ -59,7 +58,7 @@ void MainLoop::loopOverDirectory(path sub_directory)
 
 // MAIN BACKUP LOOP ----
 
-MainBackupLoop::MainBackupLoop(Configuration* config_ptr) : MainLoop(config_ptr) {}
+MainBackupLoop::MainBackupLoop(Configuration* config_ptr) : MainLoop(config_ptr),starting_path(configuration->getStartingBackupPath()) {}
 
 void MainBackupLoop::run()
 {
@@ -102,7 +101,7 @@ void MainBackupLoop::DealWithFile(path file_path)
 
 // MAIN PURGE LOOP ----
 
-MainPurgeLoop::MainPurgeLoop(Configuration* config_ptr) : MainLoop(config_ptr) {}
+MainPurgeLoop::MainPurgeLoop(Configuration* config_ptr) : MainLoop(config_ptr),starting_path(configuration->getPurgePath()) {}
 
 void MainPurgeLoop::run() 
 { 

@@ -24,10 +24,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class MainLoop
 {
-    private:
-        const path starting_path;
     protected:
         Configuration* const configuration;     // not const because one adds tasks.
+        const path starting_path; // not to be confused with starting_backup_path.
     public :
         MainLoop(Configuration*);
         void loopOverDirectory(path sub_directory);
@@ -39,6 +38,8 @@ class MainLoop
 
 class MainBackupLoop: public MainLoop
 {
+    private:
+        const path starting_path;
     public:
         MainBackupLoop(Configuration*);
         bool is_excluded(path);
@@ -49,6 +50,8 @@ class MainBackupLoop: public MainLoop
 
 class MainPurgeLoop: public MainLoop
 {
+    private:
+        const path starting_path;
     public:
         MainPurgeLoop(Configuration*);
         void DealWithDirectory(path);

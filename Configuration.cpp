@@ -25,9 +25,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // CONFIGURATION -- general
 
 Configuration::Configuration(const path sp, const DirectoryConverter* const dc, TaskList* const  tl):
-    starting_path(sp),converter_ptr(dc),task_list_ptr(tl) {}
+    starting_backup_path(sp),converter_ptr(dc),task_list_ptr(tl) {}
 
-path Configuration::getStartingPath() const { return starting_path; }
+path Configuration::getStartingBackupPath() const { return starting_backup_path; }
 
 // CONFIGURATION -- directory converter
 
@@ -43,6 +43,7 @@ path Configuration::home_to_backup(const path rep) const {return converter_ptr->
 path Configuration::home_to_modified_purge(const path rep) const { return converter_ptr->home_to_modified_purge(rep); }
 
 path Configuration::getHomePath() const { return converter_ptr->getHomePath(); }
+path Configuration::getPurgePath() const { return converter_ptr->getPurgePath(); }
 
 // CONFIGURATION -- excluding paths
 
@@ -129,7 +130,7 @@ Configuration* read_configuration_file(const path cfg_path,const path starting_p
     return config_ptr;
 }
 
-path get_starting_path(int argc, char *argv[])
+path get_starting_backup_path(int argc, char *argv[])
 {
     if (argc==1){return "";}
     const path starting_path=path(argv[1]);

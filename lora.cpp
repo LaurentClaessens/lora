@@ -58,8 +58,8 @@ int main(int argc, char *argv[])
 {
     try
     {    
-        path starting_path=get_starting_path(argc,argv);
-        Configuration* config_ptr=read_configuration_file("backup.cfg",starting_path);          // There is the file 'lora.cfg' as example.
+        path starting_backup_path=get_starting_backup_path(argc,argv);
+        Configuration* config_ptr=read_configuration_file("backup.cfg",starting_backup_path);          // There is the file 'lora.cfg' as example.
 
         //launching the thread that runs the tasks
         boost::thread scheduler( make_the_work, config_ptr );

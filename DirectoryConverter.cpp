@@ -90,7 +90,10 @@ path DirectoryConverter::backup_to_removed_purge(const path pathname) const
 path DirectoryConverter::backup_to_home(const path pathname) const
 {
 
-    if (!boost::algorithm::starts_with(pathname,backup_path)) { throw string( pathname.string()+" is not subdirectory of "+backup_path.string()  ); }
+    if (!boost::algorithm::starts_with(pathname,backup_path)) 
+    {
+        throw string( pathname.string()+" is not subdirectory of "+backup_path.string()  ); 
+    }
 
     string s_backup_path=backup_path.string();
     string s_home=home_path.string();
@@ -138,3 +141,4 @@ bool DirectoryConverter::are_all_paths_ok() const
 }
 path DirectoryConverter::getBackupPath() const { return backup_path; }
 path DirectoryConverter::getHomePath() const { return home_path; }
+path DirectoryConverter::getPurgePath() const { return purge_path; }

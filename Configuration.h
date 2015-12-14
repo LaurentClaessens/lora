@@ -30,14 +30,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class Configuration
 {
     private:
-        const path starting_path;
+        const path starting_backup_path;
         const DirectoryConverter* const converter_ptr;
         TaskList* const task_list_ptr;
         std::vector<path> excluded_paths;
     public:
         Configuration(const path,const DirectoryConverter* const,TaskList* const);
-        path getStartingPath() const;
+        path getStartingBackupPath() const;
         path getHomePath() const;
+        path getPurgePath() const;
         void add_exclude_path(const path);    
         void add_exclude_path(const std::vector<path>); 
 
@@ -56,6 +57,6 @@ class Configuration
         bool are_all_paths_ok() const;             
 };
 
-path get_starting_path(int argc, char *argv[]);
+path get_starting_backup_path(int argc, char *argv[]);
 Configuration* read_configuration_file(const path cfg_path,const path);
 #endif     //__CONFIGURATION_H__
