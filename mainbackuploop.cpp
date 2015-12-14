@@ -36,6 +36,9 @@ bool do_we_backup(path orig_path,path bak_path)
     if (t_ori>t_bak){return true;}
 
     if (t_ori<t_bak){throw string("The last_write_date of this file is f*cked up !"+orig_path.string()+" "+bak_path.string()+" ?");}
+
+    // The following piece is in order to correct an error in the time managing
+    // of my previous backup program.
     /*
     if (t_ori<t_bak){
         std::cout<<"Updating the date of "<<bak_path<<std::endl;

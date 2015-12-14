@@ -26,6 +26,7 @@ class MainLoop
 {
     private:
         const path starting_path;
+    protected:
         Configuration* const configuration;     // not const because one add tasks.
     public :
         MainLoop(Configuration*);
@@ -39,7 +40,7 @@ class MainLoop
 class MainBackupLoop: public MainLoop
 {
     public:
-        bool is_excluded(const path) const;       
+        bool is_excluded(path);
         void DealWithDirectory(path);
         void DealWithFile(path);
         void run();

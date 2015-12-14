@@ -23,8 +23,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // MAIN LOOP ----
 
 MainLoop::MainLoop(Configuration* config_ptr) :
-    starting_path(config_ptr->getStartintPath()),
-    configuration(config_prt)
+    starting_path(config_ptr->getStartingPath()),
+    configuration(config_ptr)
 {
     assert( is_directory(starting_path) );
     configuration->create_purge_directories();
@@ -42,14 +42,14 @@ void MainLoop::loopOverDirectory(path sub_directory)
     assert(is_directory(sub_directory));
 
     directory_iterator end_itr;
-    for(  directory_iterator itr(backup_path); itr!=end_itr;++itr  )
+    for(  directory_iterator itr(sub_directory); itr!=end_itr;++itr  )
     {
         path pathname=itr->path();
         if (is_directory( pathname  )) { DealWithDirectory(pathname); }
         else if (is_regular_file(pathname)) { DealWithFile(pathname); }
         else
         {
-            throw string("**  What the f*ck is "+pathname.string()+" ??? ");
+            throw std::string("**  What the hell is "+pathname.string()+" ??? ");
         }
     }
 }
@@ -63,17 +63,17 @@ bool MainBackupLoop::is_excluded(path dirname)
 
 
 
-MainBackupLoop::DealWithDirectory(path rep_path)
+void MainBackupLoop::DealWithDirectory(path rep_path)
 {
     if (!is_excluded(rep_path))
     {
-        path bak_rep=configuration->home_to_backup(pathname);
+        path bak_rep=configuration->home_to_backup(rep_path);
         if (!is_directory(bak_rep)) { create_directory_tree(bak_rep); }
-        loopOverDirectory(pathname); 
+        loopOverDirectory(rep_path); 
     }
 }
 
-MainBackupLoop::DealWithFile(path file_path)
+void MainBackupLoop::DealWithFile(path file_path)
 {
     assert( is_regular_file(file_path) );
     const path bak_path=configuration->home_to_backup(file_path);

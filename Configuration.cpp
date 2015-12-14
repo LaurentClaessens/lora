@@ -134,3 +134,33 @@ path get_starting_path(int argc, char *argv[])
     std::cout<<"We are going to backup the repertory "<<full_path<<std::endl;
     return full_path;
 }
+
+// OTHER UTILITIES FUNCTIONS
+
+
+
+bool do_we_backup(path orig_path,path bak_path)
+{
+    assert(is_regular_file(orig_path));
+    if (!is_regular_file(bak_path)){return true;}
+    uintmax_t s_orig=file_size(orig_path);
+    uintmax_t s_bak=file_size(bak_path);
+    if (s_orig!=s_bak){return true;}
+    time_t t_ori=last_write_time(orig_path);
+    time_t t_bak=last_write_time(bak_path);
+    if (t_ori>t_bak){return true;}
+
+    if (t_ori<t_bak){throw std::string("The last_write_date of this file is f*cked up !"+orig_path.string()+" "+bak_path.string()+" ?");}
+
+    // The following piece is in order to correct an error in the time managing
+    // of my previous backup program.
+    /*
+    if (t_ori<t_bak){
+        std::cout<<"Updating the date of "<<bak_path<<std::endl;
+        last_write_time( bak_path,t_ori );
+    }
+    //*/
+
+    return false;
+}
+
