@@ -171,7 +171,7 @@ qmake:  FORCE
 
 dist: 
 	@$(CHK_DIR_EXISTS) .tmp/lora1.0.0 || $(MKDIR) .tmp/lora1.0.0 
-	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/lora1.0.0/ && $(COPY_FILE) --parents CommandLine.h directoryconverter.h GitRepository.h GitWindows.h HashTable.h lora.h mainbackuploop.h mainpurgeloop.h tasks.h testing.h mainpurgeloop.cpp mainbackuploop.cpp .tmp/lora1.0.0/ && $(COPY_FILE) --parents CommandLine.cpp directoryconverter.cpp GitRepository.cpp GitWindows.cpp lora.cpp tasks.cpp testing.cpp UnitTests.cpp .tmp/lora1.0.0/ && (cd `dirname .tmp/lora1.0.0` && $(TAR) lora1.0.0.tar lora1.0.0 && $(COMPRESS) lora1.0.0.tar) && $(MOVE) `dirname .tmp/lora1.0.0`/lora1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/lora1.0.0
+	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/lora1.0.0/ && $(COPY_FILE) --parents CommandLine.h directoryconverter.h GitRepository.h GitWindows.h HashTable.h lora.h   tasks.h testing.h  .tmp/lora1.0.0/ && $(COPY_FILE) --parents CommandLine.cpp directoryconverter.cpp GitRepository.cpp GitWindows.cpp lora.cpp tasks.cpp testing.cpp UnitTests.cpp .tmp/lora1.0.0/ && (cd `dirname .tmp/lora1.0.0` && $(TAR) lora1.0.0.tar lora1.0.0 && $(COMPRESS) lora1.0.0.tar) && $(MOVE) `dirname .tmp/lora1.0.0`/lora1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/lora1.0.0
 
 
 clean:compiler_clean 
@@ -208,14 +208,17 @@ compiler_clean:
 
 ####### Compile
 lora: lora.cpp lora.h \
-		mainbackuploop.o directoryconverter.o tasks.o mainpurgeloop.o
-	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora  mainbackuploop.o mainpurgeloop.o  directoryconverter.o tasks.o   $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB)
+		directoryconverter.o tasks.o MainLoop.o
+	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora MainLoop.o  directoryconverter.o tasks.o   $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB)
 
-mainbackuploop.o: mainbackuploop.cpp mainbackuploop.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainbackuploop.o  mainbackuploop.cpp
+MainLoop.o: MainLoop.cpp MainLoop.h Configuration.o
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainLoop.o  MainLoop.cpp
 
-mainpurgeloop.o: mainpurgeloop.cpp mainpurgeloop.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainpurgeloop.o  mainpurgeloop.cpp
+Configuration.o: Configuration.cpp Configuration.h tasks.o
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Configuration.o  Configuration.cpp
+
+tasks.o: tasks.cpp tasks.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o tasks.o $(BOOST_SYSTEM)   tasks.cpp
 
 CommandLine.o: CommandLine.cpp CommandLine.h \
 		HashTable.h
@@ -233,8 +236,6 @@ GitRepository.o: GitRepository.cpp GitRepository.h \
 GitWindows.o: GitWindows.cpp GitWindows.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GitWindows.o  $(BOOST_SYSTEM)    GitWindows.cpp
 
-tasks.o: tasks.cpp tasks.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o tasks.o $(BOOST_SYSTEM)   tasks.cpp
 
 testing.o: testing.cpp testing.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o testing.o testing.cpp

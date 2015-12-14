@@ -17,23 +17,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
 
+#ifndef __CONFIGURATION_H__
+#define __CONFIGURATION_H__
+
+#include <iostream>
+#include <boost/filesystem.hpp>
+#include "directoryconverter.h"
+#include "tasks.h"
+
 // The aim of this class is to answer the questions which depend on the
 // configuration (paths manipulation, excluded files, task_list, ...)
 class Configuration
 {
     private:
         const path starting_path;
-        const DirectoryConverter* converter_ptr;
+        const DirectoryConverter* const converter_ptr;
         TaskList* const task_list_ptr;
-        vector<path> excluded_paths;
+        std::vector<path> excluded_paths;
     public:
-        Configuration(path,DirectoryConverter*,TaskList*);
+        Configuration(const path,const DirectoryConverter* const,TaskList* const);
         path getStartingPath() const;
         void add_exclude_path(const path);    
-        void add_exclude_path(const vector<path>); 
+        void add_exclude_path(const std::vector<path>); 
 
         void add_task(GenericTask*);
 
         void create_purge_directories() const;
         bool is_excluded(const path) const;       
-}
+};
+
+
+#endif     //__CONFIGURATION_H__

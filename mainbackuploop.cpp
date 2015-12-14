@@ -19,8 +19,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <ctime>            // get the current time
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-#include "mainbackuploop.h"
-#include "mainpurgeloop.h"
 #include "tasks.h"
 
 using namespace boost::filesystem;

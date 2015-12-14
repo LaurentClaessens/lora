@@ -18,8 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
 #include <boost/filesystem.hpp>
-#include "mainbackuploop.h"
-#include "mainpurgeloop.h"
 #include "tasks.h"
 
 

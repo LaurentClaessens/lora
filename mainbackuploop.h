@@ -21,7 +21,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <boost/filesystem.hpp>
 #include "tasks.h"
-#include "mainpurgeloop.h"
 #include "directoryconverter.h"
 
 using namespace boost::filesystem;

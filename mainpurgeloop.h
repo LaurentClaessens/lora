@@ -20,7 +20,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define __PURGE_LOOP_H_INCLUDED__
 
 #include <boost/filesystem.hpp>
-#include "mainbackuploop.h"
 #include "directoryconverter.h"
 #include "tasks.h"
 

@@ -16,6 +16,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
+#ifndef __MAIN_LOOP_H__
+#define __MAIN_LOOP_H__
+
+#include <boost/filesystem.hpp>
+#include "Configuration.h"
+
 class MainLoop
 {
     private:
@@ -46,3 +52,6 @@ class MainPurgeLoop: public MainLoop
         void DealWithDirectory(path);
         void DealWithFile(path);
 };
+
+
+#endif   //__MAIN_LOOP_H__
