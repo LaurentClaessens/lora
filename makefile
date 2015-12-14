@@ -14,6 +14,9 @@ DEFINES       = -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED
 CFLAGS        = -pipe -O2 -Wall -W -D_REENTRANT $(DEFINES)
 CXXFLAGS      = -pipe -O2 -Wall -W -D_REENTRANT $(DEFINES)
 INCPATH       = -I/usr/share/qt4/mkspecs/linux-g++ -I. -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4 -I. -I.
+BOOST_SYSTEM  = -lboost_filesystem -lboost_system 
+BOOST_THREAD  = -lboost_thread
+BOOST_THREAD_LIB  = /usr/lib/i386-linux-gnu/libboost_thread.so 
 LINK          = g++
 LFLAGS        = -Wl,-O1
 LIBS          = $(SUBLIBS)  -L/usr/lib/i386-linux-gnu -lQtGui -lQtCore -lpthread 
@@ -229,7 +232,7 @@ GitRepository.o: GitRepository.cpp GitRepository.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GitRepository.o  -lboost_filesystem -lboost_system   GitRepository.cpp
 
 GitWindows.o: GitWindows.cpp GitWindows.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GitWindows.o  -lboost_filesystem -lboost_system     GitWindows.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GitWindows.o  $(BOOST_SYSTEM)    GitWindows.cpp
 
 lora.o: lora.cpp lora.h \
 		tasks.h \
@@ -248,7 +251,7 @@ testing.o: testing.cpp testing.h
 
 UnitTests: UnitTests.cpp testing.h CommandLine.h HashTable.h GitRepository.h \
 	GitRepository.o 	testing.o CommandLine.o GitWindows.o
-	$(CXX) $(LFLAGS)  $(CXXFLAGS) $(INCPATH) -o UnitTests GitRepository.o  testing.o  -lboost_filesystem -lboost_system CommandLine.o GitWindows.o UnitTests.cpp  $(LIBS)
+	$(CXX) $(LFLAGS)  $(CXXFLAGS) $(INCPATH) -o UnitTests GitRepository.o  testing.o $(BOOST_SYSTEM) CommandLine.o GitWindows.o UnitTests.cpp  $(LIBS) 
 
 ####### Install
 
