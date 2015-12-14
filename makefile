@@ -212,7 +212,7 @@ lora: lora.cpp  \
 	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora MainLoop.o  directoryconverter.o tasks.o   $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB)
 
 MainLoop.o: MainLoop.cpp MainLoop.h Configuration.o
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainLoop.o  MainLoop.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainLoop.o Configuration.o  MainLoop.cpp
 
 Configuration.o: Configuration.cpp Configuration.h tasks.o
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Configuration.o  Configuration.cpp
