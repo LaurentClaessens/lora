@@ -59,5 +59,5 @@ class Configuration
 };
 
 path get_starting_backup_path(int argc, char *argv[]);
-Configuration* read_configuration_file(const path cfg_path,const path);
+Configuration* read_configuration_file(const path cfg_path,const path,bool verbose=true);
 #endif     //__CONFIGURATION_H__

@@ -64,7 +64,8 @@ OBJECTS       = CommandLine.o \
 		UnitTests.o\
 		Configuration.o\
 	  	MainLoop.o\
-	  	mainpurgeloop.o
+	  	mainpurgeloop.o\
+		HashTable.o
 DIST          = /usr/share/qt4/mkspecs/common/unix.conf \
 		/usr/share/qt4/mkspecs/common/linux.conf \
 		/usr/share/qt4/mkspecs/common/gcc-base.conf \
@@ -214,9 +215,9 @@ lora: lora.cpp  \
 		DirectoryConverter.o tasks.o MainLoop.o Configuration.o
 	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora MainLoop.o  Configuration.o DirectoryConverter.o tasks.o   $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB)
 
-UnitTests: UnitTests.cpp testing.h CommandLine.h HashTable.h GitRepository.h \
-	GitRepository.o 	testing.o CommandLine.o GitWindows.o
-	$(CXX) $(LFLAGS)  $(CXXFLAGS) $(INCPATH) -o UnitTests GitRepository.o  testing.o $(BOOST_SYSTEM) CommandLine.o GitWindows.o UnitTests.cpp  $(LIBS) 
+UnitTests: UnitTests.cpp\
+   	testing.o CommandLine.o HashTable.o GitRepository.o GitWindows.o Configuration.o DirectoryConverter.o tasks.o
+	$(CXX) $(LFLAGS)  $(CXXFLAGS) $(INCPATH) -o UnitTests GitRepository.o Configuration.o testing.o DirectoryConverter.o tasks.o $(BOOST_SYSTEM) CommandLine.o GitWindows.o UnitTests.cpp  $(LIBS) 
 
 MainLoop.o: MainLoop.cpp MainLoop.h Configuration.o
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainLoop.o MainLoop.cpp
@@ -236,8 +237,8 @@ DirectoryConverter.o: DirectoryConverter.cpp DirectoryConverter.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o DirectoryConverter.o DirectoryConverter.cpp
 
 GitRepository.o: GitRepository.cpp GitRepository.h \
-		CommandLine.h \
-		HashTable.h
+		CommandLine.o \
+		HashTable.o
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GitRepository.o  -lboost_filesystem -lboost_system   GitRepository.cpp
 
 GitWindows.o: GitWindows.cpp GitWindows.h
@@ -245,6 +246,8 @@ GitWindows.o: GitWindows.cpp GitWindows.h
 
 testing.o: testing.cpp testing.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o testing.o testing.cpp
+HashTable.o:  HashTable.h			
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o HashTable.o HashTable.h
 
 
 ####### Install

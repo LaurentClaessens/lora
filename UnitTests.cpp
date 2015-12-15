@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QPushButton>
 
 #include "testing.h"
+#include "Configuration.h"
 #include "CommandLine.h"
 #include "HashTable.h"
 #include "GitRepository.h"
@@ -190,10 +191,20 @@ void test_gw1()
     gw2.launch();
 }
 
+void test_exclude()
+{
+    Configuration* configuration=read_configuration_file("backup.cfg","",false);   // the last boolean argument is 'verbose'
+    test_assert(configuration->is_excluded("jjlk")==true,"A non existing path is not excluded.");
+    test_assert(configuration->is_excluded("/home/moky/Linux")==true,"This should be excluded.");
+    test_assert(configuration->is_excluded("/home/moky/Linux/")==true,"This should be excluded.");
+}
+
 int main(int argc,char* argv[])
 {
     QApplication app(argc, argv);
-    GenericTestingFunction("test_gw1",true,test_gw1,"See the git windows ?").run();
+    std::cout<<"Initializing tests ---------------------------"<<std::endl;
+    GenericTestingFunction("test_exclude",false,test_exclude).run();
+
     GenericTestingFunction("test_cl1",false,test_cl1).run();
     GenericTestingFunction("test_cl2",false,test_cl2).run();
 
@@ -202,6 +213,7 @@ int main(int argc,char* argv[])
     GenericTestingFunction("test_ht3",false,test_ht3).run();
     GenericTestingFunction("test_ht4",false,test_ht4).run();
 
+    GenericTestingFunction("test_gw1",true,test_gw1,"See the git windows ?").run();
     GenericTestingFunction("test_gr1",true,test_gr1,"See a status message ?").run();
     GenericTestingFunction("test_cl3",true,test_cl3,"See Vim in a new terminal ?").run();
 }

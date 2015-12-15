@@ -50,7 +50,8 @@ path Configuration::getBackupPath() const { return converter_ptr->getBackupPath(
 
 void Configuration::add_exclude_path(const path ex) 
 { 
-    excluded_paths.push_back(ex); 
+    path can_ex=canonical(ex);
+    excluded_paths.push_back(can_ex); 
 }
 
 void Configuration::add_exclude_path(const std::vector<path> vp)
@@ -60,9 +61,10 @@ void Configuration::add_exclude_path(const std::vector<path> vp)
 
 bool Configuration::is_excluded(const path rep_path) const
 {
-    for ( path p:excluded_paths  )
+    if (!exists(rep_path)) {return true;}
+    for ( path p:excluded_paths )
     {
-        if (p==rep_path) {return true;}
+        if (p==canonical(rep_path)) {return true;}
     }
     return false;
 } 
@@ -74,7 +76,7 @@ TaskList* const Configuration::getTaskList() const {return task_list_ptr;}
 
 // CREATING FUNCTIONS (not to be confused with the constructor)
 
-Configuration* read_configuration_file(const path cfg_path,const path starting_path="")
+Configuration* read_configuration_file(const path cfg_path,const path starting_path="",bool verbose)
 {
     assert(is_regular_file(cfg_path));
     std::ifstream cfg_file(cfg_path.c_str());
@@ -113,14 +115,17 @@ Configuration* read_configuration_file(const path cfg_path,const path starting_p
             break;
         }
     }
+    if (verbose)
+    {
+        std::cout<<"backup will be done in "<<bp<<std::endl;
+        std::cout<<"purge will be done in  "<<pp<<std::endl;
+        std::cout<<"starting directory is "<<sp<<std::endl;
+    }
+
     if (starting_path.string()!=""){sp=starting_path;}
     assert(is_directory(bp));
     assert(is_directory(pp));
     assert(is_directory(sp));
-
-    std::cout<<"backup will be done in "<<bp<<std::endl;
-    std::cout<<"purge will be done in  "<<pp<<std::endl;
-    std::cout<<"starting directory is "<<sp<<std::endl;
 
     const DirectoryConverter* const converter_ptr=new DirectoryConverter(bp,pp);
     TaskList* tl_ptr=new TaskList();

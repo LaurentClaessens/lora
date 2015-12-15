@@ -57,10 +57,7 @@ void MainLoop::loopOverDirectory(path sub_directory)
 // MAIN BACKUP LOOP ----
 
 MainBackupLoop::MainBackupLoop(Configuration* config_ptr) : 
-    MainLoop(config_ptr)
-{
-    std::cout<<"le backup loop a starting_path : "<<starting_path<<std::endl;
-}
+    MainLoop(config_ptr) { }
 
 const path MainBackupLoop::getStartingPath() const
 {
@@ -81,6 +78,10 @@ void MainBackupLoop::DealWithDirectory(path rep_path)
 {
     if (!is_excluded(rep_path))
     {
+        if (boost::algorithm::starts_with(rep_path.string(),"/home/moky/Linux"))
+        {
+            throw std::string("You should never get here.");
+        }
         path bak_rep=configuration->home_to_backup(rep_path);
         if (!is_directory(bak_rep)) { create_directory_tree(bak_rep); }
         loopOverDirectory(rep_path); 
