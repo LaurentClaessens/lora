@@ -41,10 +41,16 @@ GitWindows::GitWindows(GitRepository repo,QWidget* parent):
     main_layout->addLayout( button_status_layout  );
     main_layout->addLayout( quick_commit_layout  );
 
-    button_status_layout->addWidget(git_diff_button);
-    button_status_layout->addWidget(git_ignore_button);
+    button_layout->addWidget(git_diff_button);
+    button_layout->addWidget(git_ignore_button);
     status_area_layout->addWidget(status_area);
     quick_commit_layout->addWidget(quick_commit_button);
+    
+    quick_commit_button->setEnable(false);
+
+    GitDiffLauncher* git_diff_launcher= new GitDiffLauncher(repo);
+
+    QObject::connect( git_diff_button,SIGNAL( git_diff_clicked()  ), git_diff_launcher,SLOT( launch() )  );
 
     setLayout(main_layout);
 };
@@ -54,3 +60,7 @@ void GitWindows::launch()
     this->show();
     qApp->exec();
 }
+
+GitDiffLauncher::GitDiffLauncher(GitRepository r):repo(r) {}
+
+void GitDiffLauncher::launch() { repo.launchGitDiff(); }

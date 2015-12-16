@@ -178,7 +178,7 @@ dist:
 	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/lora1.0.0/ && $(COPY_FILE) --parents CommandLine.h directoryconverter.h GitRepository.h GitWindows.h HashTable.h tasks.h testing.h  .tmp/lora1.0.0/ && $(COPY_FILE) --parents CommandLine.cpp directoryconverter.cpp GitRepository.cpp GitWindows.cpp lora.cpp tasks.cpp testing.cpp UnitTests.cpp .tmp/lora1.0.0/ && (cd `dirname .tmp/lora1.0.0` && $(TAR) lora1.0.0.tar lora1.0.0 && $(COMPRESS) lora1.0.0.tar) && $(MOVE) `dirname .tmp/lora1.0.0`/lora1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/lora1.0.0
 
 
-clean:compiler_clean 
+clean:compiler_clean compiler_moc_source_clean
 	-$(DEL_FILE) $(OBJECTS)
 	-$(DEL_FILE) *~ core *.core
 
@@ -200,6 +200,7 @@ compiler_image_collection_clean:
 	-$(DEL_FILE) qmake_image_collection.cpp
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
+	rm moc_GitWindows.cpp
 compiler_uic_make_all:
 compiler_uic_clean:
 compiler_yacc_decl_make_all:
@@ -217,7 +218,7 @@ lora: lora.cpp  \
 
 UnitTests: UnitTests.cpp\
    	testing.o CommandLine.o HashTable.o GitRepository.o GitWindows.o Configuration.o DirectoryConverter.o tasks.o
-	$(CXX) $(LFLAGS)  $(CXXFLAGS) $(INCPATH) -o UnitTests GitRepository.o Configuration.o testing.o DirectoryConverter.o tasks.o $(BOOST_SYSTEM) CommandLine.o GitWindows.o UnitTests.cpp  $(LIBS) 
+	$(CXX) $(LFLAGS)  $(CXXFLAGS) $(INCPATH) -o UnitTests GitRepository.o Configuration.o testing.o DirectoryConverter.o tasks.o CommandLine.o GitWindows.o moc_GitWindows.o $(BOOST_SYSTEM) UnitTests.cpp  $(LIBS) 
 
 MainLoop.o: MainLoop.cpp MainLoop.h Configuration.o
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainLoop.o MainLoop.cpp
@@ -245,7 +246,6 @@ GitWindows.o: GitWindows.cpp GitWindows.h moc_GitWindows.o
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GitWindows.o  $(BOOST_SYSTEM)    GitWindows.cpp
 moc_GitWindows.cpp: GitWindows.h
 	/usr/lib/i386-linux-gnu/qt4/bin/moc $(DEFINES) $(INCPATH) GitWindows.h -o moc_GitWindows.cpp
-
 moc_GitWindows.o: moc_GitWindows.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_GitWindows.o moc_GitWindows.cpp
 

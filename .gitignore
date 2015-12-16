@@ -1,6 +1,9 @@
 .directory
 backup.cfg
 lora
+lora.pro
+moc_*.cpp
+Makefile
 *.swp
 .kk.log
 .viminfo

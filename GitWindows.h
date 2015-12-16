@@ -25,14 +25,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 void the_windows(GitRepository repo);
 
 class GitWindows : public QDialog
-
 {
     Q_OBJECT
+
+    signals:
+        void git_diff_clicked();
     private:
         GitRepository repo;
     public:
         GitWindows(GitRepository repo,QWidget* parent=0);
         void launch();      // open a windows in a new thread.
 };
+
+class GitDiffLauncher: public QObject
+{
+    Q_OBJECT
+
+    private:
+        GitRepository repo;
+    public:
+        GitDiffLauncher(GitRepository);
+        void launch();
+}
 
 #endif   // __GIT_WINDOWS_H__
