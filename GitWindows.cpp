@@ -27,10 +27,10 @@ GitWindows::GitWindows(GitRepository repo):repo(repo){};
 void GitWindows::launch()
 {
  
-    QApplication app(argc, argv);
+ //   QApplication app(argc, argv);
 
-    QLabel* label= new QLabel("Hello");
-    label->show();
+  //  QLabel* label= new QLabel("Hello");
+   // label->show();
 
-    app.exec();
+  //  app.exec();
 }
