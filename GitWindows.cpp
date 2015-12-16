@@ -16,21 +16,51 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
-#include <QApplication>
-#include <QLabel>
-#include <QPushButton>
+#include <string>
+#include <iostream>
+#include <QtGui>
 #include "GitWindows.h"
 
-GitWindows::GitWindows(GitRepository repo):repo(repo){};
+GitWindows::GitWindows(GitRepository repo,QWidget* parent):
+    QDialog(parent),
+    repo(repo)
+{ 
+    QVBoxLayout* main_layout = new QVBoxLayout;
+    QHBoxLayout* button_status_layout = new QHBoxLayout;
+    QVBoxLayout* button_layout = new QVBoxLayout;
+    QVBoxLayout* status_area_layout = new QVBoxLayout;
+    QHBoxLayout* quick_commit_layout = new QHBoxLayout;
 
- 
+    QPushButton* git_diff_button=new QPushButton("git diff");
+    QPushButton* git_ignore_button=new QPushButton("git ignore");
+    QTextEdit* status_area=new QTextEdit( QString( repo.getStatusMessage().c_str()  )  );
+    QPushButton* quick_commit_button = new QPushButton("Ok! commit that.");
+
+    button_status_layout->addLayout(button_layout);
+    button_status_layout->addLayout(status_area_layout);
+    main_layout->addLayout( button_status_layout  );
+    main_layout->addLayout( quick_commit_layout  );
+
+    button_layout->addWidget(git_diff_button);
+    button_layout->addWidget(git_ignore_button);
+    status_area_layout->addWidget(status_area);
+    quick_commit_layout->addWidget(quick_commit_button);
+    
+    quick_commit_button->setEnable(false);
+
+    GitDiffLauncher* git_diff_launcher= new GitDiffLauncher(repo);
+
+    QObject::connect( git_diff_button,SIGNAL( git_diff_clicked()  ), git_diff_launcher,SLOT( launch() )  );
+
+    setLayout(main_layout);
+};
+
 void GitWindows::launch()
 {
- 
- //   QApplication app(argc, argv);
-
-  //  QLabel* label= new QLabel("Hello");
-   // label->show();
-
-  //  app.exec();
+    this->show();
+    qApp->exec();
 }
+
+GitDiffLauncher::GitDiffLauncher(GitRepository r):repo(r) {}
+
+void GitDiffLauncher::launch() { repo.launchGitDiff(); }

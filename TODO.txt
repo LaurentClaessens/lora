@@ -1,0 +1,9 @@
+For HashTable :
+
+    ht=HashTable<K,V>
+    keys=ht.getKeys()   should be an object that allows to loop over the keys with the syntax
+                for (K k:keys)
+    values=ht.getValues()     idem for the values.
+            
+
+

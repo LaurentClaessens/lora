@@ -19,18 +19,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef  __GIT_WINDOWS_H__
 #define  __GIT_WINDOWS_H__
 
-#include <QApplication>
-#include <QPushButton>
-
+#include <QDialog>
 #include "GitRepository.h"
 
-class GitWindows
+void the_windows(GitRepository repo);
+
+class GitWindows : public QDialog
 {
+    Q_OBJECT
+
+    signals:
+        void git_diff_clicked();
     private:
         GitRepository repo;
     public:
-        GitWindows(GitRepository repo);
-        void launch();      // in a new thread.
+        GitWindows(GitRepository repo,QWidget* parent=0);
+        void launch();      // open a windows in a new thread.
 };
+
+class GitDiffLauncher: public QObject
+{
+    Q_OBJECT
+
+    private:
+        GitRepository repo;
+    public:
+        GitDiffLauncher(GitRepository);
+        void launch();
+}
 
 #endif   // __GIT_WINDOWS_H__

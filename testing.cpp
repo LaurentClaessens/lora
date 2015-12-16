@@ -24,12 +24,12 @@ void test_assert(bool b,std::string message)
 {
     if (!b)
     {
-        throw TestException(message);
+        throw TestException(message+"\n");
     }
 }
 
 TestException::TestException(std::string m):message(m){}
-const char* TestException::what() {return message.c_str();}
+const char* TestException::what() {return (message).c_str();}
 
 GenericTestingFunction::GenericTestingFunction(std::string n,bool b,std::function<void()> t,std::string q):name(n),interactive(b),test(t)
 {

@@ -1,7 +1,7 @@
 A backup program.
 
 // Compile with
-make -f Makefile lora
+make -f old_makefile lora
 
 Creates a copy of the home directory into a backup directory (typically on an encrypted external hard disk--to your own responsibility).
 

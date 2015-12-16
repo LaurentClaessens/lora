@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // Create the tree up to the directory to which 'rep_path' belongs to.
 // create_directory_tree("/home/foo/bar/lol.txt") creates /home/foo/bar
-bool create_directory_tree(const path rep_path)
+void create_directory_tree(const path rep_path)
 {
     const path parent_path=rep_path.parent_path();
     if (is_directory( parent_path ) ) {}
@@ -34,7 +34,7 @@ bool create_directory_tree(const path rep_path)
     assert( is_directory(rep_path) );
 }
 // Create the tree up to the directory containing the given file name.
-bool create_file_tree(const path file_path)
+void create_file_tree(const path file_path)
 {
     const path parent_path=file_path.parent_path();
     if (is_directory( parent_path ) ) {}
@@ -62,10 +62,7 @@ void my_copy_file(path from_path,path to_path)
 }
 
 GenericTask::GenericTask(){ };
-bool GenericTask::run() const
-{ 
-    throw std::string("You tried to run a GenericTask"); 
-} 
+GenericTask::~GenericTask(){ };
 
 
 FileCopyTask::FileCopyTask(pathTriple triple):GenericTask()
@@ -77,7 +74,10 @@ FileCopyTask::FileCopyTask(pathTriple triple):GenericTask()
 
 bool FileCopyTask::run() const
 {
-        assert(is_regular_file(orig_path));
+        if (!is_regular_file(orig_path))
+        {
+            throw std::string("The file "+orig_path.string()+" does not exist ?");
+        }
 
         std::vector<path> test_list;
         test_list.push_back( orig_path );
@@ -131,5 +131,5 @@ bool FinalTask::run() const { return false; }
 
 void TaskList::push_back(GenericTask* gt) { queue.push_back(gt); }
 GenericTask* TaskList::front() { return queue.front(); }
-GenericTask* TaskList::pop_front() {queue.pop_front();}
+void TaskList::pop_front() {queue.pop_front();}
 int TaskList::size() const { return queue.size(); }

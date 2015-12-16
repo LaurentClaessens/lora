@@ -29,32 +29,37 @@ using namespace boost::filesystem;
 // - purge removed          (purge_removed_path)
 // - local file             
 // - backup file            (backup_path)
+//
+// - starting_path              is the starting of a Main(Backup)(Purge)Loop.
+//                              in one case, this is the purge path and in the other
+//                              case, this is inside the home directory.
+// - starting_backup_path       is the path of the subdirectory 
+//                              of the home directory that has to be backuped.
 // It creates the needed directories.
-//
-// An instance of this class is created buy the main backup loop and then given to the main purge loop.
-//
-// One has to create an object of this class using the fonction 'create_converter'. The reason is that only the backup and purge paths have to be passed while the other paths can be deduced. But since the other path are 'const', they have to be list-initialized while computation is such an initialisation seem to be messy (I failed to make it work).
+
+
 class DirectoryConverter
 {
     private :                       // if one add some paths here, one has to update 'are_all_paths_ok' and maybe also 'create_purge_directories'.
+        const path home_path;
+        const path backup_path;
         const path purge_path;
         const path purge_datetime_path;
         const path purge_modified_path;
         const path purge_removed_path;
-        const path backup_path;
         static bool verified_paths;       // If one has already checked the paths.
     public:
-        const path home_path;
         DirectoryConverter(const path backup_path, const path purge_path );
         DirectoryConverter() {};
-        path get_backup_path() const;
-        path get_home_path() const;
+        path getBackupPath() const;
+        path getHomePath() const;
+        path getPurgePath() const;
         void create_purge_directories() const;
-        path purge_to_purge_datetime(path) const;
-        path purge_to_modified_purge(path) const;
-        path purge_to_removed_purge(path) const;
-        path backup_to_removed_purge(path) const;
-        path backup_to_home(path) const;
+        //path purge_to_purge_datetime(const path) const;
+        //path purge_to_modified_purge(const path) const;
+        //path purge_to_removed_purge(const path) const;
+        path backup_to_removed_purge(const path) const;
+        path backup_to_home(const path) const;
         path home_to_backup(const path) const;
         path home_to_modified_purge(const path) const;            
         bool are_all_paths_ok() const;                         // check if all the necessary directories exist.

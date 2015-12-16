@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QPushButton>
 
 #include "testing.h"
+#include "Configuration.h"
 #include "CommandLine.h"
 #include "HashTable.h"
 #include "GitRepository.h"
@@ -142,33 +143,33 @@ void test_gr1()
 {
     std::string commit;
     string repo;
-    std::cout<<"What directory do you want to see ? ";
+    std::cout<<"Which directory do you want to see ? ";
     std::cin>>repo;
     GitRepository gr=GitRepository(repo);
     commit=gr.getStatusMessage();
+
+    std::cout<<"--------- begin if status message ------"<<std::endl;
     std::cout<<commit<<std::endl;
+    std::cout<<"--------- end of status message ------"<<std::endl;
 
     vector<path> untracked_files=gr.getUntrackedFiles();
     std::cout<<"Untracked files :"<<std::endl;
-    for (path& p:untracked_files)
-    {
-        std::cout<<p<<std::endl;
-    }
+
+    for (path& p:untracked_files) { std::cout<<p<<std::endl; }
+
     vector<path> modified_files=gr.getModifiedFiles();
     std::cout<<"Modified files :"<<std::endl;
-    for (path& p:modified_files)
-    {
-        std::cout<<p<<std::endl;
-    }
-    if (gr.isClean())
-    {
-        std::cout<<"This repository is CLEAN."<<std::endl;
-    }
+
+    for (path& p:modified_files) { std::cout<<p<<std::endl; }
+
+    if (gr.isClean()) { std::cout<<"This repository is CLEAN."<<std::endl; }
     else
     {
         std::cout<<"This repository is NOT CLEAN."<<std::endl;
+        std::string yn="n";
         std::cout<<"Do you want to see the 'git diff' of this repository ?";
-        gr.launchGitDiff();
+        std::cin>>yn;
+        if (yn=="y"){ gr.launchGitDiff(); }
     }
 }
 
@@ -176,18 +177,28 @@ void test_gw1()
 {
     std::string commit;
     string directory;
-    std::cout<<"What directory do you want to see ? ";
+    std::cout<<"Which directory do you want to see ? ";
     std::cin>>directory;
     GitRepository repo=GitRepository(directory);
     
-    GitWindows gw=GitWindows(repo);
-    gw.launch();
+    GitWindows* gw1=new GitWindows(repo);
+    gw1->launch();
+}
+
+void test_exclude()
+{
+    Configuration* configuration=read_configuration_file("backup.cfg","",false);   // the last boolean argument is 'verbose'
+    test_assert(configuration->is_excluded("jjlk")==true,"A non existing path is not excluded.");
+    test_assert(configuration->is_excluded("/home/moky/Linux")==true,"This should be excluded.");
+    test_assert(configuration->is_excluded("/home/moky/Linux/")==true,"This should be excluded.");
 }
 
 int main(int argc,char* argv[])
 {
+    QApplication app(argc, argv);
+    std::cout<<"Initializing tests ---------------------------"<<std::endl;
+    GenericTestingFunction("test_exclude",false,test_exclude).run();
 
-    GenericTestingFunction("test_gw1",true,test_gw1,"See the git windows ?").run();
     GenericTestingFunction("test_cl1",false,test_cl1).run();
     GenericTestingFunction("test_cl2",false,test_cl2).run();
 
@@ -196,6 +207,7 @@ int main(int argc,char* argv[])
     GenericTestingFunction("test_ht3",false,test_ht3).run();
     GenericTestingFunction("test_ht4",false,test_ht4).run();
 
+    GenericTestingFunction("test_gw1",true,test_gw1,"See the git windows ?").run();
     GenericTestingFunction("test_gr1",true,test_gr1,"See a status message ?").run();
     GenericTestingFunction("test_cl3",true,test_cl3,"See Vim in a new terminal ?").run();
 }
