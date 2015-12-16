@@ -60,6 +60,7 @@ struct pathTriple{
 class GenericTask{
     public:
         GenericTask();
+        ~GenericTask();
         virtual bool run() const =0;
 };
 
