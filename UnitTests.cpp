@@ -147,24 +147,22 @@ void test_gr1()
     std::cin>>repo;
     GitRepository gr=GitRepository(repo);
     commit=gr.getStatusMessage();
+
+    std::cout<<"--------- begin if status message ------"<<std::endl;
     std::cout<<commit<<std::endl;
+    std::cout<<"--------- end of status message ------"<<std::endl;
 
     vector<path> untracked_files=gr.getUntrackedFiles();
     std::cout<<"Untracked files :"<<std::endl;
-    for (path& p:untracked_files)
-    {
-        std::cout<<p<<std::endl;
-    }
+
+    for (path& p:untracked_files) { std::cout<<p<<std::endl; }
+
     vector<path> modified_files=gr.getModifiedFiles();
     std::cout<<"Modified files :"<<std::endl;
-    for (path& p:modified_files)
-    {
-        std::cout<<p<<std::endl;
-    }
-    if (gr.isClean())
-    {
-        std::cout<<"This repository is CLEAN."<<std::endl;
-    }
+
+    for (path& p:modified_files) { std::cout<<p<<std::endl; }
+
+    if (gr.isClean()) { std::cout<<"This repository is CLEAN."<<std::endl; }
     else
     {
         std::cout<<"This repository is NOT CLEAN."<<std::endl;
@@ -183,8 +181,8 @@ void test_gw1()
     std::cin>>directory;
     GitRepository repo=GitRepository(directory);
     
-    GitWindows gw1=GitWindows(repo);
-    gw1.launch();
+    GitWindows* gw1=new GitWindows(repo);
+    gw1->launch();
 }
 
 void test_exclude()

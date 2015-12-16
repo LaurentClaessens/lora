@@ -18,17 +18,39 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <string>
 #include <iostream>
-#include <QApplication>
-#include <QLabel>
-#include <QPushButton>
+#include <QtGui>
 #include "GitWindows.h"
 
-GitWindows::GitWindows(GitRepository repo):repo(repo){};
+GitWindows::GitWindows(GitRepository repo,QWidget* parent):
+    QDialog(parent),
+    repo(repo)
+{ 
+    QVBoxLayout* main_layout = new QVBoxLayout;
+    QHBoxLayout* button_status_layout = new QHBoxLayout;
+    QVBoxLayout* button_layout = new QVBoxLayout;
+    QVBoxLayout* status_area_layout = new QVBoxLayout;
+    QHBoxLayout* quick_commit_layout = new QHBoxLayout;
+
+    QPushButton* git_diff_button=new QPushButton("git diff");
+    QPushButton* git_ignore_button=new QPushButton("git ignore");
+    QTextEdit* status_area=new QTextEdit( QString( repo.getStatusMessage().c_str()  )  );
+    QPushButton* quick_commit_button = new QPushButton("Ok! commit that.");
+
+    button_status_layout->addLayout(button_layout);
+    button_status_layout->addLayout(status_area_layout);
+    main_layout->addLayout( button_status_layout  );
+    main_layout->addLayout( quick_commit_layout  );
+
+    button_status_layout->addWidget(git_diff_button);
+    button_status_layout->addWidget(git_ignore_button);
+    status_area_layout->addWidget(status_area);
+    quick_commit_layout->addWidget(quick_commit_button);
+
+    setLayout(main_layout);
+};
 
 void GitWindows::launch()
 {
-    std::cout<<repo.getPath()<<std::endl;
-    QLabel* label= new QLabel("Bonjour");
-    label->show();
+    this->show();
     qApp->exec();
 }

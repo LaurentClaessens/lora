@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <string>
 #include <boost/algorithm/string.hpp>
-#include <boost/regex.hpp>
 #include "GitRepository.h"
 
 GitRepository::GitRepository(path p): repo_path(p) {}  

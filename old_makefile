@@ -241,13 +241,8 @@ GitRepository.o: GitRepository.cpp GitRepository.h \
 		HashTable.o
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GitRepository.o  $(BOOST_SYSTEM)    GitRepository.cpp
 
-GitWindows.o: GitWindows.cpp GitWindows.h moc_GitWindows.o
+GitWindows.o: GitWindows.cpp GitWindows.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GitWindows.o  $(BOOST_SYSTEM)    GitWindows.cpp
-moc_GitWindows.cpp: GitWindows.h
-	/usr/lib/i386-linux-gnu/qt4/bin/moc $(DEFINES) $(INCPATH) GitWindows.h -o moc_GitWindows.cpp
-
-moc_GitWindows.o: moc_GitWindows.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_GitWindows.o moc_GitWindows.cpp
 
 testing.o: testing.cpp testing.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o testing.o testing.cpp
