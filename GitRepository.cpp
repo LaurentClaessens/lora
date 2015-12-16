@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <string>
 #include <boost/algorithm/string.hpp>
+#include <boost/regex.hpp>
 #include "GitRepository.h"
 
 GitRepository::GitRepository(path p): repo_path(p) {}  
@@ -52,7 +53,7 @@ bool GitRepository::isClean()
     return false;
 }
 
-// this is a big bunch of not quite sordid string manipulations.
+// this is a big bunch of sordid string manipulations.
 // I don't even list the assumptions I made about the output of 'git status'
 vector<path> GitRepository::getUntrackedFiles()
 {
@@ -78,10 +79,21 @@ vector<path> GitRepository::getUntrackedFiles()
     return untracked_files;
 }
 
-// this is again a counter maintainable string manipulations.
+// I read somewhere that "If you really need to write crappy code, encapsulate it". 
+// here is my modest contribution to that principle.
 vector<path> GitRepository::getModifiedFiles()
 {
     vector<path> modified_files;
+    vector<string> lines=v_commit_message();
+    string prefix="\tmodified:   ";
+    for (string& line:lines)
+    {
+        if (boost::algorithm::starts_with(line,prefix))
+        {
+            boost::algorithm::erase_all(line,prefix);
+            modified_files.push_back(line);
+        }
+    }
     return modified_files;
 }
 

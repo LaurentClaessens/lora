@@ -74,7 +74,10 @@ FileCopyTask::FileCopyTask(pathTriple triple):GenericTask()
 
 bool FileCopyTask::run() const
 {
-        assert(is_regular_file(orig_path));
+        if (!is_regular_file(orig_path))
+        {
+            throw std::string("The file "+orig_path.string()+" does not exist ?");
+        }
 
         std::vector<path> test_list;
         test_list.push_back( orig_path );

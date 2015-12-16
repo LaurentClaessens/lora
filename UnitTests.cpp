@@ -143,7 +143,7 @@ void test_gr1()
 {
     std::string commit;
     string repo;
-    std::cout<<"What directory do you want to see ? ";
+    std::cout<<"Which directory do you want to see ? ";
     std::cin>>repo;
     GitRepository gr=GitRepository(repo);
     commit=gr.getStatusMessage();
@@ -179,16 +179,12 @@ void test_gw1()
 {
     std::string commit;
     string directory;
-    std::cout<<"What directory do you want to see ? ";
+    std::cout<<"Which directory do you want to see ? ";
     std::cin>>directory;
-    std::cout<<"There will be two of them.";
     GitRepository repo=GitRepository(directory);
     
     GitWindows gw1=GitWindows(repo);
     gw1.launch();
-
-    GitWindows gw2=GitWindows(repo);
-    gw2.launch();
 }
 
 void test_exclude()

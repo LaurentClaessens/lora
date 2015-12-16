@@ -45,7 +45,7 @@ class Configuration
 
         void add_task(GenericTask*);
         bool is_excluded(const path) const;       
-        TaskList* const getTaskList() const;
+        TaskList*  getTaskList() const;
 
         path backup_to_removed_purge(const path) const;
         path backup_to_home(const path) const;

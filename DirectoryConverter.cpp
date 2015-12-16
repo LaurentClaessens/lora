@@ -28,8 +28,6 @@ using namespace std;
 
 path purge_path_to_purge_datetime(const path purge_path)
 {
-    assert(is_directory(purge_path));
-
     time_t tt;
     time(&tt);
     struct tm* timeinfo=localtime(&tt);

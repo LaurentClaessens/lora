@@ -72,7 +72,7 @@ bool Configuration::is_excluded(const path rep_path) const
 // CONFIGURATION -- task list
 
 void Configuration::add_task(GenericTask* gt) { task_list_ptr->push_back(gt);  }
-TaskList* const Configuration::getTaskList() const {return task_list_ptr;}
+TaskList* Configuration::getTaskList() const {return task_list_ptr;}
 
 // CREATING FUNCTIONS (not to be confused with the constructor)
 
@@ -123,9 +123,6 @@ Configuration* read_configuration_file(const path cfg_path,const path starting_p
     }
 
     if (starting_path.string()!=""){sp=starting_path;}
-    assert(is_directory(bp));
-    assert(is_directory(pp));
-    assert(is_directory(sp));
 
     const DirectoryConverter* const converter_ptr=new DirectoryConverter(bp,pp);
     TaskList* tl_ptr=new TaskList();

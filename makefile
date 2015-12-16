@@ -239,7 +239,7 @@ DirectoryConverter.o: DirectoryConverter.cpp DirectoryConverter.h \
 GitRepository.o: GitRepository.cpp GitRepository.h \
 		CommandLine.o \
 		HashTable.o
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GitRepository.o  -lboost_filesystem -lboost_system   GitRepository.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GitRepository.o  $(BOOST_SYSTEM)    GitRepository.cpp
 
 GitWindows.o: GitWindows.cpp GitWindows.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GitWindows.o  $(BOOST_SYSTEM)    GitWindows.cpp
