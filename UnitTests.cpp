@@ -148,7 +148,7 @@ void test_gr1()
     GitRepository gr=GitRepository(repo);
     commit=gr.getStatusMessage();
 
-    std::cout<<"--------- begin if status message ------"<<std::endl;
+    std::cout<<"--------- begin of status message ------"<<std::endl;
     std::cout<<commit<<std::endl;
     std::cout<<"--------- end of status message ------"<<std::endl;
 
