@@ -61,11 +61,4 @@ void GitWindows::launch()
     qApp->exec();
 }
 
-GitDiffLauncher::GitDiffLauncher(GitRepository r):repo(r) {}
-
-void GitWindows::launch_git_diff() { 
-    std::cout<<"git diff va être fait"<<std::flush;
-    qDebug()<<"git diff va être fait";
-    repo.launchGitDiff(); 
-    std::cout<<"git diff fait"<<std::endl;
-}
+void GitWindows::launch_git_diff() { repo.launchGitDiff(); }

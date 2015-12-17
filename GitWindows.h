@@ -28,8 +28,6 @@ class GitWindows : public QDialog
 {
     Q_OBJECT
 
-    signals:
-        void clicked();
     private slots :
         void launch_git_diff();
     private:
@@ -37,17 +35,6 @@ class GitWindows : public QDialog
     public:
         GitWindows(GitRepository repo,QWidget* parent=0);
         void launch();      // open a windows 
-};
-
-class GitDiffLauncher: public QObject
-{
-    Q_OBJECT
-
-    private:
-        GitRepository repo;
-    public:
-        GitDiffLauncher(GitRepository);
-        void launch();
 };
 
 #endif   // __GIT_WINDOWS_H__
