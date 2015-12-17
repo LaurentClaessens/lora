@@ -33,7 +33,7 @@ GitWindows::GitWindows(GitRepository repo,QWidget* parent):
 
     QPushButton* git_diff_button=new QPushButton("git diff");
     QPushButton* git_ignore_button=new QPushButton("git ignore");
-    QTextEdit* status_area=new QTextEdit( QString( repo.getStatusMessage().c_str()  )  );
+    QLabel* status_area=new QLabel( QString::fromStdString( repo.getStatusMessage()  ));
     QPushButton* quick_commit_button = new QPushButton("Ok! commit that.");
 
     button_status_layout->addLayout(button_layout);
@@ -47,8 +47,6 @@ GitWindows::GitWindows(GitRepository repo,QWidget* parent):
     quick_commit_layout->addWidget(quick_commit_button);
     
     quick_commit_button->setEnabled(false);
-
-    //GitDiffLauncher* git_diff_launcher= new GitDiffLauncher(repo);
 
     QObject::connect( git_diff_button,SIGNAL( clicked()  ), this,SLOT( launch_git_diff() )  );
 

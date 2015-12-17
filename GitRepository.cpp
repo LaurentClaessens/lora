@@ -35,7 +35,6 @@ path GitRepository::getPath() {return repo_path;}
 vector<string> GitRepository::v_commit_message()
 {
     string commit=getStatusMessage();
-    string line;
     vector<string> lines;
     boost::split(lines,commit,boost::is_any_of("\n"));
     return lines;
