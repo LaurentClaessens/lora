@@ -48,9 +48,9 @@ GitWindows::GitWindows(GitRepository repo,QWidget* parent):
     
     quick_commit_button->setEnabled(false);
 
-    GitDiffLauncher* git_diff_launcher= new GitDiffLauncher(repo);
+    //GitDiffLauncher* git_diff_launcher= new GitDiffLauncher(repo);
 
-    QObject::connect( git_diff_button,SIGNAL( git_diff_clicked()  ), git_diff_launcher,SLOT( launch() )  );
+    QObject::connect( git_diff_button,SIGNAL( clicked()  ), this,SLOT( launch_git_diff() )  );
 
     setLayout(main_layout);
 };
@@ -63,4 +63,9 @@ void GitWindows::launch()
 
 GitDiffLauncher::GitDiffLauncher(GitRepository r):repo(r) {}
 
-void GitDiffLauncher::launch() { repo.launchGitDiff(); }
+void GitWindows::launch_git_diff() { 
+    std::cout<<"git diff va être fait"<<std::flush;
+    qDebug()<<"git diff va être fait";
+    repo.launchGitDiff(); 
+    std::cout<<"git diff fait"<<std::endl;
+}
