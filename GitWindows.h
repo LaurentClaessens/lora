@@ -20,9 +20,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define  __GIT_WINDOWS_H__
 
 #include <QDialog>
+#include <QHBoxLayout>
 #include "GitRepository.h"
 
-void the_windows(GitRepository repo);
+QString modified_text(GitRepository rep);
 
 class GitWindows : public QDialog
 {
@@ -32,6 +33,8 @@ class GitWindows : public QDialog
         void launch_git_diff();
     private:
         GitRepository repo;
+        QHBoxLayout* untracked_line(path file);
+        QString modified_text();
     public:
         GitWindows(GitRepository repo,QWidget* parent=0);
         void launch();      // open a windows 
