@@ -38,12 +38,22 @@ QHBoxLayout* GitWindows::untracked_line(path file)
 {
     QCheckBox*  box_add = new QCheckBox("add");
     QCheckBox*  box_ignore = new QCheckBox("gitignore");
+    QCheckBox*  box_noaction = new QCheckBox("no action");
     QLabel* filename = new QLabel( QString::fromStdString(file.string()));
     QHBoxLayout* line = new QHBoxLayout();
+
+    box_noaction->setChecked(true);
+
+    QButtonGroup* buttons = new QButtonGroup(line);
+    buttons->addButton(box_add);
+    buttons->addButton(box_ignore);
+    buttons->addButton(box_noaction);
+    buttons->setExclusive(true);
 
     line->addWidget(filename);
     line->addWidget(box_add);
     line->addWidget(box_ignore);
+    line->addWidget(box_noaction);
     return line;
 }
 
