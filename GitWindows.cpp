@@ -46,7 +46,7 @@ GitWindows::GitWindows(GitRepository repo,QWidget* parent):
     status_area_layout->addWidget(status_area);
     quick_commit_layout->addWidget(quick_commit_button);
     
-    quick_commit_button->setEnable(false);
+    quick_commit_button->setEnabled(false);
 
     GitDiffLauncher* git_diff_launcher= new GitDiffLauncher(repo);
 

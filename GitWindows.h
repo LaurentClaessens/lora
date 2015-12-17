@@ -46,6 +46,6 @@ class GitDiffLauncher: public QObject
     public:
         GitDiffLauncher(GitRepository);
         void launch();
-}
+};
 
 #endif   // __GIT_WINDOWS_H__
