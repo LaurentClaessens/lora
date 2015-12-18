@@ -34,8 +34,11 @@ class GitRepository
         string getStatusMessage();
         bool isClean();
         void launchGitDiff();       // in a new terminal
+        void git_add(path);
+        void add_to_gitignore(path);
+        void add_to_gitignore(std::vector<path>);
 
-        // in the paths are relative to the repository path
+        // the paths are relative to the repository path
         vector<path> getUntrackedFiles(); 
         vector<path> getModifiedFiles();
 };

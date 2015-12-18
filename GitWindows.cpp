@@ -93,18 +93,19 @@ GitWindows::GitWindows(GitRepository repo,QWidget* parent):
     QPushButton* git_ignore_button=new QPushButton("git ignore");
     QLabel* modified_qlabel=new QLabel(modified_text());
 
-
     for (path f : repo.getUntrackedFiles())
     {
         untracked_layout->addLayout(untracked_line(f));
     }
 
-    QPushButton* quick_commit_button = new QPushButton("Ok! commit that.");
+    QPushButton* apply_add_ignore_button=new QPushButton("ok for these changes");
+    QPushButton* quick_commit_button = new QPushButton("Commit me that");
 
     modified_layout->addWidget(modified_qlabel);
 
     status_area_layout->addLayout(modified_layout);
     status_area_layout->addLayout(untracked_layout);
+    status_area_layout->addWidget(apply_add_ignore_button);
 
     button_status_layout->addLayout(button_layout);
     button_status_layout->addLayout(status_area_layout);
@@ -117,10 +118,22 @@ GitWindows::GitWindows(GitRepository repo,QWidget* parent):
     
     quick_commit_button->setEnabled(false);
 
-    QObject::connect( git_diff_button,SIGNAL( clicked()  ), this,SLOT( launch_git_diff() )  );
+    connect(git_diff_button,SIGNAL( clicked() ), this,SLOT( launch_git_diff() ));
+    connect(apply_add_ignore_button,SIGNAL(clicked()),this,SLOT(apply_add_ignore_changes()));
 
     setLayout(main_layout);
 };
+
+void GitWindows::apply_add_ignore_changes()
+{
+    for (auto itr=add_ignore_status.begin();itr!=add_ignore_status.end();itr++) 
+    {
+        path k=itr->key;
+        int v=itr->value;
+        if (v==1) {repo.git_add(k);}
+        if (v==2) {repo.add_to_gitignore(k);}
+    }
+}
 
 void GitWindows::launch()
 {

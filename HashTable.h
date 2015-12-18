@@ -27,16 +27,13 @@ INTRODUCTION
  We add at the end and an iterator begins at the beginning.
  When iterating, we get the values (not the keys);
 
- One can assign a second value to the same key. The previous one is lost.
+ One can assign a new value to the same key. The old value is lost.
  BTW : this works pretty the same as a Python dictionary.
 //*/
 
-// Oh yeah! last but not least : this whole f***ing class with template and iterators is to add "LC_ALL=C" in front of "git status".
 
 #ifndef __HASH_TABLE_H__
 #define __HASH_TABLE_H__
-
-
 
 #include <iostream>
 #include <string>

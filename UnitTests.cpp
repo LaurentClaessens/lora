@@ -93,9 +93,22 @@ void test_ht1()
     }
     
     test_assert(s1=="hello 4hello 5hello 1","loop in HashTable with itr++");
-    // iteration with ++itr. The result is the same
+    // iteration with ++itr. The result is the same.
     for (HashTable<int,string>::iterator itr=my_hash.begin();itr!=my_hash.end();++itr) {s2=s2+my_hash[itr]; }
     test_assert(s1==s2,"loop in HashTable with ++itr");
+    string s3="";
+
+    // We can get the value and the key from the iterator.
+    HashTable<string,string> my_other_hash;
+    my_other_hash["Kone"]="Vone";
+    my_other_hash["Ktwo"]="Vtwo";
+    my_other_hash["Kthree"]="Vthree";
+    for (auto itr=my_other_hash.begin();itr!=my_other_hash.end();++itr) 
+    {
+        s3=s3+itr->key;
+        s3=s3+itr->value;
+    }
+    test_assert(s3=="KoneVoneKtwoVtwoKthreeVthree","Value and key retreiving from an iterator");
 }
 
 // We can change the value of a key-value pair.

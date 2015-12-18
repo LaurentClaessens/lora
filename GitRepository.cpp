@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
 #include <string>
+#include <fstream>
 #include <boost/algorithm/string.hpp>
 #include "GitRepository.h"
 
@@ -93,6 +94,31 @@ vector<path> GitRepository::getModifiedFiles()
         }
     }
     return modified_files;
+}
+
+void GitRepository::git_add(path file)
+{
+    CommandLine cl=CommandLine("git add "+file.string());
+    cl.setWorkingDirectory(getPath());
+    cl.run();
+}
+
+void GitRepository::add_to_gitignore(path file)
+{
+    std::ofstream filestream;
+    filestream.open(".gitignore",std::ios_base::app); 
+    filestream<<"\n"<<file.string()<<"\n";
+}
+
+void GitRepository::add_to_gitignore(std::vector<path> files)
+{
+    std::ofstream filestream;
+    filestream.open(".gitignore",std::ios_base::app); 
+    filestream<<"\n";
+    for (path f:files)
+    {
+        filestream<<f.string()<<"\n";
+    }
 }
 
 

@@ -11,3 +11,17 @@ Makefile
 *.o
 core
 UnitTests
+
+.viminfo.tmp
+
+.viminfv.tmp
+
+.viminfx.tmp
+
+.viminfy.tmp
+
+.viminfz.tmp
+
+Databases.db
+
+.viminfx.tmp

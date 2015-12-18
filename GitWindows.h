@@ -35,6 +35,7 @@ class GitWindows : public QDialog
 
     private slots :
         void launch_git_diff();
+        void apply_add_ignore_changes();
     private:
         // 0 : no action. 1 : add, 2 : gitignore
         HashTable<path,int> add_ignore_status;
