@@ -34,11 +34,30 @@ QString GitWindows::modified_text()
     return QString::fromStdString( s_text  );
 }
 
+FileQCheckBox::FileQCheckBox(const QString text,const int ai_value,const path f,GitWindows* gw):
+    QCheckBox(text),
+    file(f),
+    add_ignore_value(ai_value),
+    parent(gw)
+{
+    connect( this,SIGNAL( stateChanged(int) ),this,SLOT(newCheckedValue(int)) );
+}
+
+void FileQCheckBox::newCheckedValue(int v)
+{
+    std::cout<<"Vu : "<<v<<std::endl;
+    if (v==1)
+    {
+        parent->add_ignore_status[file]=add_ignore_value;   
+        std::cout<<file.string()<<" devient "<<v<<std::endl;
+    }
+}
+
 QHBoxLayout* GitWindows::untracked_line(path file)
 {
-    QCheckBox*  box_add = new QCheckBox("add");
-    QCheckBox*  box_ignore = new QCheckBox("gitignore");
-    QCheckBox*  box_noaction = new QCheckBox("no action");
+    QCheckBox*  box_add = new FileQCheckBox("add",1,file,this);
+    QCheckBox*  box_ignore = new FileQCheckBox("gitignore",2,file,this);
+    QCheckBox*  box_noaction = new FileQCheckBox("no action",0,file,this);
     QLabel* filename = new QLabel( QString::fromStdString(file.string()));
     QHBoxLayout* line = new QHBoxLayout();
 
@@ -54,6 +73,9 @@ QHBoxLayout* GitWindows::untracked_line(path file)
     line->addWidget(box_add);
     line->addWidget(box_ignore);
     line->addWidget(box_noaction);
+
+    add_ignore_status[file]=0;
+
     return line;
 }
 
