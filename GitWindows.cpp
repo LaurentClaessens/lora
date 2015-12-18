@@ -45,11 +45,9 @@ FileQCheckBox::FileQCheckBox(const QString text,const int ai_value,const path f,
 
 void FileQCheckBox::newCheckedValue(int v)
 {
-    std::cout<<"Vu : "<<v<<std::endl;
-    if (v==1)
+    if (v==2)
     {
         parent->add_ignore_status[file]=add_ignore_value;   
-        std::cout<<file.string()<<" devient "<<v<<std::endl;
     }
 }
 

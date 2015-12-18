@@ -50,6 +50,11 @@ class GitWindows : public QDialog
 // its "signification".
 // The FileQCheckedBox of "add" for file "foo.txt" has the charge of setting to 1 
 // the "foo.txt" entry of the add_ignore_status table when it is checked.
+// Constructor :
+// text : the text printed in front of the CheckBox
+// add_ignore_value : the value of the action associated with the box
+// f : the file associated with the check box
+// parent : the GitWindows in which the box in living (we need it to modify the add_ignore_status hash table).
 class FileQCheckBox : public QCheckBox
 {
     Q_OBJECT
