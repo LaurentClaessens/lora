@@ -39,42 +39,31 @@ FileQCheckBox::FileQCheckBox(const QString text,const int ai_value,const path f,
     file(f),
     add_ignore_value(ai_value),
     parent(gw)
-{
-    connect( this,SIGNAL( stateChanged(int) ),this,SLOT(newCheckedValue(int)) );
-}
+{ }
 
-void FileQCheckBox::newCheckedValue(int v)
+UntrackedLine::UntrackedLine(path f, GitWindows* p):
+    QHBoxLayout(p),
+    file(f),
+    parent(p),
+    box_add(FileQCheckBox("add",1,file,parent)),
+    box_ignore(FileQCheckBox("gitignore",2,file,parent)),
+    box_noaction(FileQCheckBox("no action",0,file,parent)),
+    label_filename(QLabel( QString::fromStdString(file.string())))
 {
-    if (v==2)
-    {
-        parent->add_ignore_status[file]=add_ignore_value;   
-    }
-}
-
-QHBoxLayout* GitWindows::untracked_line(path file)
-{
-    QCheckBox*  box_add = new FileQCheckBox("add",1,file,this);
-    QCheckBox*  box_ignore = new FileQCheckBox("gitignore",2,file,this);
-    QCheckBox*  box_noaction = new FileQCheckBox("no action",0,file,this);
-    QLabel* filename = new QLabel( QString::fromStdString(file.string()));
-    QHBoxLayout* line = new QHBoxLayout();
-
     box_noaction->setChecked(true);
 
-    QButtonGroup* buttons = new QButtonGroup(line);
+    QButtonGroup* buttons = new QButtonGroup(this);
     buttons->addButton(box_add);
     buttons->addButton(box_ignore);
     buttons->addButton(box_noaction);
     buttons->setExclusive(true);
 
-    line->addWidget(filename);
-    line->addWidget(box_add);
-    line->addWidget(box_ignore);
-    line->addWidget(box_noaction);
+    this->addWidget(label_filename);
+    this->addWidget(box_add);
+    this->addWidget(box_ignore);
+    this->addWidget(box_noaction);
 
-    add_ignore_status[file]=0;
-
-    return line;
+    buttons.setEnable(false);
 }
 
 GitWindows::GitWindows(GitRepository repo,QWidget* parent):
@@ -85,26 +74,21 @@ GitWindows::GitWindows(GitRepository repo,QWidget* parent):
     QHBoxLayout* button_status_layout = new QHBoxLayout;
     QVBoxLayout* button_layout = new QVBoxLayout;
     QVBoxLayout* status_area_layout = new QVBoxLayout;
-    QVBoxLayout* modified_layout = new QVBoxLayout;
-    QVBoxLayout* untracked_layout = new QVBoxLayout;
     QHBoxLayout* quick_commit_layout = new QHBoxLayout;
 
     QPushButton* git_diff_button=new QPushButton("git diff");
     QPushButton* git_ignore_button=new QPushButton("git ignore");
-    QLabel* modified_qlabel=new QLabel(modified_text());
 
-    for (path f : repo.getUntrackedFiles())
-    {
-        untracked_layout->addLayout(untracked_line(f));
-    }
-
-    QPushButton* apply_add_ignore_button=new QPushButton("ok for these changes");
     QPushButton* quick_commit_button = new QPushButton("Commit me that");
 
-    modified_layout->addWidget(modified_qlabel);
+    QLabel* modified_qlabel=new QLabel(modified_text());
+    AddIgnoreLayout* add_ignore_layout = new AddIgnoreLayout(this);
 
-    status_area_layout->addLayout(modified_layout);
-    status_area_layout->addLayout(untracked_layout);
+    QPushButton* apply_add_ignore_button=new QPushButton("ok for these changes");
+    connect(apply_add_ignore_button,SIGNAL(clicked()),this,SLOT(apply_add_ignore_changes()));
+
+    status_area_layout->addWidget(modified_qlabel);
+    status_area_layout->addLayout(add_ignore_layout);
     status_area_layout->addWidget(apply_add_ignore_button);
 
     button_status_layout->addLayout(button_layout);
@@ -119,7 +103,6 @@ GitWindows::GitWindows(GitRepository repo,QWidget* parent):
     quick_commit_button->setEnabled(false);
 
     connect(git_diff_button,SIGNAL( clicked() ), this,SLOT( launch_git_diff() ));
-    connect(apply_add_ignore_button,SIGNAL(clicked()),this,SLOT(apply_add_ignore_changes()));
 
     setLayout(main_layout);
 };
@@ -129,10 +112,46 @@ void GitWindows::apply_add_ignore_changes()
     for (auto itr=add_ignore_status.begin();itr!=add_ignore_status.end();itr++) 
     {
         path k=itr->key;
-        int v=itr->value;
-        if (v==1) {repo.git_add(k);}
-        if (v==2) {repo.add_to_gitignore(k);}
+        UntrackedLine* line=itr->value;
+        int v=line->getStatus();
+        if (v==1) 
+        {
+            repo.git_add(k);
+            line->setEnable(false);
+        }
+        if (v==2) 
+        {
+            repo.append_to_gitignore(k);
+            line->setEnable(false);
+        }
     }
+}
+
+AddIgnoreLayout::AddIgnoreLayout(GitWindows* gw):
+    QVBoxLayout(),
+    parent(gw)
+{
+    for (path f : parent->repo.getUntrackedFiles())
+    {
+        line*=new UntrackedLine(f,parent);
+        parent->add_ignore_status[file]=this;
+        this->addLayout(line);
+    }
+}
+
+UntrackedLine::setEnable(bool b)
+{
+    box_add.setEnable(b);
+    box_ignore.setEnable(b):
+    box_noaction.setEnable(b);
+}
+
+UntrackedLine::getStatus()
+{
+    if (box_add->isChecked()) { return 1 ;}
+    if (box_ignore->isChecked()) { return 2 ;}
+    if (box_noaction->isChecked()) { return 0 ;}
+    throw std::string("One of these three boxes has to be checked");
 }
 
 void GitWindows::launch()

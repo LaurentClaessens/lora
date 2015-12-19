@@ -22,8 +22,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QDialog>
 #include <QCheckBox>
 #include <QHBoxLayout>
+#include <QLabel>
 #include "GitRepository.h"
 #include "HashTable.h"
+
+class UntrackedLine;
 
 QString modified_text(GitRepository rep);
 
@@ -32,13 +35,14 @@ class GitWindows : public QDialog
     Q_OBJECT
 
     friend class FileQCheckBox;
+    friend class AddIgnoreLayout;
 
     private slots :
         void launch_git_diff();
         void apply_add_ignore_changes();
     private:
         // 0 : no action. 1 : add, 2 : gitignore
-        HashTable<path,int> add_ignore_status;
+        HashTable<path,UntrackedLine*> add_ignore_status;
         GitRepository repo;
         QHBoxLayout* untracked_line(path file); 
         QString modified_text();
@@ -68,6 +72,34 @@ class FileQCheckBox : public QCheckBox
         void newCheckedValue(int);
     public:
         FileQCheckBox(const QString text,const int add_ignore_value,const path f,GitWindows* parent=0);
+};
+
+class AddIgnoreLayout : public QVBoxLayout
+{
+    Q_OBJECT
+
+    private:
+        QHBoxLayout* untracked_line(path);
+        GitWindows* parent;
+    public:
+        AddIgnoreLayout(GitWindows*);
+};
+
+class UntrackedLine : public QHBoxLayout
+{
+    Q_OBJECT
+
+    private : 
+        path file;
+        GitWindows* parent;
+        QCheckBox*  box_add;
+        QCheckBox*  box_ignore;
+        QCheckBox*  box_noaction;
+        QLabel* label_filename;
+    public:
+        UntrackedLine(path,GitWindows*);
+        int getStatus();       // 0 : no action. 1 : add, 2 : gitignore
+        void setDisable(bool);
 };
 
 

@@ -35,8 +35,7 @@ class GitRepository
         bool isClean();
         void launchGitDiff();       // in a new terminal
         void git_add(path);
-        void add_to_gitignore(path);
-        void add_to_gitignore(std::vector<path>);
+        void append_to_gitignore(path);
 
         // the paths are relative to the repository path
         vector<path> getUntrackedFiles(); 

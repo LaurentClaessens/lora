@@ -98,29 +98,24 @@ vector<path> GitRepository::getModifiedFiles()
 
 void GitRepository::git_add(path file)
 {
-    CommandLine cl=CommandLine("git add "+file.string());
+    CommandLine cl=CommandLine("git add \""+file.string()+"\"");
     cl.setWorkingDirectory(getPath());
     cl.run();
 }
 
-void GitRepository::add_to_gitignore(path file)
+void GitRepository::append_to_gitignore(path file)
 {
     std::ofstream filestream;
-    filestream.open(".gitignore",std::ios_base::app); 
-    filestream<<"\n"<<file.string()<<"\n";
+    std::cout<<"Ajout de "<<file.string()<<std::endl;
+    std::cout<<"getPath : "<<getPath().string()<<std::endl;
+    path aux;
+    aux=getPath()/file;
+    std::cout<<"et slash : "<<aux.string()<<std::endl;
+    path full_filepath=getPath()/".gitignore";
+    std::cout<<"Ajout de "+file.string()+" dans "<<full_filepath.string()<<std::endl;
+    filestream.open(full_filepath.string(),std::ios_base::app); 
+    filestream<<"\n"<<file.string();
 }
-
-void GitRepository::add_to_gitignore(std::vector<path> files)
-{
-    std::ofstream filestream;
-    filestream.open(".gitignore",std::ios_base::app); 
-    filestream<<"\n";
-    for (path f:files)
-    {
-        filestream<<f.string()<<"\n";
-    }
-}
-
 
 void GitRepository::launchGitDiff()
 {
