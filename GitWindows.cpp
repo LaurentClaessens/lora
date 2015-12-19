@@ -34,22 +34,15 @@ QString GitWindows::modified_text()
     return QString::fromStdString( s_text  );
 }
 
-FileQCheckBox::FileQCheckBox(const QString text,const int ai_value,const path f,GitWindows* gw):
-    QCheckBox(text),
-    file(f),
-    add_ignore_value(ai_value),
-    parent(gw)
-{ }
-
 UntrackedLine::UntrackedLine(path f, GitWindows* p):
     QHBoxLayout(p),
     file(f),
-    parent(p),
-    box_add(FileQCheckBox("add",1,file,parent)),
-    box_ignore(FileQCheckBox("gitignore",2,file,parent)),
-    box_noaction(FileQCheckBox("no action",0,file,parent)),
-    label_filename(QLabel( QString::fromStdString(file.string())))
+    parent(p)
 {
+    box_add=new QCheckBox("add");
+    box_ignore=new QCheckBox("gitignore");
+    box_noaction=new QCheckBox("no action");
+    label_filename=new QLabel( QString::fromStdString(file.string()));
     box_noaction->setChecked(true);
 
     QButtonGroup* buttons = new QButtonGroup(this);
@@ -62,8 +55,6 @@ UntrackedLine::UntrackedLine(path f, GitWindows* p):
     this->addWidget(box_add);
     this->addWidget(box_ignore);
     this->addWidget(box_noaction);
-
-    buttons.setEnable(false);
 }
 
 GitWindows::GitWindows(GitRepository repo,QWidget* parent):
@@ -117,12 +108,12 @@ void GitWindows::apply_add_ignore_changes()
         if (v==1) 
         {
             repo.git_add(k);
-            line->setEnable(false);
+            line->setEnabled(false);
         }
         if (v==2) 
         {
             repo.append_to_gitignore(k);
-            line->setEnable(false);
+            line->setEnabled(false);
         }
     }
 }
@@ -133,20 +124,20 @@ AddIgnoreLayout::AddIgnoreLayout(GitWindows* gw):
 {
     for (path f : parent->repo.getUntrackedFiles())
     {
-        line*=new UntrackedLine(f,parent);
-        parent->add_ignore_status[file]=this;
+        UntrackedLine* line=new UntrackedLine(f,parent);
+        parent->add_ignore_status[f]=line;
         this->addLayout(line);
     }
 }
 
-UntrackedLine::setEnable(bool b)
+void UntrackedLine::setEnabled(bool b)
 {
-    box_add.setEnable(b);
-    box_ignore.setEnable(b):
-    box_noaction.setEnable(b);
+    box_add->setEnabled(b);
+    box_ignore->setEnabled(b);
+    box_noaction->setEnabled(b);
 }
 
-UntrackedLine::getStatus()
+int UntrackedLine::getStatus()
 {
     if (box_add->isChecked()) { return 1 ;}
     if (box_ignore->isChecked()) { return 2 ;}
