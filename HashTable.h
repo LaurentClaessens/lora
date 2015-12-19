@@ -160,7 +160,7 @@ V& HashTable<K,V>::operator[](const K key)
             return itr->value;
         }
     }
-    // If you are here, the HashTable is not empthy, but has not yet the key 'key'.
+    // If you are here, the HashTable is not empty, but has not yet the key 'key'.
     setValue(key,V());   
     return last->value;
 }
@@ -190,7 +190,7 @@ typename HashTable<K,V>::iterator HashTable<K,V>::end() const
 template <class K,class V>
 typename HashTable<K,V>::iterator& HashTable<K,V>::iterator::operator++()
 {
-    if (punt) punt=punt->next;       // if the iterator points to 0, making "itr++" gives again an itarator pointing to 0.
+    if (punt) punt=punt->next;       // if the iterator points to 0, making "itr++" gives again an iterator pointing to 0.
     return *this;
 }
 template <class K,class V>
