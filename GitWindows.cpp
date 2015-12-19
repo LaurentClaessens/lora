@@ -85,12 +85,12 @@ void GitWindows::apply_add_ignore_changes()
         int v=line->getStatus();
         if (v==1) 
         {
-            repo.git_add(k);
+            repo.git_add(itr->value->getActualPath());
             line->setEnabled(false);
         }
         if (v==2) 
         {
-            repo.append_to_gitignore(k);
+            repo.append_to_gitignore(itr->value->getActualPath());
             line->setEnabled(false);
         }
     }
@@ -113,10 +113,16 @@ UntrackedLine::UntrackedLine(path f, GitWindows* p):
     file(f),
     parent(p)
 {
+    printed_path=f.string();
+    if (is_directory(parent->repo.getPath()/f))
+    {
+        std::cout<<"j'ajoute * à "<<f.string()<<std::endl;
+        printed_path=printed_path+"*";
+    }
     box_add=new QCheckBox("add");
     box_ignore=new QCheckBox("gitignore");
     box_noaction=new QCheckBox("no action");
-    label_filename=new QLabel( QString::fromStdString(file.string()));
+    label_filename=new QLabel( QString::fromStdString(printed_path));
     box_noaction->setChecked(true);
 
     QButtonGroup* buttons = new QButtonGroup(this);
@@ -145,6 +151,8 @@ int UntrackedLine::getStatus()
     if (box_noaction->isChecked()) { return 0 ;}
     throw std::string("One of these three boxes has to be checked");
 }
+
+string UntrackedLine::getActualPath() {return printed_path;}
 
 void GitWindows::launch()
 {

@@ -35,9 +35,11 @@ class GitWindows : public QDialog
     Q_OBJECT
 
     friend class AddIgnoreLayout;
+    friend class UntrackedLine;
 
     private slots :
         void launch_git_diff();
+        void launch_edit_gitignore();
         void apply_add_ignore_changes();
     private:
         // 0 : no action. 1 : add, 2 : gitignore
@@ -67,6 +69,7 @@ class UntrackedLine : public QHBoxLayout
 
     private : 
         path file;
+        string printed_path;   
         GitWindows* parent;
         QCheckBox*  box_add;
         QCheckBox*  box_ignore;
@@ -75,6 +78,9 @@ class UntrackedLine : public QHBoxLayout
     public:
         UntrackedLine(path,GitWindows*);
         int getStatus();       // 0 : no action. 1 : add, 2 : gitignore
+
+        // if 'file' is a directory, we want to work with "file/*"
+        string getActualPath();
         void setEnabled(bool);
 };
 

@@ -111,7 +111,6 @@ Configuration* read_configuration_file(const path cfg_path,const path starting_p
              //   if (one.is_absolute()){ priority.push_back(one) ;}
              //   else { priority.push_back(  home_path/one  ) ; }
             //}
-            else { throw std::string("Unknown entry in the configuration file :"+parts[0]); }
             break;
         }
     }

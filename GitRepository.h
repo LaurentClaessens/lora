@@ -20,28 +20,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define   __GITREPOSITORY_H__
 
 #include "CommandLine.h"
+#include "Configuration.h"
 
 class GitRepository
 {
     private :
         path repo_path;
-        vector<string> v_commit_message();
+        vector<string> v_commit_message() const; 
     public :
         GitRepository(path);
 
-        path getPath();
-        path getGitIgnoreFullPath();  // return the full path of .gitignore
-        string getPathName();
-        string getStatusMessage();
-        bool isClean();
-        void launchGitDiff();       // in a new terminal
-        void editGitiGnore();       // in a new terminal
-        void git_add(path);
+        path getPath() const;
+        path getGitIgnoreFullPath() const;  // return the full path of .gitignore
+        string getPathName() const;
+        string getStatusMessage() const;
+        bool isClean() const;
+
+        // The following functions are not marked as 'const' because
+        // they change the git repository and then, indirectly, the logic of 'this'.
+        // e.g. editing '.gitignore' can modify the return value of "isClean".
+        void launchGitDiff(string terminal_launcher="konsole -e ");       // in a new terminal
+        void append_to_gitignore(string);
         void append_to_gitignore(path);
+        void editGitIgnore(string editor="konsole -e vim ");
+        void git_add(string);
+        void git_add(path);
 
         // the paths are relative to the repository path
-        vector<path> getUntrackedFiles(); 
-        vector<path> getModifiedFiles();
+        vector<path> getUntrackedFiles() const; 
+        vector<path> getModifiedFiles() const;
 };
 
 #endif   //__GITREPOSITORY_H__
