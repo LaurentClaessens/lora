@@ -111,7 +111,6 @@ Configuration* read_configuration_file(const path cfg_path,const path starting_p
              //   if (one.is_absolute()){ priority.push_back(one) ;}
              //   else { priority.push_back(  home_path/one  ) ; }
             //}
-            else { throw std::string("Unknown entry in the configuration file :"+parts[0]); }
             break;
         }
     }
@@ -137,6 +136,8 @@ path get_starting_backup_path(int argc, char *argv[])
 {
     if (argc==1){return "";}
     const path starting_path=path(argv[1]);
+    std::cout<<"starting_path"<<starting_path.string()<<std::endl;
+    std::cout<<"argv 1"<<argv[1]<<std::endl;
     path full_path;
     if (starting_path.is_relative()) { full_path=absolute(starting_path); }
     else { full_path=starting_path; }

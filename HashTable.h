@@ -27,16 +27,13 @@ INTRODUCTION
  We add at the end and an iterator begins at the beginning.
  When iterating, we get the values (not the keys);
 
- One can assign a second value to the same key. The previous one is lost.
+ One can assign a new value to the same key. The old value is lost.
  BTW : this works pretty the same as a Python dictionary.
 //*/
 
-// Oh yeah! last but not least : this whole f***ing class with template and iterators is to add "LC_ALL=C" in front of "git status".
 
 #ifndef __HASH_TABLE_H__
 #define __HASH_TABLE_H__
-
-
 
 #include <iostream>
 #include <string>
@@ -163,7 +160,7 @@ V& HashTable<K,V>::operator[](const K key)
             return itr->value;
         }
     }
-    // If you are here, the HashTable is not empthy, but has not yet the key 'key'.
+    // If you are here, the HashTable is not empty, but has not yet the key 'key'.
     setValue(key,V());   
     return last->value;
 }
@@ -193,7 +190,7 @@ typename HashTable<K,V>::iterator HashTable<K,V>::end() const
 template <class K,class V>
 typename HashTable<K,V>::iterator& HashTable<K,V>::iterator::operator++()
 {
-    if (punt) punt=punt->next;       // if the iterator points to 0, making "itr++" gives again an itarator pointing to 0.
+    if (punt) punt=punt->next;       // if the iterator points to 0, making "itr++" gives again an iterator pointing to 0.
     return *this;
 }
 template <class K,class V>

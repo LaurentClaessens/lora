@@ -93,9 +93,22 @@ void test_ht1()
     }
     
     test_assert(s1=="hello 4hello 5hello 1","loop in HashTable with itr++");
-    // iteration with ++itr. The result is the same
+    // iteration with ++itr. The result is the same.
     for (HashTable<int,string>::iterator itr=my_hash.begin();itr!=my_hash.end();++itr) {s2=s2+my_hash[itr]; }
     test_assert(s1==s2,"loop in HashTable with ++itr");
+    string s3="";
+
+    // We can get the value and the key from the iterator.
+    HashTable<string,string> my_other_hash;
+    my_other_hash["Kone"]="Vone";
+    my_other_hash["Ktwo"]="Vtwo";
+    my_other_hash["Kthree"]="Vthree";
+    for (auto itr=my_other_hash.begin();itr!=my_other_hash.end();++itr) 
+    {
+        s3=s3+itr->key;
+        s3=s3+itr->value;
+    }
+    test_assert(s3=="KoneVoneKtwoVtwoKthreeVthree","Value and key retreiving from an iterator");
 }
 
 // We can change the value of a key-value pair.
@@ -173,6 +186,14 @@ void test_gr1()
     }
 }
 
+void test_gr2()
+{
+    GitRepository repo=GitRepository("~");
+    path gitignore=repo.getGitIgnoreFullPath();
+    string s1=std::getenv("HOME");
+    test_assert(gitignore.string()==s1+"/.gitignore","bad HOME or gitignore research");
+}
+
 void test_gw1()
 {
     std::string commit;
@@ -206,6 +227,8 @@ int main(int argc,char* argv[])
     GenericTestingFunction("test_ht2",false,test_ht2).run();
     GenericTestingFunction("test_ht3",false,test_ht3).run();
     GenericTestingFunction("test_ht4",false,test_ht4).run();
+
+    GenericTestingFunction("test_gr2",false,test_gr2).run();
 
     GenericTestingFunction("test_gw1",true,test_gw1,"See the git windows ?").run();
     GenericTestingFunction("test_gr1",true,test_gr1,"See a status message ?").run();

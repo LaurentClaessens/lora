@@ -17,12 +17,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
 #include <string>
+#include <fstream>
 #include <boost/algorithm/string.hpp>
 #include "GitRepository.h"
 
-GitRepository::GitRepository(path p): repo_path(p) {}  
+GitRepository::GitRepository(path p)
+{
+    // The whole point is that the user can enter "~/foo" and that
+    // it seems that Boost is not able to convert ~ to the home dir name.
+    string s_path = p.string();
+    if (boost::algorithm::starts_with(s_path,"~"))
+    {
+        s_path.replace(0,1,getenv("HOME"));
+    }
+    repo_path=path(s_path);
+}  
 
-string GitRepository::getStatusMessage()
+string GitRepository::getStatusMessage() const
 {
     CommandLine cl=CommandLine("git status");
     cl.setEnvironmentVariable("LC_ALL","C");
@@ -30,9 +41,9 @@ string GitRepository::getStatusMessage()
     return cl.getOutput();
 }
 
-path GitRepository::getPath() {return repo_path;}
+path GitRepository::getPath() const {return repo_path;}
 
-vector<string> GitRepository::v_commit_message()
+vector<string> GitRepository::v_commit_message() const
 {
     string commit=getStatusMessage();
     vector<string> lines;
@@ -40,7 +51,7 @@ vector<string> GitRepository::v_commit_message()
     return lines;
 }
 
-bool GitRepository::isClean() 
+bool GitRepository::isClean()  const
 {
     vector<string> lines=v_commit_message();
     string line;
@@ -53,7 +64,7 @@ bool GitRepository::isClean()
 
 // this is a big bunch of sordid string manipulations.
 // I don't even list the assumptions I made about the output of 'git status'
-vector<path> GitRepository::getUntrackedFiles()
+vector<path> GitRepository::getUntrackedFiles() const
 {
     vector<string> lines=v_commit_message();
     vector<path> untracked_files;
@@ -79,7 +90,7 @@ vector<path> GitRepository::getUntrackedFiles()
 
 // I read somewhere that "If you really need to write crappy code, encapsulate it". 
 // here is my modest contribution to that principle.
-vector<path> GitRepository::getModifiedFiles()
+vector<path> GitRepository::getModifiedFiles() const
 {
     vector<path> modified_files;
     vector<string> lines=v_commit_message();
@@ -95,11 +106,42 @@ vector<path> GitRepository::getModifiedFiles()
     return modified_files;
 }
 
+void GitRepository::git_add(string s_file)
+{
+    CommandLine cl=CommandLine("git add \""+s_file+"\"");
+    cl.setWorkingDirectory(getPath());
+    cl.run();
+}
 
-void GitRepository::launchGitDiff()
+void GitRepository::git_add(path file) { git_add(file.string()); }
+
+path GitRepository::getGitIgnoreFullPath() const
+{
+    path full_filepath=getPath()/".gitignore";
+    return full_filepath;
+}
+
+void GitRepository::append_to_gitignore(string s_file)
+{
+    std::ofstream filestream;
+    path full_filepath=getGitIgnoreFullPath();
+    filestream.open(full_filepath.string(),std::ios_base::app); 
+    filestream<<"\n"<<s_file;
+}
+
+void GitRepository::append_to_gitignore(path file) { append_to_gitignore(file.string()); }
+
+void GitRepository::launchGitDiff(string terminal_launcher)
 {
     CommandLine cl=CommandLine("git diff");
     cl.setWorkingDirectory(getPath());
-    cl.setTerminal("terminology -e");
+    cl.setTerminal(terminal_launcher);
+    cl.run();
+}
+
+void GitRepository::editGitIgnore(string editor)
+{
+   CommandLine cl=CommandLine(editor+" .gitignore");
+    cl.setWorkingDirectory(getPath());
     cl.run();
 }
