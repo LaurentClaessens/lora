@@ -186,6 +186,14 @@ void test_gr1()
     }
 }
 
+void test_gr2()
+{
+    GitRepository repo=GitRepository("~");
+    path gitignore=repo.getGitIgnoreFullPath();
+    string s1=std::getenv("HOME");
+    test_assert(gitignore.string()==s1+"/.gitignore","bad HOME or gitignore research");
+}
+
 void test_gw1()
 {
     std::string commit;
@@ -219,6 +227,8 @@ int main(int argc,char* argv[])
     GenericTestingFunction("test_ht2",false,test_ht2).run();
     GenericTestingFunction("test_ht3",false,test_ht3).run();
     GenericTestingFunction("test_ht4",false,test_ht4).run();
+
+    GenericTestingFunction("test_gr2",false,test_gr2).run();
 
     GenericTestingFunction("test_gw1",true,test_gw1,"See the git windows ?").run();
     GenericTestingFunction("test_gr1",true,test_gr1,"See a status message ?").run();

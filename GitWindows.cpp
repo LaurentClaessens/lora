@@ -34,29 +34,6 @@ QString GitWindows::modified_text()
     return QString::fromStdString( s_text  );
 }
 
-UntrackedLine::UntrackedLine(path f, GitWindows* p):
-    QHBoxLayout(p),
-    file(f),
-    parent(p)
-{
-    box_add=new QCheckBox("add");
-    box_ignore=new QCheckBox("gitignore");
-    box_noaction=new QCheckBox("no action");
-    label_filename=new QLabel( QString::fromStdString(file.string()));
-    box_noaction->setChecked(true);
-
-    QButtonGroup* buttons = new QButtonGroup(this);
-    buttons->addButton(box_add);
-    buttons->addButton(box_ignore);
-    buttons->addButton(box_noaction);
-    buttons->setExclusive(true);
-
-    this->addWidget(label_filename);
-    this->addWidget(box_add);
-    this->addWidget(box_ignore);
-    this->addWidget(box_noaction);
-}
-
 GitWindows::GitWindows(GitRepository repo,QWidget* parent):
     QDialog(parent),
     repo(repo)
@@ -94,6 +71,7 @@ GitWindows::GitWindows(GitRepository repo,QWidget* parent):
     quick_commit_button->setEnabled(false);
 
     connect(git_diff_button,SIGNAL( clicked() ), this,SLOT( launch_git_diff() ));
+    connect(git_ignore_button,SIGNAL( clicked() ), this,SLOT( launch_edit_gitignore() ));
 
     setLayout(main_layout);
 };
@@ -130,6 +108,29 @@ AddIgnoreLayout::AddIgnoreLayout(GitWindows* gw):
     }
 }
 
+UntrackedLine::UntrackedLine(path f, GitWindows* p):
+    QHBoxLayout(),
+    file(f),
+    parent(p)
+{
+    box_add=new QCheckBox("add");
+    box_ignore=new QCheckBox("gitignore");
+    box_noaction=new QCheckBox("no action");
+    label_filename=new QLabel( QString::fromStdString(file.string()));
+    box_noaction->setChecked(true);
+
+    QButtonGroup* buttons = new QButtonGroup(this);
+    buttons->addButton(box_add);
+    buttons->addButton(box_ignore);
+    buttons->addButton(box_noaction);
+    buttons->setExclusive(true);
+
+    this->addWidget(label_filename);
+    this->addWidget(box_add);
+    this->addWidget(box_ignore);
+    this->addWidget(box_noaction);
+}
+
 void UntrackedLine::setEnabled(bool b)
 {
     box_add->setEnabled(b);
@@ -152,3 +153,4 @@ void GitWindows::launch()
 }
 
 void GitWindows::launch_git_diff() { repo.launchGitDiff(); }
+void GitWindows::launch_edit_gitignore() { repo.editGitIgnore(); }

@@ -21,7 +21,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <boost/algorithm/string.hpp>
 #include "GitRepository.h"
 
-GitRepository::GitRepository(path p): repo_path(p) {}  
+GitRepository::GitRepository(path p)
+{
+    // The whole point is that the user can enter "~/foo" and that
+    // it seems that Boost is not able to convert ~ to the home dir name.
+    string s_path = p.string();
+    if (boost::algorithm::starts_with(s_path,"~"))
+    {
+        s_path.replace(0,1,getenv("HOME"));
+    }
+    repo_path=path(s_path);
+}  
 
 string GitRepository::getStatusMessage()
 {
@@ -103,16 +113,16 @@ void GitRepository::git_add(path file)
     cl.run();
 }
 
+path GitRepository::getGitIgnoreFullPath()
+{
+    path full_filepath=getPath()/".gitignore";
+    return full_filepath;
+}
+
 void GitRepository::append_to_gitignore(path file)
 {
     std::ofstream filestream;
-    std::cout<<"Ajout de "<<file.string()<<std::endl;
-    std::cout<<"getPath : "<<getPath().string()<<std::endl;
-    path aux;
-    aux=getPath()/file;
-    std::cout<<"et slash : "<<aux.string()<<std::endl;
-    path full_filepath=getPath()/".gitignore";
-    std::cout<<"Ajout de "+file.string()+" dans "<<full_filepath.string()<<std::endl;
+    path full_filepath=getGitIgnoreFullPath();
     filestream.open(full_filepath.string(),std::ios_base::app); 
     filestream<<"\n"<<file.string();
 }

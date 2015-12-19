@@ -29,11 +29,13 @@ class GitRepository
     public :
         GitRepository(path);
 
-        path  getPath();
+        path getPath();
+        path getGitIgnoreFullPath();  // return the full path of .gitignore
         string getPathName();
         string getStatusMessage();
         bool isClean();
         void launchGitDiff();       // in a new terminal
+        void editGitiGnore();       // in a new terminal
         void git_add(path);
         void append_to_gitignore(path);
 
