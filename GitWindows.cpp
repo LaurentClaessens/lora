@@ -57,6 +57,8 @@ GitWindows::GitWindows(GitRepository repo,QWidget* parent):
 
     QPushButton* apply_add_ignore_button=new QPushButton("Apply these changes");
     connect(apply_add_ignore_button,SIGNAL(clicked()),this,SLOT(apply_add_ignore_changes()));
+    connect(git_commit_button,SIGNAL(clicked()),this,SLOT(launch_git_diff()));
+    connect(open_terminal_button,SIGNAL(clicked()),this,SLOT(open_terminal()));
 
     status_area_layout->addWidget(modified_qlabel);
     status_area_layout->addLayout(add_ignore_layout);
