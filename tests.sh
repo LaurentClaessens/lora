@@ -1,3 +1,3 @@
 # This is a simple shell tests script
 
-make UnitTests&&make lora && ./UnitTests
+make UnitTests ./UnitTests&&make lora
