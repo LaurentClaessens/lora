@@ -110,7 +110,8 @@ void GitRepository::git_add(string s_file)
 {
     CommandLine cl=CommandLine("git add \""+s_file+"\"");
     cl.setWorkingDirectory(getPath());
-    cl.run();
+    FILE* in=cl.run();
+    pclose(in);
 }
 
 void GitRepository::git_add(path file) { git_add(file.string()); }
