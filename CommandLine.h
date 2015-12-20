@@ -57,7 +57,7 @@ class CommandLine
         string toString() const;
         CommandLine();
         CommandLine(string);
-        FILE* run();
+        FILE* run();        // don't forget to pclose the FILE* object.
         string getOutput();
 };
 
