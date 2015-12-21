@@ -6,4 +6,6 @@ For HashTable :
     values=ht.getValues()     idem for the values.
             
 
-
+For reading the configuration file
+   
+    We should memoize the terminal preferences in GitRepository.

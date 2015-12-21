@@ -223,7 +223,7 @@ UnitTests: UnitTests.cpp\
 MainLoop.o: MainLoop.cpp MainLoop.h Configuration.o
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainLoop.o MainLoop.cpp
 
-Configuration.o: Configuration.cpp Configuration.h tasks.o
+Configuration.o: Configuration.cpp Configuration.h tasks.o HashTable.o
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Configuration.o  Configuration.cpp
 
 tasks.o: tasks.cpp tasks.h

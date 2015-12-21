@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <boost/filesystem.hpp>
 #include "DirectoryConverter.h"
 #include "tasks.h"
+#include "HashTable.h"
 
 // The aim of this class is to answer the questions which depend on the
 // configuration (paths manipulation, excluded files, task_list, ...)
@@ -59,5 +60,22 @@ class Configuration
 };
 
 path get_starting_backup_path(int argc, char *argv[]);
-Configuration* read_configuration_file(const path cfg_path,const path,bool verbose=true,string searched_property="");
+
+// read configuration file reads the given configuration file and returns
+// an HashTable whose keys are the "before the = sign" and values are vectors
+// of string "after the = signe".
+// example.
+// if the configutation file contains
+// foo=bla
+// bar=blo
+// foo=bli
+// the returned hash table will satisfy
+// ht["foo"]=(bla,bli)
+// ht["bar"]=(blo)
+HashTable<std::string,std::vector<std::string>> read_configuration_file(const path cfg_path);
+Configuration* configuration_file_to_configuration(const path cfg_path,const path,bool verbose=true);
+
+// The following returns the last found value (in the file) of the required property.
+std::string read_configuration_file(const path cfg_patah,const std::string searched_property);
+
 #endif     //__CONFIGURATION_H__

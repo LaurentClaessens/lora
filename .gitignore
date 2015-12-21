@@ -2,6 +2,7 @@
 backup.cfg
 lora
 lora.pro
+lora.cfg
 moc_*.cpp
 Makefile
 *.swp

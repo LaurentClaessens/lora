@@ -24,6 +24,7 @@ void test_assert(bool b,std::string message)
 {
     if (!b)
     {
+        std::cout<<"********************************* your software is juste agglomerate pieces of bullshit -- it don't even pass this elementary test *************************"<<std::endl;
         throw TestException(message+"\n");
     }
 }

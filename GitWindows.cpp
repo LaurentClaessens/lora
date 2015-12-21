@@ -46,8 +46,11 @@ GitWindows::GitWindows(GitRepository repo,QWidget* parent):
 
     QPushButton* git_diff_button=new QPushButton("See git diff");
     QPushButton* git_ignore_button=new QPushButton("Edit .gitignore");
-    QPushButton* git_commit_button=new QPushButton("launch git commit");
+    QPushButton* git_commit_button=new QPushButton("launch git commit -a");
     QPushButton* open_terminal_button=new QPushButton("Open a terminal here");
+    connect(git_commit_button,SIGNAL(clicked()),this,SLOT(launch_git_commit()));
+    connect(open_terminal_button,SIGNAL(clicked()),this,SLOT(open_terminal()));
+    connect(git_ignore_button,SIGNAL( clicked() ), this,SLOT( launch_edit_gitignore() ));
 
     QPushButton* quick_commit_button = new QPushButton("Commit me that");
 
@@ -57,8 +60,6 @@ GitWindows::GitWindows(GitRepository repo,QWidget* parent):
 
     QPushButton* apply_add_ignore_button=new QPushButton("Apply these changes");
     connect(apply_add_ignore_button,SIGNAL(clicked()),this,SLOT(apply_add_ignore_changes()));
-    connect(git_commit_button,SIGNAL(clicked()),this,SLOT(launch_git_diff()));
-    connect(open_terminal_button,SIGNAL(clicked()),this,SLOT(open_terminal()));
 
     status_area_layout->addWidget(modified_qlabel);
     status_area_layout->addLayout(add_ignore_layout);
@@ -78,7 +79,6 @@ GitWindows::GitWindows(GitRepository repo,QWidget* parent):
     quick_commit_button->setEnabled(false);
 
     connect(git_diff_button,SIGNAL( clicked() ), this,SLOT( launch_git_diff() ));
-    connect(git_ignore_button,SIGNAL( clicked() ), this,SLOT( launch_edit_gitignore() ));
 
     setLayout(main_layout);
 };
@@ -168,4 +168,5 @@ void GitWindows::launch()
 }
 
 void GitWindows::launch_git_diff() { repo.launchGitDiff(); }
+void GitWindows::launch_git_commit() { repo.launchGitCommit(); }
 void GitWindows::launch_edit_gitignore() { repo.editGitIgnore(); }

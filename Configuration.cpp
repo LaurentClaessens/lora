@@ -76,15 +76,13 @@ TaskList* Configuration::getTaskList() const {return task_list_ptr;}
 
 // CREATING FUNCTIONS (not to be confused with the constructor)
 
-Configuration* read_configuration_file(const path cfg_path,const path starting_path="",bool verbose)
+HashTable<std::string,std::vector<std::string>> read_configuration_file(const path cfg_path)
 {
     assert(is_regular_file(cfg_path));
+    auto hash_table=HashTable<std::string,std::vector<std::string>>();
     std::ifstream cfg_file(cfg_path.c_str());
     std::string line;
-    path bp,pp,sp;
-    const path home_path=path(getenv("HOME"));      // TODO : guess from the starting_path ??
     std::vector<std::string> parts;
-    std::vector<path> exclude;
     while (  std::getline(cfg_file,line) )
     {
         split( parts,line,boost::is_any_of("=") );
@@ -96,23 +94,53 @@ Configuration* read_configuration_file(const path cfg_path,const path starting_p
          case 1 :       // probably empty line
              break;
          case 2 :
-            path one=path(parts[1]);
-            if (parts[0]=="starting")  { sp=one; }
-            else if (parts[0]=="backup") { bp=one; }
-            else if (parts[0]=="purge") { pp=one; }
-            else if (parts[0]=="exclude") 
-            {   
-                if (one.is_absolute()){ exclude.push_back(one) ;}
-                else { exclude.push_back(  home_path/one  ) ; }
+             std::string key=parts[0];
+             std::string value=parts[1];
+            if (!hash_table.isKey(key))
+            {
+                hash_table[key]=std::vector<std::string>();
             }
-            // Temporally we do not support priority.
-            //else if (parts[0]=="priority") 
-            //{   
-             //   if (one.is_absolute()){ priority.push_back(one) ;}
-             //   else { priority.push_back(  home_path/one  ) ; }
-            //}
+            hash_table[key].push_back(value);
             break;
         }
+    }
+    return hash_table;
+}
+
+std::string read_configuration_file(const path cfg_path,const std::string searched_property)
+{
+    auto hash_table=read_configuration_file(cfg_path);
+
+    for (auto itr=hash_table.begin();itr!=hash_table.end();itr++)
+    {
+        if (itr->key==searched_property)
+        {
+            std::vector<std::string> v=itr->value;
+            if (!v.empty()) { return v.back(); }
+        }
+    }
+    throw std::string("Property not found in the configuration file : "+searched_property);
+}
+
+Configuration* configuration_file_to_configuration(const path cfg_path,const path starting_path="",bool verbose)
+{
+
+    assert(is_regular_file(cfg_path));
+    auto hash_table=read_configuration_file(cfg_path);
+
+    path bp,pp,sp;
+    const path home_path=path(getenv("HOME"));      // TODO : guess from the starting_path ??
+    std::vector<path> exclude;
+
+    bp=hash_table["backup"][0];
+    pp=hash_table["purge"][0];
+    sp=hash_table["starting"][0];
+
+    for (std::string s_path:hash_table["exclude"])
+    {
+        path aux=path(s_path);
+        if (aux.is_absolute()){ exclude.push_back(aux) ;}
+        else { exclude.push_back(  home_path/aux ) ; }
     }
     if (verbose)
     {
@@ -130,6 +158,7 @@ Configuration* read_configuration_file(const path cfg_path,const path starting_p
     config_ptr->add_exclude_path(exclude);
 
     return config_ptr;
+
 }
 
 path get_starting_backup_path(int argc, char *argv[])

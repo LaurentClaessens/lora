@@ -40,6 +40,7 @@ class GitRepository
         // they change the git repository and then, indirectly, the logic of 'this'.
         // e.g. editing '.gitignore' can modify the return value of "isClean".
         void launchGitDiff(string terminal_launcher="konsole -e ");       // in a new terminal
+        void launchGitCommit(string terminal_launcher="konsole -e ");    
         void append_to_gitignore(string);
         void append_to_gitignore(path);
         void editGitIgnore(string editor="konsole -e vim ");

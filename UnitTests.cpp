@@ -208,7 +208,7 @@ void test_gw1()
 
 void test_exclude()
 {
-    Configuration* configuration=read_configuration_file("backup.cfg","",false);   // the last boolean argument is 'verbose'
+    Configuration* configuration=configuration_file_to_configuration("lora.cfg","",false);   // the last boolean argument is 'verbose'
     test_assert(configuration->is_excluded("jjlk")==true,"A non existing path is not excluded.");
     test_assert(configuration->is_excluded("/home/moky/Linux")==true,"This should be excluded.");
     test_assert(configuration->is_excluded("/home/moky/Linux/")==true,"This should be excluded.");
@@ -217,7 +217,7 @@ void test_exclude()
 int main(int argc,char* argv[])
 {
     QApplication app(argc, argv);
-    std::cout<<"Initializing tests ---------------------------"<<std::endl;
+    std::cout<<"Initializing tests ---------------------------"<<std::endl<<std::endl<<std::endl;
     GenericTestingFunction("test_exclude",false,test_exclude).run();
 
     GenericTestingFunction("test_cl1",false,test_cl1).run();

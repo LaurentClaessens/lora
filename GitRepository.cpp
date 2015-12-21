@@ -140,6 +140,14 @@ void GitRepository::launchGitDiff(string terminal_launcher)
     cl.run();
 }
 
+void GitRepository::launchGitCommit(string terminal_launcher)
+{
+    CommandLine cl=CommandLine("git commit -a");
+    cl.setWorkingDirectory(getPath());
+    cl.setTerminal(terminal_launcher);
+    cl.run();
+}
+
 void GitRepository::editGitIgnore(string editor)
 {
    CommandLine cl=CommandLine(editor+" .gitignore");

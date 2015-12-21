@@ -39,6 +39,7 @@ class GitWindows : public QDialog
 
     private slots :
         void launch_git_diff();
+        void launch_git_commit();
         void launch_edit_gitignore();
         void apply_add_ignore_changes();
     private:
