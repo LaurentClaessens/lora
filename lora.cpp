@@ -16,16 +16,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <boost/filesystem.hpp>
-#include <boost/thread.hpp>
-#include <boost/algorithm/string.hpp>
-
-#include "tasks.h"
-#include "MainLoop.h"
-#include "Configuration.h"
+#include <QtGui>
+#include "lora.h"
+#include "MainWindows.h"
 
 using namespace boost::filesystem;
 using namespace std;
@@ -63,16 +56,30 @@ void run_loops(Configuration* config_ptr)
     purge_loop.run();
 }
 
-int main(int argc, char *argv[])
+void start_main_windows(MainWindows* mw) { mw->exec(); }
+
+int main(int argc, char* argv[])
 {
+    QApplication app(argc, argv);
     try
     {    
+
         path starting_backup_path=get_starting_backup_path(argc,argv);
         Configuration* config_ptr=configuration_file_to_configuration("lora.cfg",starting_backup_path);          // There is the file 'example.cfg' as example.
 
         //launching the thread that runs the tasks
         boost::thread scheduler( run_tasks, config_ptr );
         boost::thread loops( run_loops,config_ptr  );
+        MainWindows* mw=new MainWindows();
+        boost::thread main_windows_process( start_main_windows,mw   );
+
+        mw->add_button("la vol");
+        mw->add_button("la vol");
+        mw->add_button("la vol");
+        mw->add_button("la vol");
+        mw->add_button("la vol");
+        mw->exec();
+        mw->show();
 
         loops.join();
         cout<<"Let's wait the end of the tasks..."<<endl;
@@ -85,4 +92,5 @@ int main(int argc, char *argv[])
         cerr<<"Caught : "<<err.what()<<endl;
         cerr<<"Type : "<<typeid(err).name()<<endl;
     }
+    return 1;
 }

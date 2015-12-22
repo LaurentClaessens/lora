@@ -213,8 +213,14 @@ compiler_clean:
 
 ####### Compile
 lora: lora.cpp  \
-		DirectoryConverter.o tasks.o MainLoop.o Configuration.o
-	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora MainLoop.o  Configuration.o DirectoryConverter.o tasks.o   $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB)
+		DirectoryConverter.o tasks.o MainLoop.o Configuration.o MainWindows.o
+	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora MainLoop.o  Configuration.o DirectoryConverter.o tasks.o MainWindows.o moc_MainWindows.o  $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB) $(LIBS)
+MainWindows.o: moc_MainWindows.o MainWindows.cpp MainWindows.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainWindows.o     MainWindows.cpp
+moc_MainWindows.cpp: MainWindows.h
+	/usr/lib/i386-linux-gnu/qt4/bin/moc $(DEFINES) $(INCPATH) MainWindows.h -o moc_MainWindows.cpp
+moc_MainWindows.o: moc_MainWindows.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_MainWindows.o moc_MainWindows.cpp
 
 UnitTests: UnitTests.cpp\
    	testing.o CommandLine.o HashTable.o GitRepository.o GitWindows.o Configuration.o DirectoryConverter.o tasks.o
