@@ -9,6 +9,7 @@ Makefile
 .kk.log
 .viminfo
 *~
+.*.swo
 *.o
 core
 UnitTests

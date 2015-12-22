@@ -40,9 +40,9 @@ bool run_next(TaskList &task_list)
     return ret;
 }
 
-void make_the_work(Configuration* config)
+void run_tasks(Configuration* config_ptr)
 {   
-    TaskList* const tl_ptr=config->getTaskList();
+    TaskList* const tl_ptr=config_ptr->getTaskList();
     bool still=true;
     while (still)
     {
@@ -54,6 +54,15 @@ void make_the_work(Configuration* config)
     cout<<"The work seems to be done. Leaving the 'make_the_work' thread."<<endl;
 }
 
+void run_loops(Configuration* config_ptr)
+{
+    MainBackupLoop backup_loop=MainBackupLoop(config_ptr);
+    MainPurgeLoop purge_loop=MainPurgeLoop(config_ptr);
+    backup_loop.run();
+    cout<<endl<<"Launching the purge process ..."<<endl;
+    purge_loop.run();
+}
+
 int main(int argc, char *argv[])
 {
     try
@@ -62,16 +71,10 @@ int main(int argc, char *argv[])
         Configuration* config_ptr=configuration_file_to_configuration("lora.cfg",starting_backup_path);          // There is the file 'example.cfg' as example.
 
         //launching the thread that runs the tasks
-        boost::thread scheduler( make_the_work, config_ptr );
+        boost::thread scheduler( run_tasks, config_ptr );
+        boost::thread loops( run_loops,config_ptr  );
 
-        MainBackupLoop backup_loop=MainBackupLoop(config_ptr);
-        MainPurgeLoop purge_loop=MainPurgeLoop(config_ptr);
-
-        backup_loop.run();
-    
-        cout<<endl<<"Launching the purge process ..."<<endl;
-        purge_loop.run();
-
+        loops.join();
         cout<<"Let's wait the end of the tasks..."<<endl;
         scheduler.join();
 
