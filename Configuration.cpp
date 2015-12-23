@@ -175,6 +175,11 @@ path get_starting_backup_path(int argc, char *argv[])
     return full_path;
 }
 
+// MAIN WINDOWS
+
+void Configuration::setMainWindows(MainWindows* mw) { main_windows=mw ;}
+MainWindows* Configuration::getMainWindows() {return main_windows;}
+
 // OTHER UTILITIES FUNCTIONS
 
 bool Configuration::do_we_backup(const path orig_path,const path bak_path) const

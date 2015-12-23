@@ -47,7 +47,7 @@ void run_tasks(Configuration* config_ptr)
     cout<<"The work seems to be done. Leaving the 'make_the_work' thread."<<endl;
 }
 
-void run_loops(Configuration* config_ptr)
+void loops(Configuration* config_ptr)
 {
     MainBackupLoop backup_loop=MainBackupLoop(config_ptr);
     MainPurgeLoop purge_loop=MainPurgeLoop(config_ptr);
@@ -55,8 +55,8 @@ void run_loops(Configuration* config_ptr)
     cout<<endl<<"Launching the purge process ..."<<endl;
     purge_loop.run();
 }
-
-void start_main_windows(MainWindows* mw) { mw->exec(); }
+ 
+void start_main_windows(MainWindows* mw)  {mw->exec();}
 
 int main(int argc, char* argv[])
 {
@@ -64,27 +64,19 @@ int main(int argc, char* argv[])
     try
     {    
 
+        MainWindows* main_windows=new MainWindows();
+        boost::thread main_windows_process( start_main_windows, main_windows );
+
         path starting_backup_path=get_starting_backup_path(argc,argv);
         Configuration* config_ptr=configuration_file_to_configuration("lora.cfg",starting_backup_path);          // There is the file 'example.cfg' as example.
 
+        config_ptr->setMainWindows(main_windows);
         //launching the thread that runs the tasks
         boost::thread scheduler( run_tasks, config_ptr );
-        boost::thread loops( run_loops,config_ptr  );
-        MainWindows* mw=new MainWindows();
-        boost::thread main_windows_process( start_main_windows,mw   );
 
-        mw->add_button("la vol");
-        mw->add_button("la vol");
-        mw->add_button("la vol");
-        mw->add_button("la vol");
-        mw->add_button("la vol");
-        mw->exec();
-        mw->show();
-
-        loops.join();
-        cout<<"Let's wait the end of the tasks..."<<endl;
+        loops(config_ptr);
+        
         scheduler.join();
-
     }
     catch (string err) { cout<<endl<<string("I got a bad news : ")<<err<<endl; }
     catch (std::length_error &err) 

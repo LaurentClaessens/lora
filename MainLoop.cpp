@@ -85,6 +85,7 @@ void MainBackupLoop::DealWithDirectory(path rep_path)
     if (!repo.isClean())
     {
         std::cout<<"********************** Le répoertoire "<<repo.getPathName()<<" est à giter"<<std::endl;
+        configuration->getMainWindows()->addButton(repo.getPathName());
     }
     if (!is_excluded(rep_path))
     {

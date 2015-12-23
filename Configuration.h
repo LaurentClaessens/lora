@@ -25,6 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "DirectoryConverter.h"
 #include "tasks.h"
 #include "HashTable.h"
+#include "MainWindows.h"
+
 
 // The aim of this class is to answer the questions which depend on the
 // configuration (paths manipulation, excluded files, task_list, ...)
@@ -35,6 +37,7 @@ class Configuration
         const DirectoryConverter* const converter_ptr;
         TaskList* const task_list_ptr;
         std::vector<path> excluded_paths;
+        MainWindows* main_windows;
     public:
         Configuration(const path,const DirectoryConverter* const,TaskList* const);
         path getStartingBackupPath() const;
@@ -54,9 +57,11 @@ class Configuration
         path home_to_modified_purge(const path) const;            
 
         bool do_we_backup(const path orig_path,const path bak_path) const;
-
         void create_purge_directories() const;
         bool are_all_paths_ok() const;             
+
+        void setMainWindows(MainWindows*);
+        MainWindows* getMainWindows();
 };
 
 path get_starting_backup_path(int argc, char *argv[]);
