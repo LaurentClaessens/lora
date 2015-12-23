@@ -34,7 +34,7 @@ class GitRepository
         path getGitIgnoreFullPath() const;  // return the full path of .gitignore
         string getPathName() const;
         string getStatusMessage() const;
-        bool isClean() const;
+        bool isClean() const;   // if there is not subdir '.git', return "true"
 
         // The following functions are not marked as 'const' because
         // they change the git repository and then, indirectly, the logic of 'this'.

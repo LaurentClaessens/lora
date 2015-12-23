@@ -6,11 +6,6 @@
 
 #include "MainWindows.h"
 
-// The Makefile is created by
-// qmake -project
-// qmake
-// and that's it.
-
 void MainWindows::add_button(std::string s)
 {
     std::cout<<"Je passe par add_button "<<s<<std::endl;

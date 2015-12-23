@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/predicate.hpp>     // starts_with
 #include "MainLoop.h"
+#include "GitRepository.h"
 #include "Configuration.h"
 
 // MAIN LOOP ----
@@ -80,12 +81,13 @@ bool MainBackupLoop::is_excluded(path dirname) { return configuration->is_exclud
 
 void MainBackupLoop::DealWithDirectory(path rep_path)
 {
+    GitRepository repo=GitRepository(rep_path);
+    if (!repo.isClean())
+    {
+        std::cout<<"********************** Le répoertoire "<<repo.getPathName()<<" est à giter"<<std::endl;
+    }
     if (!is_excluded(rep_path))
     {
-        if (boost::algorithm::starts_with(rep_path.string(),"/home/moky/Linux"))
-        {
-            throw std::string("You should never get here.");
-        }
         path bak_rep=configuration->home_to_backup(rep_path);
         if (!is_directory(bak_rep)) { create_directory_tree(bak_rep); }
         loopOverDirectory(rep_path); 

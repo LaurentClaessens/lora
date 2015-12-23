@@ -14,8 +14,9 @@ class MainWindows : public QDialog
 {
     Q_OBJECT;
 
+    private :
+        QVBoxLayout* main_layout=new QVBoxLayout;
     public:
-        QHBoxLayout* main_layout=new QHBoxLayout;
         MainWindows(QWidget* parent=0);
         void add_button(std::string);
 };

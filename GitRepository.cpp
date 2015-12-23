@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 #include <fstream>
 #include <boost/algorithm/string.hpp>
+#include "CommandLine.h"
 #include "GitRepository.h"
 
 GitRepository::GitRepository(path p)
@@ -42,6 +43,7 @@ string GitRepository::getStatusMessage() const
 }
 
 path GitRepository::getPath() const {return repo_path;}
+string GitRepository::getPathName() const {return getPath().string();}
 
 vector<string> GitRepository::v_commit_message() const
 {
@@ -53,6 +55,7 @@ vector<string> GitRepository::v_commit_message() const
 
 bool GitRepository::isClean()  const
 {
+    if (!is_directory(getPath()/".git")) { return true; }
     vector<string> lines=v_commit_message();
     string line;
     for (string& line:lines)
