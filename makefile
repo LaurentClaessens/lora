@@ -212,21 +212,22 @@ compiler_lex_clean:
 compiler_clean: 
 
 ####### Compile
+all: lora UnitTests
 lora: lora.cpp  \
-		DirectoryConverter.o tasks.o MainLoop.o Configuration.o MainWindows.o GitRepository.o CommandLine.o
-	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora MainLoop.o CommandLine.o GitRepository.o Configuration.o DirectoryConverter.o tasks.o MainWindows.o moc_MainWindows.o  $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB) $(LIBS)
-MainWindows.o: moc_MainWindows.o MainWindows.cpp MainWindows.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainWindows.o     MainWindows.cpp
-moc_MainWindows.cpp: MainWindows.h
-	/usr/lib/i386-linux-gnu/qt4/bin/moc $(DEFINES) $(INCPATH) MainWindows.h -o moc_MainWindows.cpp
-moc_MainWindows.o: moc_MainWindows.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_MainWindows.o moc_MainWindows.cpp
+		DirectoryConverter.o tasks.o MainLoop.o Configuration.o GitListWindow.o GitRepository.o CommandLine.o
+	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora MainLoop.o CommandLine.o GitRepository.o Configuration.o DirectoryConverter.o tasks.o GitListWindow.o moc_GitListWindow.o  $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB) $(LIBS)
+GitListWindow.o: moc_GitListWindow.o GitListWindow.cpp GitListWindow.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GitListWindow.o     GitListWindow.cpp
+moc_GitListWindow.cpp: GitListWindow.h
+	/usr/lib/i386-linux-gnu/qt4/bin/moc $(DEFINES) $(INCPATH) GitListWindow.h -o moc_GitListWindow.cpp
+moc_GitListWindow.o: moc_GitListWindow.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_GitListWindow.o moc_GitListWindow.cpp
 
 UnitTests: UnitTests.cpp\
    	testing.o CommandLine.o HashTable.o GitRepository.o GitWindows.o Configuration.o DirectoryConverter.o tasks.o
-	$(CXX) $(LFLAGS)  $(CXXFLAGS) $(INCPATH) -o UnitTests GitRepository.o Configuration.o testing.o DirectoryConverter.o tasks.o CommandLine.o GitWindows.o moc_GitWindows.o $(BOOST_SYSTEM) UnitTests.cpp  $(LIBS) 
+	$(CXX) $(LFLAGS)  $(CXXFLAGS) $(INCPATH) -o UnitTests GitRepository.o Configuration.o testing.o DirectoryConverter.o tasks.o CommandLine.o GitWindows.o GitListWindow.o moc_GitListWindow.o  moc_GitWindows.o $(BOOST_SYSTEM) UnitTests.cpp  $(LIBS) 
 
-MainLoop.o: MainLoop.cpp MainLoop.h Configuration.o
+MainLoop.o: MainLoop.cpp MainLoop.h Configuration.o GitRepository.o
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainLoop.o MainLoop.cpp
 
 Configuration.o: Configuration.cpp Configuration.h tasks.o HashTable.o

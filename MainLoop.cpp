@@ -81,11 +81,12 @@ bool MainBackupLoop::is_excluded(path dirname) { return configuration->is_exclud
 
 void MainBackupLoop::DealWithDirectory(path rep_path)
 {
+    std::cout<<"Entrer dans le répertoire "<<rep_path<<std::endl;
     GitRepository repo=GitRepository(rep_path);
     if (!repo.isClean())
     {
-        std::cout<<"********************** Le répoertoire "<<repo.getPathName()<<" est à giter"<<std::endl;
-        configuration->getMainWindows()->addButton(repo.getPathName());
+        std::cout<<"********************** There is git stuff to do in "<<repo.getPathName()<<std::endl;
+        configuration->addGitButton(repo);
     }
     if (!is_excluded(rep_path))
     {

@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 #include <fstream>
 #include <boost/algorithm/string.hpp>
+#include "GitListWindow.h"
 #include "Configuration.h"
 
 // CONFIGURATION -- general
@@ -175,10 +176,17 @@ path get_starting_backup_path(int argc, char *argv[])
     return full_path;
 }
 
-// MAIN WINDOWS
+// GIT LIST WINDOWS
 
-void Configuration::setMainWindows(MainWindows* mw) { main_windows=mw ;}
-MainWindows* Configuration::getMainWindows() {return main_windows;}
+void Configuration::setGitListWindow(GitListWindow* gw)
+{
+    git_list_window=gw;
+}
+
+void Configuration::addGitButton(GitRepository repo)
+{
+    git_list_window->addGitButton(repo);
+}
 
 // OTHER UTILITIES FUNCTIONS
 

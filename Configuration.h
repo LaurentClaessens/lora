@@ -37,7 +37,7 @@ class Configuration
         const DirectoryConverter* const converter_ptr;
         TaskList* const task_list_ptr;
         std::vector<path> excluded_paths;
-        MainWindows* main_windows;
+        GitListWindow* git_list_window;
     public:
         Configuration(const path,const DirectoryConverter* const,TaskList* const);
         path getStartingBackupPath() const;
@@ -60,8 +60,8 @@ class Configuration
         void create_purge_directories() const;
         bool are_all_paths_ok() const;             
 
-        void setMainWindows(MainWindows*);
-        MainWindows* getMainWindows();
+        void setGitListWindow(GitListWindow*);
+        void addGitButton(GitRepository);
 };
 
 path get_starting_backup_path(int argc, char *argv[]);

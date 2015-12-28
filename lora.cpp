@@ -56,21 +56,18 @@ void loops(Configuration* config_ptr)
     purge_loop.run();
 }
  
-void start_main_windows(MainWindows* mw)  {mw->exec();}
-
 int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
     try
     {    
 
-        MainWindows* main_windows=new MainWindows();
-        boost::thread main_windows_process( start_main_windows, main_windows );
+        GitListWindow* git_list_window=new GitListWindow();
 
         path starting_backup_path=get_starting_backup_path(argc,argv);
         Configuration* config_ptr=configuration_file_to_configuration("lora.cfg",starting_backup_path);          // There is the file 'example.cfg' as example.
 
-        config_ptr->setMainWindows(main_windows);
+        config_ptr->setGitListWindow(git_list_window);
         //launching the thread that runs the tasks
         boost::thread scheduler( run_tasks, config_ptr );
 
