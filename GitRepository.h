@@ -20,7 +20,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define   __GITREPOSITORY_H__
 
 #include "CommandLine.h"
-#include "Configuration.h"
 
 class GitRepository
 {

@@ -153,7 +153,7 @@ void GitRepository::launchGitCommit(string terminal_launcher)
 
 void GitRepository::editGitIgnore(string editor)
 {
-   CommandLine cl=CommandLine(editor+" .gitignore");
+    CommandLine cl=CommandLine(editor+" .gitignore");
     cl.setWorkingDirectory(getPath());
     cl.run();
 }

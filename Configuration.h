@@ -25,11 +25,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "DirectoryConverter.h"
 #include "tasks.h"
 #include "HashTable.h"
-#include "MainWindows.h"
+#include "GitListWindow.h"
+#include "GitRepository.h"
 
 
 // The aim of this class is to answer the questions which depend on the
 // configuration (paths manipulation, excluded files, task_list, ...)
+// It also holds a hand on the main windows in order to add buttons when
+// a git need is found.
 class Configuration
 {
     private:
@@ -70,7 +73,7 @@ path get_starting_backup_path(int argc, char *argv[]);
 // an HashTable whose keys are the "before the = sign" and values are vectors
 // of string "after the = signe".
 // example.
-// if the configutation file contains
+// if the configuration file contains
 // foo=bla
 // bar=blo
 // foo=bli
@@ -82,5 +85,7 @@ Configuration* configuration_file_to_configuration(const path cfg_path,const pat
 
 // The following returns the last found value (in the file) of the required property.
 std::string read_configuration_file(const path cfg_patah,const std::string searched_property);
+
+path get_starting_backup_path(int,char*);
 
 #endif     //__CONFIGURATION_H__

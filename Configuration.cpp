@@ -162,7 +162,7 @@ Configuration* configuration_file_to_configuration(const path cfg_path,const pat
 
 }
 
-path get_starting_backup_path(int argc, char *argv[])
+path get_starting_backup_path(int argc, char* argv[])
 {
     if (argc==1){return "";}
     const path starting_path=path(argv[1]);

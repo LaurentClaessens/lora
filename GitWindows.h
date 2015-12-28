@@ -42,6 +42,7 @@ class GitWindows : public QDialog
         void launch_git_commit();
         void launch_edit_gitignore();
         void apply_add_ignore_changes();
+        void open_terminal(string);
     private:
         // 0 : no action. 1 : add, 2 : gitignore
         HashTable<path,UntrackedLine*> add_ignore_status;

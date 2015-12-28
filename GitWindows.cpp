@@ -170,3 +170,11 @@ void GitWindows::launch()
 void GitWindows::launch_git_diff() { repo.launchGitDiff(); }
 void GitWindows::launch_git_commit() { repo.launchGitCommit(); }
 void GitWindows::launch_edit_gitignore() { repo.editGitIgnore(); }
+void GitWindows::open_terminal(string terminal_launcher)
+{
+    CommandLine cl=CommandLine("");
+    cl.setWorkingDirectory(repo.getPath());
+    cl.setTerminal(terminal_launcher);
+    cl.run();
+}
+

@@ -18,7 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <QtGui>
 #include "lora.h"
-#include "MainWindows.h"
+#include "GitListWindow.h"
+#include "Configuration.h"
 
 using namespace boost::filesystem;
 using namespace std;
