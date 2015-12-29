@@ -41,7 +41,7 @@ void test_cl1()
     cl1.setEnvironmentVariable("BLA","foo");
     cl1.setWorkingDirectory("..");
     string s=cl1.toString();
-    test_assert(s=="cd ..&& LC_ALL=C BLA=foo cat lora.cpp","Command line composition");
+    test_assert(s=="cd \"..\"  && LC_ALL=C BLA=foo cat lora.cpp","Command line composition");
 }
 
 // This one uses "cat" to read a file and compare to the content of the file
