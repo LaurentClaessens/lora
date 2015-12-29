@@ -18,8 +18,14 @@ GitListWindow::GitListWindow():
 {
     main_layout=new QVBoxLayout;
     QWidget* button_widget=new QWidget(this);
+    QScrollArea* scroll_area=new QScrollArea;
     QPushButton* exit_button=new QPushButton("exit");
+
     main_layout->addWidget(exit_button);
     button_widget->setLayout(main_layout);
-    setCentralWidget(button_widget);
+
+    scroll_area->setWidgetResizable(true);
+    scroll_area->setWidget(button_widget);
+    
+    setCentralWidget(scroll_area);
 }

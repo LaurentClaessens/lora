@@ -3,6 +3,8 @@
 
 // This contains the mechanism that allow the buttons to be added and shown
 // while the backup loop is running.
+// There is a minimal working example of the technique here :
+// https://github.com/LaurentClaessens/ex_qt
 
 #include<string>
 #include<QVBoxLayout>
