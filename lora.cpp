@@ -64,6 +64,7 @@ int main(int argc, char* argv[])
     {    
 
         GitListWindow* git_list_window=new GitListWindow();
+        git_list_window->show();
 
         path starting_backup_path=get_starting_backup_path(argc,argv);
         Configuration* config_ptr=configuration_file_to_configuration("lora.cfg",starting_backup_path);          // There is the file 'example.cfg' as example.
