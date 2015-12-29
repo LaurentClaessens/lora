@@ -49,7 +49,7 @@ void CommandLine::setTerminal(string t) {
 string CommandLine::full_command_line() const
 {
     vector<string> cl;
-    cl.push_back( "cd "+working_directory.string()+"&&"  );
+    cl.push_back( "cd \""+working_directory.string()+"\"  &&"  );
     cl.push_back( environment_variables.toString() );
 
     if (in_terminal) { cl.push_back(terminal_cl); }
