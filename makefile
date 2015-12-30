@@ -214,8 +214,8 @@ compiler_clean:
 ####### Compile
 all: lora UnitTests
 lora: lora.cpp  \
-		DirectoryConverter.o tasks.o MainLoop.o Configuration.o GitListWindow.o GitRepository.o CommandLine.o
-	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora MainLoop.o CommandLine.o GitRepository.o Configuration.o DirectoryConverter.o tasks.o GitListWindow.o moc_GitListWindow.o  $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB) $(LIBS)
+		DirectoryConverter.o tasks.o MainLoop.o Configuration.o GitRepository.o CommandLine.o GitWindows.o GitListWindow.o 
+	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora MainLoop.o CommandLine.o GitRepository.o Configuration.o DirectoryConverter.o tasks.o  GitWindows.o moc_GitWindows.o GitListWindow.o moc_GitListWindow.o  $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB) $(LIBS)
 GitListWindow.o: moc_GitListWindow.o GitListWindow.cpp GitListWindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GitListWindow.o     GitListWindow.cpp
 moc_GitListWindow.cpp: GitListWindow.h

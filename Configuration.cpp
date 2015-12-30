@@ -166,8 +166,6 @@ path get_starting_backup_path(int argc, char* argv[])
 {
     if (argc==1){return "";}
     const path starting_path=path(argv[1]);
-    std::cout<<"starting_path"<<starting_path.string()<<std::endl;
-    std::cout<<"argv 1"<<argv[1]<<std::endl;
     path full_path;
     if (starting_path.is_relative()) { full_path=absolute(starting_path); }
     else { full_path=starting_path; }

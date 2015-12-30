@@ -9,15 +9,32 @@
 #include<string>
 #include<QVBoxLayout>
 #include<QMainWindow>
+#include<QPushButton>
 
 #include "GitRepository.h"
 
 using std::string;
 
+class GitButton : public QPushButton
+{
+    Q_OBJECT
+
+    private slots:
+        void launchGitWindow();
+    private:
+        GitRepository repo;
+    public:
+        GitButton(GitRepository);
+};
+
+// This is the main window. It contains the list of buttons named after
+// the directories that are git repositories needing some intervention.
 class GitListWindow : public QMainWindow
 {
     Q_OBJECT;
 
+    signals:
+        void need_git_windows();
     private :
         QVBoxLayout* main_layout;
     public:
