@@ -3,7 +3,7 @@
 #include <QtGui>
 
 #include "GitListWindow.h"
-#include "GitWindows.h"
+#include "GitWindow.h"
 
 
 // GIT BUTTON
@@ -16,9 +16,9 @@ GitButton::GitButton(GitRepository r) :
 void GitButton::launchGitWindow()
 {
     std::cout<<"Clicked for git window in "<<repo.getPathName()<<std::endl;
-    GitWindows* git_windows = new GitWindows(repo,this);
-    git_windows->show();
-    git_windows->activateWindow();
+    GitWindow* git_window = new GitWindow(repo,this);
+    git_window->show();
+    git_window->activateWindow();
     qApp->processEvents();
 }
 

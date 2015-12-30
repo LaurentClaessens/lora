@@ -30,7 +30,7 @@ class UntrackedLine;
 
 QString modified_text(GitRepository rep);
 
-class GitWindows : public QDialog
+class GitWindow : public QDialog
 {
     Q_OBJECT
 
@@ -50,8 +50,8 @@ class GitWindows : public QDialog
         QHBoxLayout* untracked_line(path file); 
         QString modified_text();
     public:
-        GitWindows(GitRepository repo,QWidget* parent=0);
-        void launch();      // open a windows 
+        GitWindow(GitRepository repo,QWidget* parent=0);
+        void launch();      // open a window 
 };
 
 class AddIgnoreLayout : public QVBoxLayout
@@ -60,9 +60,9 @@ class AddIgnoreLayout : public QVBoxLayout
 
     private:
         QHBoxLayout* untracked_line(path);
-        GitWindows* parent;
+        GitWindow* parent;
     public:
-        AddIgnoreLayout(GitWindows*);
+        AddIgnoreLayout(GitWindow*);
 };
 
 class UntrackedLine : public QHBoxLayout
@@ -72,13 +72,13 @@ class UntrackedLine : public QHBoxLayout
     private : 
         path file;
         string printed_path;   
-        GitWindows* parent;
+        GitWindow* parent;
         QCheckBox*  box_add;
         QCheckBox*  box_ignore;
         QCheckBox*  box_noaction;
         QLabel* label_filename;
     public:
-        UntrackedLine(path,GitWindows*);
+        UntrackedLine(path,GitWindow*);
         int getStatus();       // 0 : no action. 1 : add, 2 : gitignore
 
         // if 'file' is a directory, we want to work with "file/*"

@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "CommandLine.h"
 #include "HashTable.h"
 #include "GitRepository.h"
-#include "GitWindows.h"
+#include "GitWindow.h"
 
 using namespace std;
     
@@ -202,7 +202,7 @@ void test_gw1()
     std::cin>>directory;
     GitRepository repo=GitRepository(directory);
     
-    GitWindows* gw1=new GitWindows(repo);
+    GitWindow* gw1=new GitWindow(repo);
     gw1->launch();
 }
 
@@ -230,7 +230,7 @@ int main(int argc,char* argv[])
 
     GenericTestingFunction("test_gr2",false,test_gr2).run();
 
-    GenericTestingFunction("test_gw1",true,test_gw1,"See the git windows ?").run();
+    GenericTestingFunction("test_gw1",true,test_gw1,"See the git window ?").run();
     GenericTestingFunction("test_gr1",true,test_gr1,"See a status message ?").run();
     GenericTestingFunction("test_cl3",true,test_cl3,"See Vim in a new terminal ?").run();
 }

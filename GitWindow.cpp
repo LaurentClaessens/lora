@@ -20,9 +20,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <boost/algorithm/string/join.hpp>
 #include <QtGui>
-#include "GitWindows.h"
+#include "GitWindow.h"
 
-QString GitWindows::modified_text()
+QString GitWindow::modified_text()
 {
     vector<string> v_text;
     v_text.push_back("Modified files :");
@@ -34,7 +34,7 @@ QString GitWindows::modified_text()
     return QString::fromStdString( s_text  );
 }
 
-GitWindows::GitWindows(GitRepository repo,QWidget* parent):
+GitWindow::GitWindow(GitRepository repo,QWidget* parent):
     QDialog(parent),
     repo(repo)
 { 
@@ -83,7 +83,7 @@ GitWindows::GitWindows(GitRepository repo,QWidget* parent):
     setLayout(main_layout);
 };
 
-void GitWindows::apply_add_ignore_changes()
+void GitWindow::apply_add_ignore_changes()
 {
     for (auto itr=add_ignore_status.begin();itr!=add_ignore_status.end();itr++) 
     {
@@ -103,7 +103,7 @@ void GitWindows::apply_add_ignore_changes()
     }
 }
 
-AddIgnoreLayout::AddIgnoreLayout(GitWindows* gw):
+AddIgnoreLayout::AddIgnoreLayout(GitWindow* gw):
     QVBoxLayout(),
     parent(gw)
 {
@@ -115,7 +115,7 @@ AddIgnoreLayout::AddIgnoreLayout(GitWindows* gw):
     }
 }
 
-UntrackedLine::UntrackedLine(path f, GitWindows* p):
+UntrackedLine::UntrackedLine(path f, GitWindow* p):
     QHBoxLayout(),
     file(f),
     parent(p)
@@ -161,16 +161,16 @@ int UntrackedLine::getStatus()
 
 string UntrackedLine::getActualPath() {return printed_path;}
 
-void GitWindows::launch()
+void GitWindow::launch()
 {
     this->show();
     qApp->exec();
 }
 
-void GitWindows::launch_git_diff() { repo.launchGitDiff(); }
-void GitWindows::launch_git_commit() { repo.launchGitCommit(); }
-void GitWindows::launch_edit_gitignore() { repo.editGitIgnore(); }
-void GitWindows::open_terminal(string terminal_launcher)
+void GitWindow::launch_git_diff() { repo.launchGitDiff(); }
+void GitWindow::launch_git_commit() { repo.launchGitCommit(); }
+void GitWindow::launch_edit_gitignore() { repo.editGitIgnore(); }
+void GitWindow::open_terminal(string terminal_launcher)
 {
     CommandLine cl=CommandLine("");
     cl.setWorkingDirectory(repo.getPath());

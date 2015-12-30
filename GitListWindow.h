@@ -34,7 +34,7 @@ class GitListWindow : public QMainWindow
     Q_OBJECT;
 
     signals:
-        void need_git_windows();
+        void need_git_window();
     private :
         QVBoxLayout* main_layout;
     public:
