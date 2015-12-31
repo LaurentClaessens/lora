@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "HashTable.h"
 
 using namespace boost::filesystem;
-using namespace std;
+using std::string;
 
 class CommandLine
 {
@@ -61,5 +61,23 @@ class CommandLine
         string getOutput();
 };
 
+// This class is basically a record of the command lines related to the terminal
+// that are read from the configuration file.
+// TODO : guess "in_terminal" and "editor" from terminal and a list of the more
+//        classic terminals (terminolofy, konsole, xterm, ...)
+//        Use the Debian's alternative system to get the editor. Or the git
+//        preferences.
+class TerminalLines
+{
+    private:
+        const string terminal;
+        const string in_terminal;
+        const string editor;
+    public:
+        TerminalLines(const string,const string,const string);
+        string getTerminal() const;
+        string getInTerminal() const;
+        string getEditor() const;
+};
 
 #endif // __COMMAND_LINE_H__

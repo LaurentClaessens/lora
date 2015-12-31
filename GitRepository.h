@@ -21,6 +21,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "CommandLine.h"
 
+using std::vector;
+using std::string;
+
 class GitRepository
 {
     private :

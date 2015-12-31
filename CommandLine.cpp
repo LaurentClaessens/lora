@@ -103,3 +103,18 @@ string CommandLine::EnvironmentVariables::toString() const
     }
     return boost::algorithm::join(tmp," ");
 }
+
+// TERMINAL LINE
+
+TerminalLines::TerminalLines(const string _terminal,const string _in_terminal,const string _editor) :
+    terminal(_terminal),
+    in_terminal(_in_terminal),
+    editor(_editor)
+{}
+
+string TerminalLines::getTerminal() const {return terminal;}
+string TerminalLines::getInTerminal() const {return in_terminal;}
+string TerminalLines::getEditor() const  {return editor;}
+
+
+

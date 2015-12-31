@@ -202,7 +202,8 @@ void test_gw1()
     std::cin>>directory;
     GitRepository repo=GitRepository(directory);
     
-    GitWindow* gw1=new GitWindow(repo);
+    Configuration* config_ptr=configuration_file_to_configuration("lora.cfg","");
+    GitWindow* gw1=new GitWindow(repo,config_ptr);
     gw1->launch();
 }
 

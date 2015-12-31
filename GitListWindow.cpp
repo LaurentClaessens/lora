@@ -8,25 +8,30 @@
 
 // GIT BUTTON
 
-GitButton::GitButton(GitRepository r) : 
+GitButton::GitButton(GitRepository r,GitListWindow* glw) : 
     QPushButton(QString::fromStdString(r.getPathName())), 
-    repo(r) 
+    repo(r),
+    parent(glw)
     {}
 
 void GitButton::launchGitWindow()
 {
     std::cout<<"Clicked for git window in "<<repo.getPathName()<<std::endl;
-    GitWindow* git_window = new GitWindow(repo,this);
+    parent->launchGitWindow(repo);
+}
+
+// GIT LIST WINDOW
+void GitListWindow::launchGitWindow(GitRepository repo)
+{
+    GitWindow* git_window = new GitWindow(repo,config_ptr,this);
     git_window->show();
     git_window->activateWindow();
     qApp->processEvents();
 }
 
-// GIT LIST WINDOW
-
 void GitListWindow::addGitButton(GitRepository repo)
 {
-    GitButton* button=new GitButton(repo);
+    GitButton* button=new GitButton(repo,this);
 
     connect(button,SIGNAL(clicked()),button,SLOT(launchGitWindow()));
     button->show();
@@ -34,8 +39,9 @@ void GitListWindow::addGitButton(GitRepository repo)
     qApp->processEvents();
 }
 
-GitListWindow::GitListWindow():
-    QMainWindow()
+GitListWindow::GitListWindow(const Configuration* conf):
+    QMainWindow(),
+    config_ptr(conf)
 {
     main_layout=new QVBoxLayout;
     QWidget* button_widget=new QWidget(this);

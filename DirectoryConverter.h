@@ -55,9 +55,6 @@ class DirectoryConverter
         path getHomePath() const;
         path getPurgePath() const;
         void create_purge_directories() const;
-        //path purge_to_purge_datetime(const path) const;
-        //path purge_to_modified_purge(const path) const;
-        //path purge_to_removed_purge(const path) const;
         path backup_to_removed_purge(const path) const;
         path backup_to_home(const path) const;
         path home_to_backup(const path) const;

@@ -33,16 +33,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // configuration (paths manipulation, excluded files, task_list, ...)
 // It also holds a hand on the main windows in order to add buttons when
 // a git need is found.
+// This contains a direct sum of
+// - directory converter,
+// - task list,
+// - excluded path,
+// - terminal command line,
+// and some functions to access it.
 class Configuration
 {
     private:
         const path starting_backup_path;
         const DirectoryConverter* const converter_ptr;
         TaskList* const task_list_ptr;
+        const TerminalLines* const terminal_lines_ptr;
         std::vector<path> excluded_paths;
         GitListWindow* git_list_window;
     public:
-        Configuration(const path,const DirectoryConverter* const,TaskList* const);
+        Configuration(const path,const DirectoryConverter* const,TaskList* const, const TerminalLines* const);
         path getStartingBackupPath() const;
         path getHomePath() const;
         path getBackupPath() const;
@@ -62,6 +69,10 @@ class Configuration
         bool do_we_backup(const path orig_path,const path bak_path) const;
         void create_purge_directories() const;
         bool are_all_paths_ok() const;             
+
+        const string getTerminal() const;
+        const string getInTerminal() const;
+        const string getEditor() const; 
 
         void setGitListWindow(GitListWindow*);
         void addGitButton(GitRepository);

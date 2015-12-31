@@ -25,6 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QLabel>
 #include "GitRepository.h"
 #include "HashTable.h"
+#include "Configuration.h"
+
 
 class UntrackedLine;
 
@@ -42,15 +44,19 @@ class GitWindow : public QDialog
         void launch_git_commit();
         void launch_edit_gitignore();
         void apply_add_ignore_changes();
-        void open_terminal(string);
+        void open_terminal();
     private:
         // 0 : no action. 1 : add, 2 : gitignore
         HashTable<path,UntrackedLine*> add_ignore_status;
+
+        // GitRepository is not 'const' because the status of the repository
+        // is going to change (even if the logical object is probably const)
         GitRepository repo;
         QHBoxLayout* untracked_line(path file); 
         QString modified_text();
+        const Configuration* config_ptr;
     public:
-        GitWindow(GitRepository repo,QWidget* parent=0);
+        GitWindow(const GitRepository repo,const Configuration*,QWidget* parent=0);
         void launch();      // open a window 
 };
 

@@ -25,8 +25,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // CONFIGURATION -- general
 
-Configuration::Configuration(const path sp, const DirectoryConverter* const dc, TaskList* const  tl):
-    starting_backup_path(sp),converter_ptr(dc),task_list_ptr(tl) {}
+Configuration::Configuration(const path sp, const DirectoryConverter* const dc, TaskList* const  tl, const TerminalLines* const term_lines_ptr):
+    starting_backup_path(sp),
+    converter_ptr(dc),
+    task_list_ptr(tl),
+    terminal_lines_ptr(term_lines_ptr)
+{}
 
 path Configuration::getStartingBackupPath() const { return starting_backup_path; }
 
@@ -152,10 +156,15 @@ Configuration* configuration_file_to_configuration(const path cfg_path,const pat
 
     if (starting_path.string()!=""){sp=starting_path;}
 
+    string terminal=hash_table["terminal"][0];
+    string in_terminal=hash_table["in_terminal"][0];
+    string editor=hash_table["editor"][0];
+
     const DirectoryConverter* const converter_ptr=new DirectoryConverter(bp,pp);
     TaskList* tl_ptr=new TaskList();
+    const TerminalLines* const terminal_lines_ptr=new TerminalLines(terminal,in_terminal,editor);
     
-    Configuration* config_ptr = new Configuration( sp,converter_ptr,tl_ptr  );
+    Configuration* config_ptr = new Configuration( sp,converter_ptr,tl_ptr,terminal_lines_ptr  );
     config_ptr->add_exclude_path(exclude);
 
     return config_ptr;
@@ -185,6 +194,12 @@ void Configuration::addGitButton(GitRepository repo)
 {
     git_list_window->addGitButton(repo);
 }
+
+// TERMINAL LINES
+
+const string Configuration::getTerminal() const {return terminal_lines_ptr->getTerminal();}
+const string Configuration::getInTerminal() const {return terminal_lines_ptr->getInTerminal();}
+const string Configuration::getEditor() const {return terminal_lines_ptr->getEditor();}
 
 // OTHER UTILITIES FUNCTIONS
 

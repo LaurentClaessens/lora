@@ -34,9 +34,10 @@ QString GitWindow::modified_text()
     return QString::fromStdString( s_text  );
 }
 
-GitWindow::GitWindow(GitRepository repo,QWidget* parent):
+GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget* parent):
     QDialog(parent),
-    repo(repo)
+    repo(repo),
+    config_ptr(conf)
 { 
     QVBoxLayout* main_layout = new QVBoxLayout;
     QHBoxLayout* button_status_layout = new QHBoxLayout;
@@ -170,11 +171,11 @@ void GitWindow::launch()
 void GitWindow::launch_git_diff() { repo.launchGitDiff(); }
 void GitWindow::launch_git_commit() { repo.launchGitCommit(); }
 void GitWindow::launch_edit_gitignore() { repo.editGitIgnore(); }
-void GitWindow::open_terminal(string terminal_launcher)
+void GitWindow::open_terminal()
 {
     CommandLine cl=CommandLine("");
     cl.setWorkingDirectory(repo.getPath());
-    cl.setTerminal(terminal_launcher);
+    cl.setTerminal(config_ptr->getTerminal());
     cl.run();
 }
 
