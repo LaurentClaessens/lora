@@ -49,6 +49,11 @@ GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget*
     QPushButton* git_ignore_button=new QPushButton("Edit .gitignore");
     QPushButton* git_commit_button=new QPushButton("launch git commit -a");
     QPushButton* open_terminal_button=new QPushButton("Open a terminal here");
+
+    QPushButton* python_gitignore_button=new QPushButton("add Python gitignore");
+    QPushButton* latex_gitignore_button=new QPushButton("add LaTeX gitignore");
+    QPushButton* cpp_gitignore_button=new QPushButton("add C++ gitignore");
+
     connect(git_commit_button,SIGNAL(clicked()),this,SLOT(launch_git_commit()));
     connect(open_terminal_button,SIGNAL(clicked()),this,SLOT(open_terminal()));
     connect(git_ignore_button,SIGNAL( clicked() ), this,SLOT( launch_edit_gitignore() ));
@@ -75,6 +80,9 @@ GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget*
     button_layout->addWidget(git_ignore_button);
     button_layout->addWidget(git_commit_button);
     button_layout->addWidget(open_terminal_button);
+    button_layout->addWidget(python_gitignore_button);
+    button_layout->addWidget(latex_gitignore_button);
+    button_layout->addWidget(cpp_gitignore_button);
     quick_commit_layout->addWidget(quick_commit_button);
     
     quick_commit_button->setEnabled(false);
