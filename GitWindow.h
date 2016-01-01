@@ -55,6 +55,7 @@ class GitWindow : public QDialog
         QHBoxLayout* untracked_line(path file); 
         QString modified_text();
         const Configuration* config_ptr;
+        void addFormatButton(string,QLayout*);
     public:
         GitWindow(const GitRepository repo,const Configuration*,QWidget* parent=0);
         void launch();      // open a window 
@@ -92,5 +93,18 @@ class UntrackedLine : public QHBoxLayout
         void setEnabled(bool);
 };
 
+// A button that proposes to add files in .gitignore.
+class FormatButton : public QPushButton
+{
+    Q_OBJECT
+
+    private slots:
+        void add_to_gitignore();
+    private :
+        GitRepository repo;
+        const string format;
+    public:
+        FormatButton(GitRepository,string);
+};
 
 #endif   // __GIT_WINDOWS_H__

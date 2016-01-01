@@ -131,9 +131,44 @@ void GitRepository::append_to_gitignore(string s_file)
     path full_filepath=getGitIgnoreFullPath();
     filestream.open(full_filepath.string(),std::ios_base::app); 
     filestream<<"\n"<<s_file;
+    std::cout<<"Append "+s_file+" in .gitignore in "+getPathName()<<std::endl;
 }
 
-void GitRepository::append_to_gitignore(path file) { append_to_gitignore(file.string()); }
+void GitRepository::append_format_to_gitignore(string format)
+{
+        if (format== "latex")
+        {
+            append_to_gitignore("*.aux");
+            append_to_gitignore("*.log");
+            append_to_gitignore("*.bbl");
+            append_to_gitignore("*.out");
+            append_to_gitignore("*.idx");
+            append_to_gitignore("*.nlo");
+            append_to_gitignore("*.blg");
+            append_to_gitignore("*.toc");
+            append_to_gitignore("*.nls");
+            append_to_gitignore("*.auxlock");
+            append_to_gitignore("*.ind");
+            append_to_gitignore("*.ilg");
+        }
+        else if(format=="C++")
+        {
+            append_to_gitignore("*.o");
+            append_to_gitignore("core");
+            append_to_gitignore("moc_*.cpp");
+        }
+        else if(format=="python")
+        {
+            append_to_gitignore("*.pyc");
+        }
+        else if(format=="vim")
+        {
+            append_to_gitignore(".*~");
+            append_to_gitignore(".*~");
+            append_to_gitignore(".viminfo");
+        }
+        std::cout<<"Unknown format : "<<format<<std::endl;
+    }
 
 void GitRepository::launchGitDiff(string terminal_launcher)
 {

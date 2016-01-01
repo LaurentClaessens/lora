@@ -34,6 +34,12 @@ QString GitWindow::modified_text()
     return QString::fromStdString( s_text  );
 }
 
+void GitWindow::addFormatButton(string format,QLayout* layout)
+{
+    FormatButton* button=new FormatButton(repo,format);
+    layout->addWidget(button);
+}
+
 GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget* parent):
     QDialog(parent),
     repo(repo),
@@ -50,9 +56,10 @@ GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget*
     QPushButton* git_commit_button=new QPushButton("launch git commit -a");
     QPushButton* open_terminal_button=new QPushButton("Open a terminal here");
 
-    QPushButton* python_gitignore_button=new QPushButton("add Python gitignore");
-    QPushButton* latex_gitignore_button=new QPushButton("add LaTeX gitignore");
-    QPushButton* cpp_gitignore_button=new QPushButton("add C++ gitignore");
+    addFormatButton("vim",button_layout);
+    addFormatButton("latex",button_layout);
+    addFormatButton("C++",button_layout);
+    addFormatButton("python",button_layout);
 
     connect(git_commit_button,SIGNAL(clicked()),this,SLOT(launch_git_commit()));
     connect(open_terminal_button,SIGNAL(clicked()),this,SLOT(open_terminal()));
@@ -80,9 +87,6 @@ GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget*
     button_layout->addWidget(git_ignore_button);
     button_layout->addWidget(git_commit_button);
     button_layout->addWidget(open_terminal_button);
-    button_layout->addWidget(python_gitignore_button);
-    button_layout->addWidget(latex_gitignore_button);
-    button_layout->addWidget(cpp_gitignore_button);
     quick_commit_layout->addWidget(quick_commit_button);
     
     quick_commit_button->setEnabled(false);
@@ -187,3 +191,15 @@ void GitWindow::open_terminal()
     cl.run();
 }
 
+// FORMAT BUTTON
+
+
+FormatButton::FormatButton(GitRepository r,const string t) : 
+    QPushButton(QString::fromStdString("add "+t+" to gitignore")),
+    repo(r),
+    format(t)
+{
+    connect(this,SIGNAL(clicked()),this,SLOT(add_to_gitignore()));
+}
+
+void FormatButton::add_to_gitignore() { repo.append_format_to_gitignore(format); }

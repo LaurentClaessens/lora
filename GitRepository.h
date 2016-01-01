@@ -44,7 +44,7 @@ class GitRepository
         void launchGitDiff(string terminal_launcher="konsole -e ");       // in a new terminal
         void launchGitCommit(string terminal_launcher="konsole -e ");    
         void append_to_gitignore(string);
-        void append_to_gitignore(path);
+        void append_format_to_gitignore(string);
         void editGitIgnore(string editor="konsole -e vim ");
         void git_add(string);
         void git_add(path);
