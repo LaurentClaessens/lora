@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class MainLoop
 {
     protected:
-        Configuration* const configuration;     // not const because one adds tasks.
+        Configuration* const config_ptr;     // not const because one adds tasks.
     public :
         MainLoop(Configuration*);
         void loopOverDirectory(path sub_directory);

@@ -209,10 +209,10 @@ void test_gw1()
 
 void test_exclude()
 {
-    Configuration* configuration=configuration_file_to_configuration(0,0,false);   // the last boolean argument is 'verbose'
-    test_assert(configuration->is_excluded("jjlk")==true,"A non existing path is not excluded.");
-    test_assert(configuration->is_excluded("/home/moky/Linux")==true,"This should be excluded.");
-    test_assert(configuration->is_excluded("/home/moky/Linux/")==true,"This should be excluded.");
+    Configuration* config_ptr=configuration_file_to_configuration(0,0,false);   // the last boolean argument is 'verbose'
+    test_assert(config_ptr->is_excluded("jjlk")==true,"A non existing path is not excluded.");
+    test_assert(config_ptr->is_excluded("/home/moky/Linux")==true,"This should be excluded.");
+    test_assert(config_ptr->is_excluded("/home/moky/Linux/")==true,"This should be excluded.");
 }
 
 int main(int argc,char* argv[])
