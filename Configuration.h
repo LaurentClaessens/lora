@@ -38,6 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // - task list,
 // - excluded path,
 // - terminal command line,
+// - an handle on the git list window
 // and some functions to access it.
 class Configuration
 {
@@ -76,6 +77,8 @@ class Configuration
 
         void setGitListWindow(GitListWindow*);
         void addGitButton(GitRepository);
+
+        void processEvents();
 };
 
 path get_starting_backup_path(int argc, char *argv[]);

@@ -42,6 +42,7 @@ void MainLoop::loopOverDirectory(path sub_directory)
 {
     assert(is_directory(sub_directory));
 
+    //configuration->processEvents();      // a more reactive window.
     directory_iterator end_itr;
     for(  directory_iterator itr(sub_directory); itr!=end_itr;++itr  )
     {

@@ -58,3 +58,5 @@ GitListWindow::GitListWindow(const Configuration* conf):
     
     setCentralWidget(scroll_area);
 }
+
+void GitListWindow::processEvents() { qApp->processEvents(); }

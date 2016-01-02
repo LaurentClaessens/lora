@@ -174,12 +174,6 @@ int UntrackedLine::getStatus()
 
 string UntrackedLine::getActualPath() {return printed_path;}
 
-void GitWindow::launch()
-{
-    this->show();
-    qApp->exec();
-}
-
 void GitWindow::launch_git_diff() { repo.launchGitDiff(); }
 void GitWindow::launch_git_commit() { repo.launchGitCommit(); }
 void GitWindow::launch_edit_gitignore() { repo.editGitIgnore(); }

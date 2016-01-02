@@ -58,7 +58,6 @@ class GitWindow : public QDialog
         void addFormatButton(string,QLayout*);
     public:
         GitWindow(const GitRepository repo,const Configuration*,QWidget* parent=0);
-        void launch();      // open a window 
 };
 
 class AddIgnoreLayout : public QVBoxLayout
