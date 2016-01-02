@@ -192,3 +192,10 @@ void GitRepository::editGitIgnore(string editor)
     cl.setWorkingDirectory(getPath());
     cl.run();
 }
+
+void GitRepository::commit(string message)
+{
+    CommandLine cl=CommandLine("git commit -a --message=\""+message+"\"");
+    cl.setWorkingDirectory(getPath());
+    cl.run();
+}

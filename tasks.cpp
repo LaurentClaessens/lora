@@ -67,36 +67,33 @@ GenericTask::GenericTask(){ };
 GenericTask::~GenericTask(){ };
 
 
-FileCopyTask::FileCopyTask(pathTriple triple):GenericTask()
-    {
-        this->orig_path=triple.orig;
-        this->bak_path=triple.bak;
-        this->purge_modified_path=triple.purge;
-    }
+FileCopyTask::FileCopyTask(pathTriple triple):
+    GenericTask(),
+    orig_path(triple.orig),
+    bak_path(triple.bak),
+    purge_modified_path(triple.purge)
+{ }
 
 bool FileCopyTask::run() const
 {
-        if (!is_regular_file(orig_path))
-        {
-            throw string("The file "+orig_path.string()+" does not exist ?");
-        }
+    if (!is_regular_file(orig_path))
+    {
+        throw string("The file "+orig_path.string()+" does not exist ?");
+    }
 
-        std::vector<path> test_list;
-        test_list.push_back( orig_path );
-        test_list.push_back( bak_path );
+    if (is_regular_file(bak_path))
+    {
+        create_directory_tree(purge_modified_path.parent_path());
+        rename( bak_path,purge_modified_path );
+        assert( is_regular_file(purge_modified_path) );
+    }
+    my_copy_file(  orig_path,bak_path  );
 
-        if (is_regular_file(bak_path))
-        {
-            create_directory_tree(purge_modified_path.parent_path());
-            rename( bak_path,purge_modified_path );
-            assert( is_regular_file(purge_modified_path) );
-        }
-        my_copy_file(  orig_path,bak_path  );
-
-        assert( is_regular_file(orig_path) );
-        assert( is_regular_file(bak_path) );
-        return true;
+    assert( is_regular_file(orig_path) );
+    assert( is_regular_file(bak_path) );
+    return true;
 }
+
 FileMoveTask::FileMoveTask(const path orig,const path destination): orig_path(orig), destination_path(destination) {}
 
 bool FileMoveTask::run() const

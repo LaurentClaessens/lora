@@ -56,6 +56,7 @@ GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget*
     QPushButton* git_ignore_button=new QPushButton("Edit .gitignore");
     QPushButton* git_commit_button=new QPushButton("launch git commit -a");
     QPushButton* open_terminal_button=new QPushButton("Open a terminal here");
+    QPushButton* exit_button=new QPushButton("Exit");
 
     addFormatButton("vim",button_layout);
     addFormatButton("latex",button_layout);
@@ -64,6 +65,7 @@ GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget*
 
     connect(git_commit_button,SIGNAL(clicked()),this,SLOT(launch_git_commit()));
     connect(open_terminal_button,SIGNAL(clicked()),this,SLOT(open_terminal()));
+    connect(exit_button,SIGNAL(clicked()),this,SLOT(close()));
     connect(git_ignore_button,SIGNAL( clicked() ), this,SLOT( launch_edit_gitignore() ));
 
 
@@ -90,6 +92,7 @@ GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget*
     button_layout->addWidget(git_ignore_button);
     button_layout->addWidget(git_commit_button);
     button_layout->addWidget(open_terminal_button);
+    button_layout->addWidget(exit_button);
     
 
     connect(git_diff_button,SIGNAL( clicked() ), this,SLOT( launch_git_diff() ));
@@ -135,11 +138,7 @@ UntrackedLine::UntrackedLine(path f, GitWindow* p):
     parent(p)
 {
     printed_path=f.string();
-    if (is_directory(parent->repo.getPath()/f))
-    {
-        std::cout<<"j'ajoute * à "<<f.string()<<std::endl;
-        printed_path=printed_path+"*";
-    }
+    if (is_directory(parent->repo.getPath()/f)) { printed_path=printed_path+"*"; }
     box_add=new QCheckBox("add");
     box_ignore=new QCheckBox("gitignore");
     box_noaction=new QCheckBox("no action");
@@ -186,6 +185,7 @@ void GitWindow::open_terminal()
     cl.run();
 }
 
+
 // FORMAT BUTTON
 
 
@@ -208,7 +208,7 @@ QuickCommitLayout::QuickCommitLayout(GitRepository r):
 {
     QPushButton* button = new QPushButton("Commit me that");
     connect(button,SIGNAL(clicked()),this,SLOT(do_commit()));
-    QLineEdit* edit_line = new QLineEdit();
+    edit_line = new QLineEdit();
     addWidget(edit_line);
     addWidget(button);
 }
@@ -216,5 +216,5 @@ QuickCommitLayout::QuickCommitLayout(GitRepository r):
 void QuickCommitLayout::do_commit()
 {
     string message=edit_line->text().toStdString();
-    std::cout<<"Commit message :"<<message<<std::endl;
+    repo.commit(message);
 }

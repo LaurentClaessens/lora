@@ -42,12 +42,16 @@ class GitRepository
         // they change the git repository and then, indirectly, the logic of 'this'.
         // e.g. editing '.gitignore' can modify the return value of "isClean".
         void launchGitDiff(string terminal_launcher="konsole -e ");       // in a new terminal
-        void launchGitCommit(string terminal_launcher="konsole -e ");    
         void append_to_gitignore(string);
         void append_format_to_gitignore(string);
         void editGitIgnore(string editor="konsole -e vim ");
         void git_add(string);
         void git_add(path);
+        
+        //launchGitCommit launches 'git commit -a' in a terminal
+        //commit simply performs 'git commit -a' with the given message
+        void launchGitCommit(string terminal_launcher="konsole -e ");    
+        void commit(string message);
 
         // the paths are relative to the repository path
         vector<path> getUntrackedFiles() const; 
