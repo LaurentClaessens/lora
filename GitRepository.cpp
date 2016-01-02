@@ -136,7 +136,7 @@ void GitRepository::append_to_gitignore(string s_file)
 
 void GitRepository::append_format_to_gitignore(string format)
 {
-        if (format== "latex")
+        if (format=="latex")
         {
             append_to_gitignore("*.aux");
             append_to_gitignore("*.log");
@@ -167,7 +167,7 @@ void GitRepository::append_format_to_gitignore(string format)
             append_to_gitignore(".*~");
             append_to_gitignore(".viminfo");
         }
-        std::cout<<"Unknown format : "<<format<<std::endl;
+        else { std::cout<<"Unknown format : "<<format<<std::endl; }
     }
 
 void GitRepository::launchGitDiff(string terminal_launcher)

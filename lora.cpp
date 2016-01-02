@@ -1,5 +1,5 @@
 /*
-Copyright 2015 Laurent Claessens
+Copyright 2015,2016 Laurent Claessens
 contact : moky.math@gmail.com
 
 This program is free software: you can redistribute it and/or modify
@@ -87,4 +87,4 @@ int main(int argc, char* argv[])
 
 
 // segfault on what():  boost::filesystem::copy_file: Permesso negato:
-// segfault when an excluded directory is excluded.
+// segfault when a non-existing directory is excluded.

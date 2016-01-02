@@ -1,5 +1,5 @@
 /*
-Copyright 2015 Laurent Claessens
+Copyright 2015,2016 Laurent Claessens
 contact : moky.math@gmail.com
 
 This is part of 'lora': you can redistribute it and/or modify
@@ -248,3 +248,4 @@ bool Configuration::do_we_backup(const path orig_path,const path bak_path) const
     return false;
 }
 
+void Configuration::processEvents(){ git_list_window->processEvents(); }

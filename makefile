@@ -42,58 +42,6 @@ MKDIR         = mkdir -p
 
 ####### Output directory
 
-OBJECTS_DIR   = ./
-
-####### Files
-
-SOURCES       = CommandLine.cpp \
-		DirectoryConverter.cpp \
-		GitRepository.cpp \
-		GitWindow.cpp \
-		lora.cpp \
-		tasks.cpp \
-		testing.cpp \
-		UnitTests.cpp 
-OBJECTS       = CommandLine.o \
-		DirectoryConverter.o \
-		GitRepository.o \
-		GitWindow.o \
-		lora.o \
-		tasks.o \
-		testing.o \
-		UnitTests.o\
-		Configuration.o\
-	  	MainLoop.o\
-	  	mainpurgeloop.o\
-		HashTable.o
-DIST          = /usr/share/qt4/mkspecs/common/unix.conf \
-		/usr/share/qt4/mkspecs/common/linux.conf \
-		/usr/share/qt4/mkspecs/common/gcc-base.conf \
-		/usr/share/qt4/mkspecs/common/gcc-base-unix.conf \
-		/usr/share/qt4/mkspecs/common/g++-base.conf \
-		/usr/share/qt4/mkspecs/common/g++-unix.conf \
-		/usr/share/qt4/mkspecs/qconfig.pri \
-		/usr/share/qt4/mkspecs/features/qt_functions.prf \
-		/usr/share/qt4/mkspecs/features/qt_config.prf \
-		/usr/share/qt4/mkspecs/features/exclusive_builds.prf \
-		/usr/share/qt4/mkspecs/features/default_pre.prf \
-		/usr/share/qt4/mkspecs/features/release.prf \
-		/usr/share/qt4/mkspecs/features/default_post.prf \
-		/usr/share/qt4/mkspecs/features/shared.prf \
-		/usr/share/qt4/mkspecs/features/unix/gdb_dwarf_index.prf \
-		/usr/share/qt4/mkspecs/features/warn_on.prf \
-		/usr/share/qt4/mkspecs/features/qt.prf \
-		/usr/share/qt4/mkspecs/features/unix/thread.prf \
-		/usr/share/qt4/mkspecs/features/moc.prf \
-		/usr/share/qt4/mkspecs/features/resources.prf \
-		/usr/share/qt4/mkspecs/features/uic.prf \
-		/usr/share/qt4/mkspecs/features/yacc.prf \
-		/usr/share/qt4/mkspecs/features/lex.prf \
-		/usr/share/qt4/mkspecs/features/include_source_dir.prf \
-		lora.pro
-QMAKE_TARGET  = lora
-DESTDIR       = 
-
 first: all
 ####### Implicit rules
 

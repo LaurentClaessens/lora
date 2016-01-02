@@ -99,7 +99,10 @@ FileMoveTask::FileMoveTask(const path orig,const path destination): orig_path(or
 
 bool FileMoveTask::run() const
 {
-    assert( is_regular_file(orig_path) );
+    if (!is_regular_file(orig_path))
+    {
+        throw std::string("FileMoveTask : The file "+orig_path.string()+" does not exists");
+    }
     assert( !is_regular_file(destination_path) );
     std::cout<<"(purge file) "<<orig_path<<" --> "<<destination_path<<std::endl;
     create_file_tree(destination_path);
