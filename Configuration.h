@@ -95,7 +95,8 @@ path get_starting_backup_path(int argc, char *argv[]);
 // ht["foo"]=(bla,bli)
 // ht["bar"]=(blo)
 HashTable<std::string,std::vector<std::string>> read_configuration_file(const path cfg_path);
-Configuration* configuration_file_to_configuration(const path cfg_path,const path,bool verbose=true);
+Configuration* configuration_file_to_configuration(const int argc=0,char* argv[]=0, const bool verbose=true);
+
 
 // The following returns the last found value (in the file) of the required property.
 std::string read_configuration_file(const path cfg_patah,const std::string searched_property);

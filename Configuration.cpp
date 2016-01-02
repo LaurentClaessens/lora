@@ -23,6 +23,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "GitListWindow.h"
 #include "Configuration.h"
 
+using std::string;
+
 // CONFIGURATION -- general
 
 Configuration::Configuration(const path sp, const DirectoryConverter* const dc, TaskList* const  tl, const TerminalLines* const term_lines_ptr):
@@ -127,14 +129,45 @@ std::string read_configuration_file(const path cfg_path,const std::string search
     throw std::string("Property not found in the configuration file : "+searched_property);
 }
 
-Configuration* configuration_file_to_configuration(const path cfg_path,const path starting_path="",bool verbose)
+HashTable<string,string> parse_arguments(int argc,char* argv[])
 {
+    HashTable<string,string>hash=HashTable<string,string>();
+    hash["--configuration"]="lora.cfg";
+    hash["--starting"]="~";
+    for (int i=0;i<argc;i++)
+    {
+        std::vector<string> parts;
+        string arg=argv[i];
+        split( parts,arg,boost::is_any_of("=") );
+        hash[parts[0]]=parts[1];
+    }
+    return hash;
+}
+
+path get_starting_backup_path(string s_path)
+{
+    const path starting_path=path(s_path);
+    path full_path;
+    if (starting_path.is_relative()) { full_path=absolute(starting_path); }
+    else { full_path=starting_path; }
+    full_path=canonical(full_path);
+    std::cout<<"We are going to backup the repertory "<<full_path<<std::endl;
+    return full_path;
+}
+
+Configuration* configuration_file_to_configuration(int argc, char* argv[],bool verbose)
+{
+
+    HashTable<string,string> hash_args=parse_arguments(argc,argv);
+
+    path cfg_path=hash_args["--configuration"];
+    path starting_backup_path=get_starting_backup_path(hash_args["--starting"]);
 
     assert(is_regular_file(cfg_path));
     auto hash_table=read_configuration_file(cfg_path);
 
     path bp,pp,sp;
-    const path home_path=path(getenv("HOME"));      // TODO : guess from the starting_path ??
+    const path home_path=path(getenv("HOME"));
     std::vector<path> exclude;
 
     bp=hash_table["backup"][0];
@@ -154,7 +187,7 @@ Configuration* configuration_file_to_configuration(const path cfg_path,const pat
         std::cout<<"starting directory is "<<sp<<std::endl;
     }
 
-    if (starting_path.string()!=""){sp=starting_path;}
+    if (starting_backup_path.string()!=""){sp=starting_backup_path;}
 
     string terminal=hash_table["terminal"][0];
     string in_terminal=hash_table["in_terminal"][0];
@@ -168,19 +201,6 @@ Configuration* configuration_file_to_configuration(const path cfg_path,const pat
     config_ptr->add_exclude_path(exclude);
 
     return config_ptr;
-
-}
-
-path get_starting_backup_path(int argc, char* argv[])
-{
-    if (argc==1){return "";}
-    const path starting_path=path(argv[1]);
-    path full_path;
-    if (starting_path.is_relative()) { full_path=absolute(starting_path); }
-    else { full_path=starting_path; }
-    full_path=canonical(full_path);
-    std::cout<<"We are going to backup the repertory "<<full_path<<std::endl;
-    return full_path;
 }
 
 // GIT LIST WINDOWS

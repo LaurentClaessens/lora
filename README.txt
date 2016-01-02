@@ -7,6 +7,14 @@ Creates a copy of the home directory into a backup directory (typically on an en
 
 The main feature is : the backup copy is only a copy. You can browse it with your favorite file browser and get a file back with a simple copy. You do not require a special software for getting back your data.
 
+INVOCATION
+
+
+For a backup of the directory "/home/daniel" using the configuration file "foo.cfg", invoke :
+$ ./lora  --configuration=foo.cgf  --starting=/home/daniel/foo
+
+
+
 Example. 
 We backup the repertory  /home/daniel  into  /mnt/backup.
 
@@ -49,7 +57,5 @@ By the way, Lora has very bad performance against renaming an intere directory :
 
 TODO
 
-- Graphical interface.
 - the purge vector is parsed too many times
-- is deque the good choice ?
-
+- an argument parser

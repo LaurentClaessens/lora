@@ -202,14 +202,14 @@ void test_gw1()
     std::cin>>directory;
     GitRepository repo=GitRepository(directory);
     
-    Configuration* config_ptr=configuration_file_to_configuration("lora.cfg","");
+    Configuration* config_ptr=configuration_file_to_configuration();
     GitWindow* gw1=new GitWindow(repo,config_ptr);
-    gw1->launch();
+    gw1->show();
 }
 
 void test_exclude()
 {
-    Configuration* configuration=configuration_file_to_configuration("lora.cfg","",false);   // the last boolean argument is 'verbose'
+    Configuration* configuration=configuration_file_to_configuration(0,0,false);   // the last boolean argument is 'verbose'
     test_assert(configuration->is_excluded("jjlk")==true,"A non existing path is not excluded.");
     test_assert(configuration->is_excluded("/home/moky/Linux")==true,"This should be excluded.");
     test_assert(configuration->is_excluded("/home/moky/Linux/")==true,"This should be excluded.");
