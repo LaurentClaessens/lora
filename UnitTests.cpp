@@ -204,7 +204,7 @@ void test_gw1()
     
     Configuration* config_ptr=configuration_file_to_configuration();
     GitWindow* gw1=new GitWindow(repo,config_ptr);
-    gw1->show();
+    gw1->exec();
 }
 
 void test_exclude()
