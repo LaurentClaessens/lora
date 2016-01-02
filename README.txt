@@ -13,6 +13,7 @@ INVOCATION
 For a backup of the directory "/home/daniel" using the configuration file "foo.cfg", invoke :
 $ ./lora  --configuration=foo.cgf  --starting=/home/daniel/foo
 
+Defaults : configuration file is "lora.cfg" and the directory to be backuped is $HOME.
 
 
 Example. 
