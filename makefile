@@ -8,132 +8,25 @@
 
 ####### Compiler, tools and options
 
-CC            = gcc
 CXX           = LC_ALL=C g++ -std=c++11    #c++11 for  std::to_string
 DEFINES       = -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED
-CFLAGS        = -pipe -O2 -Wall -W -D_REENTRANT $(DEFINES)
 CXXFLAGS      = -pipe -O2 -Wall -W -D_REENTRANT $(DEFINES)
 INCPATH       = -I/usr/share/qt4/mkspecs/linux-g++ -I. -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4 -I. -I.
 BOOST_SYSTEM  = -lboost_filesystem -lboost_system 
 BOOST_THREAD  = -lboost_thread
 BOOST_THREAD_LIB  = /usr/lib/i386-linux-gnu/libboost_thread.so 
-LINK          = g++
 LFLAGS        = -Wl,-O1
 LIBS          = $(SUBLIBS)  -L/usr/lib/i386-linux-gnu -lQtGui -lQtCore -lpthread 
-AR            = ar cqs
-RANLIB        = 
-QMAKE         = /usr/lib/i386-linux-gnu/qt4/bin/qmake
-TAR           = tar -cf
-COMPRESS      = gzip -9f
-COPY          = cp -f
-SED           = sed
-COPY_FILE     = $(COPY)
-COPY_DIR      = $(COPY) -r
-STRIP         = strip
-INSTALL_FILE  = install -m 644 -p
-INSTALL_DIR   = $(COPY_DIR)
-INSTALL_PROGRAM = install -m 755 -p
 DEL_FILE      = rm -f
-SYMLINK       = ln -f -s
 DEL_DIR       = rmdir
 MOVE          = mv -f
-CHK_DIR_EXISTS= test -d
-MKDIR         = mkdir -p
 
-####### Output directory
-
-first: all
 ####### Implicit rules
-
-.SUFFIXES: .o .c .cpp .cc .cxx .C
-
-.cpp.o:
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o "$@" "$<"
-
-.cc.o:
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o "$@" "$<"
-
-.cxx.o:
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o "$@" "$<"
-
-.C.o:
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o "$@" "$<"
-
-.c.o:
-	$(CC) -c $(CFLAGS) $(INCPATH) -o "$@" "$<"
-
-####### Build rules
-
-
-Makefile: lora.pro  /usr/share/qt4/mkspecs/linux-g++/qmake.conf /usr/share/qt4/mkspecs/common/unix.conf \
-		/usr/share/qt4/mkspecs/common/linux.conf \
-		/usr/share/qt4/mkspecs/common/gcc-base.conf \
-		/usr/share/qt4/mkspecs/common/gcc-base-unix.conf \
-		/usr/share/qt4/mkspecs/common/g++-base.conf \
-		/usr/share/qt4/mkspecs/common/g++-unix.conf \
-		/usr/share/qt4/mkspecs/qconfig.pri \
-		/usr/share/qt4/mkspecs/features/qt_functions.prf \
-		/usr/share/qt4/mkspecs/features/qt_config.prf \
-		/usr/share/qt4/mkspecs/features/exclusive_builds.prf \
-		/usr/share/qt4/mkspecs/features/default_pre.prf \
-		/usr/share/qt4/mkspecs/features/release.prf \
-		/usr/share/qt4/mkspecs/features/default_post.prf \
-		/usr/share/qt4/mkspecs/features/shared.prf \
-		/usr/share/qt4/mkspecs/features/unix/gdb_dwarf_index.prf \
-		/usr/share/qt4/mkspecs/features/warn_on.prf \
-		/usr/share/qt4/mkspecs/features/qt.prf \
-		/usr/share/qt4/mkspecs/features/unix/thread.prf \
-		/usr/share/qt4/mkspecs/features/moc.prf \
-		/usr/share/qt4/mkspecs/features/resources.prf \
-		/usr/share/qt4/mkspecs/features/uic.prf \
-		/usr/share/qt4/mkspecs/features/yacc.prf \
-		/usr/share/qt4/mkspecs/features/lex.prf \
-		/usr/share/qt4/mkspecs/features/include_source_dir.prf \
-		/usr/lib/i386-linux-gnu/libQtGui.prl \
-		/usr/lib/i386-linux-gnu/libQtCore.prl
-	$(QMAKE) -o Makefile lora.pro
-/usr/share/qt4/mkspecs/common/unix.conf:
-/usr/share/qt4/mkspecs/common/linux.conf:
-/usr/share/qt4/mkspecs/common/gcc-base.conf:
-/usr/share/qt4/mkspecs/common/gcc-base-unix.conf:
-/usr/share/qt4/mkspecs/common/g++-base.conf:
-/usr/share/qt4/mkspecs/common/g++-unix.conf:
-/usr/share/qt4/mkspecs/qconfig.pri:
-/usr/share/qt4/mkspecs/features/qt_functions.prf:
-/usr/share/qt4/mkspecs/features/qt_config.prf:
-/usr/share/qt4/mkspecs/features/exclusive_builds.prf:
-/usr/share/qt4/mkspecs/features/default_pre.prf:
-/usr/share/qt4/mkspecs/features/release.prf:
-/usr/share/qt4/mkspecs/features/default_post.prf:
-/usr/share/qt4/mkspecs/features/shared.prf:
-/usr/share/qt4/mkspecs/features/unix/gdb_dwarf_index.prf:
-/usr/share/qt4/mkspecs/features/warn_on.prf:
-/usr/share/qt4/mkspecs/features/qt.prf:
-/usr/share/qt4/mkspecs/features/unix/thread.prf:
-/usr/share/qt4/mkspecs/features/moc.prf:
-/usr/share/qt4/mkspecs/features/resources.prf:
-/usr/share/qt4/mkspecs/features/uic.prf:
-/usr/share/qt4/mkspecs/features/yacc.prf:
-/usr/share/qt4/mkspecs/features/lex.prf:
-/usr/share/qt4/mkspecs/features/include_source_dir.prf:
-/usr/lib/i386-linux-gnu/libQtGui.prl:
-/usr/lib/i386-linux-gnu/libQtCore.prl:
-qmake:  FORCE
-	@$(QMAKE) -o Makefile lora.pro
-
-dist: 
-	@$(CHK_DIR_EXISTS) .tmp/lora1.0.0 || $(MKDIR) .tmp/lora1.0.0 
-	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/lora1.0.0/ && $(COPY_FILE) --parents CommandLine.h directoryconverter.h GitRepository.h GitWindow.h HashTable.h tasks.h testing.h  .tmp/lora1.0.0/ && $(COPY_FILE) --parents CommandLine.cpp directoryconverter.cpp GitRepository.cpp GitWindow.cpp lora.cpp tasks.cpp testing.cpp UnitTests.cpp .tmp/lora1.0.0/ && (cd `dirname .tmp/lora1.0.0` && $(TAR) lora1.0.0.tar lora1.0.0 && $(COMPRESS) lora1.0.0.tar) && $(MOVE) `dirname .tmp/lora1.0.0`/lora1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/lora1.0.0
-
 
 clean:compiler_clean compiler_moc_source_clean
 	-$(DEL_FILE) $(OBJECTS)
 	-$(DEL_FILE) *~ core *.core
 
-
-####### Sub-libraries
-
-check: first
 
 mocclean: compiler_moc_header_clean compiler_moc_source_clean
 
@@ -175,7 +68,7 @@ UnitTests: UnitTests.cpp\
    	testing.o CommandLine.o HashTable.o GitRepository.o GitWindow.o Configuration.o DirectoryConverter.o tasks.o
 	$(CXX) $(LFLAGS)  $(CXXFLAGS) $(INCPATH) -o UnitTests GitRepository.o Configuration.o testing.o DirectoryConverter.o tasks.o CommandLine.o GitWindow.o GitListWindow.o moc_GitListWindow.o  moc_GitWindow.o $(BOOST_SYSTEM) UnitTests.cpp  $(LIBS) 
 
-MainLoop.o: MainLoop.cpp MainLoop.h Configuration.o GitRepository.o
+MainLoop.o: MainLoop.cpp MainLoop.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainLoop.o MainLoop.cpp
 
 Configuration.o: Configuration.cpp Configuration.h tasks.o HashTable.o
