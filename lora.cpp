@@ -43,6 +43,7 @@ void run_tasks(Configuration* config_ptr)
         if (tl_ptr->size() != 0)
         {
             still=run_next(*tl_ptr);
+            config_ptr->processEvents();
         }
     }
     cout<<"The work seems to be done. Leaving the 'make_the_work' thread."<<endl;
