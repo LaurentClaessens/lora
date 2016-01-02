@@ -144,7 +144,6 @@ HashTable<string,string> parse_arguments(int argc,char* argv[])
     HashTable<string,string>hash=HashTable<string,string>();
     hash["--configuration"]="lora.cfg";
     hash["--starting"]=getenv("HOME");
-    std::cout<<"argc="<<argc<<std::endl;
     for (int i=1;i<argc;i++)
     {
         std::vector<string> parts;

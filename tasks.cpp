@@ -23,6 +23,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <boost/filesystem.hpp>
 #include "tasks.h"
 
+using std::string;
+
 // Create the tree up to the directory to which 'rep_path' belongs to.
 // create_directory_tree("/home/foo/bar/lol.txt") creates /home/foo/bar
 void create_directory_tree(const path rep_path)
