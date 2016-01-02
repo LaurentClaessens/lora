@@ -22,6 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QtGui>
 #include "GitWindow.h"
 
+using std::string;
+
 QString GitWindow::modified_text()
 {
     vector<string> v_text;
@@ -49,7 +51,6 @@ GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget*
     QHBoxLayout* button_status_layout = new QHBoxLayout;
     QVBoxLayout* button_layout = new QVBoxLayout;
     QVBoxLayout* status_area_layout = new QVBoxLayout;
-    QHBoxLayout* quick_commit_layout = new QHBoxLayout;
 
     QPushButton* git_diff_button=new QPushButton("See git diff");
     QPushButton* git_ignore_button=new QPushButton("Edit .gitignore");
@@ -65,7 +66,6 @@ GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget*
     connect(open_terminal_button,SIGNAL(clicked()),this,SLOT(open_terminal()));
     connect(git_ignore_button,SIGNAL( clicked() ), this,SLOT( launch_edit_gitignore() ));
 
-    QPushButton* quick_commit_button = new QPushButton("Commit me that");
 
     QLabel* modified_qlabel=new QLabel(modified_text());
 
@@ -81,15 +81,16 @@ GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget*
     button_status_layout->addLayout(button_layout);
     button_status_layout->addLayout(status_area_layout);
     main_layout->addLayout( button_status_layout  );
+
+
+    QuickCommitLayout* quick_commit_layout = new QuickCommitLayout(repo);
     main_layout->addLayout( quick_commit_layout  );
 
     button_layout->addWidget(git_diff_button);
     button_layout->addWidget(git_ignore_button);
     button_layout->addWidget(git_commit_button);
     button_layout->addWidget(open_terminal_button);
-    quick_commit_layout->addWidget(quick_commit_button);
     
-    quick_commit_button->setEnabled(false);
 
     connect(git_diff_button,SIGNAL( clicked() ), this,SLOT( launch_git_diff() ));
 
@@ -169,7 +170,7 @@ int UntrackedLine::getStatus()
     if (box_add->isChecked()) { return 1 ;}
     if (box_ignore->isChecked()) { return 2 ;}
     if (box_noaction->isChecked()) { return 0 ;}
-    throw std::string("One of these three boxes has to be checked");
+    throw string("One of these three boxes has to be checked");
 }
 
 string UntrackedLine::getActualPath() {return printed_path;}
@@ -197,3 +198,23 @@ FormatButton::FormatButton(GitRepository r,const string t) :
 }
 
 void FormatButton::add_to_gitignore() { repo.append_format_to_gitignore(format); }
+
+
+// QUICK COMMIT LAYOUT
+
+QuickCommitLayout::QuickCommitLayout(GitRepository r):
+    QHBoxLayout(),
+    repo(r)
+{
+    QPushButton* button = new QPushButton("Commit me that");
+    connect(button,SIGNAL(clicked()),this,SLOT(do_commit()));
+    QLineEdit* edit_line = new QLineEdit();
+    addWidget(edit_line);
+    addWidget(button);
+}
+
+void QuickCommitLayout::do_commit()
+{
+    string message=edit_line->text().toStdString();
+    std::cout<<"Commit message :"<<message<<std::endl;
+}

@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QCheckBox>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QLineEdit>
 #include "GitRepository.h"
 #include "HashTable.h"
 #include "Configuration.h"
@@ -93,6 +94,8 @@ class UntrackedLine : public QHBoxLayout
 };
 
 // A button that proposes to add files in .gitignore.
+// The list of added files is based on the passed format (vim,latex,c++,etc.)
+// See GitRepository::append_format_to_gitignore
 class FormatButton : public QPushButton
 {
     Q_OBJECT
@@ -104,6 +107,20 @@ class FormatButton : public QPushButton
         const string format;
     public:
         FormatButton(GitRepository,string);
+};
+
+// A small bar that allows to write a quick comment and launch 'git commit -a'
+class QuickCommitLayout : public QHBoxLayout
+{
+    Q_OBJECT
+
+    private:
+        GitRepository repo;
+        QLineEdit* edit_line=new QLineEdit();
+    private slots:
+        void do_commit();
+    public:
+        QuickCommitLayout(GitRepository);
 };
 
 #endif   // __GIT_WINDOWS_H__
