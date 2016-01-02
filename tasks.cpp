@@ -76,7 +76,7 @@ bool FileCopyTask::run() const
 {
         if (!is_regular_file(orig_path))
         {
-            throw std::string("The file "+orig_path.string()+" does not exist ?");
+            throw string("The file "+orig_path.string()+" does not exist ?");
         }
 
         std::vector<path> test_list;
@@ -101,7 +101,7 @@ bool FileMoveTask::run() const
 {
     if (!is_regular_file(orig_path))
     {
-        throw std::string("FileMoveTask : The file "+orig_path.string()+" does not exists");
+        throw string("FileMoveTask : The file "+orig_path.string()+" does not exists");
     }
     assert( !is_regular_file(destination_path) );
     std::cout<<"(purge file) "<<orig_path<<" --> "<<destination_path<<std::endl;
@@ -117,7 +117,11 @@ DirectoryMoveTask::DirectoryMoveTask(const path orig,const path destination): or
 
 bool DirectoryMoveTask::run() const{
     std::cout<<"(purge rep) "<<orig_path<<" --> "<<destination_path<<std::endl;
-    assert( is_directory(orig_path) );
+
+    if (!is_directory(orig_path))
+    {
+        throw string( "The directory "+orig_path.string()+" has to be moved but does not exists anymore ..." );
+    }
     assert( !is_directory(destination_path) );
 
     create_directory_tree(destination_path);

@@ -57,8 +57,15 @@ path Configuration::getBackupPath() const { return converter_ptr->getBackupPath(
 
 void Configuration::add_exclude_path(const path ex) 
 { 
-    path can_ex=canonical(ex);
-    excluded_paths.push_back(can_ex); 
+    if ( is_directory(ex)  )
+    {
+        path can_ex=canonical(ex);
+        excluded_paths.push_back(can_ex); 
+    }
+    else
+    {
+        throw string(  "Trying to exclude a non-directory path : "+ex.string()  );
+    }
 }
 
 void Configuration::add_exclude_path(const std::vector<path> vp)
