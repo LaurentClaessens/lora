@@ -38,28 +38,40 @@ path purge_path_to_purge_datetime(const path purge_path)
     {
         case 0:
             s_mon="January";
+            break;
         case 1:
             s_mon="February";
+            break;
         case 2:
             s_mon="March";
+            break;
         case 3:
             s_mon="April";
+            break;
         case 4:
             s_mon="May";
+            break;
         case 5:
             s_mon="June";
+            break;
         case 6:
             s_mon="July";
+            break;
         case 7:
             s_mon="August";
+            break;
         case 8:
             s_mon="September";
+            break;
         case 9:
             s_mon="October";
+            break;
         case 10:
             s_mon="November";
+            break;
         case 11:
             s_mon="December";
+            break;
     }
 
     string s_mday=std::to_string(timeinfo->tm_mday);
