@@ -83,7 +83,7 @@ class Configuration
 
 path get_starting_backup_path(int argc, char *argv[]);
 
-// read configuration file reads the given configuration file and returns
+// Read the given configuration file and return
 // an HashTable whose keys are the "before the = sign" and values are vectors
 // of string "after the = signe".
 // example.

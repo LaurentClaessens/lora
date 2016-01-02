@@ -129,17 +129,40 @@ std::string read_configuration_file(const path cfg_path,const std::string search
     throw std::string("Property not found in the configuration file : "+searched_property);
 }
 
+
+// an argument with no "=" is interpreted // as the starting path.
+//  this allows to use bash completion.
 HashTable<string,string> parse_arguments(int argc,char* argv[])
 {
     HashTable<string,string>hash=HashTable<string,string>();
     hash["--configuration"]="lora.cfg";
     hash["--starting"]=getenv("HOME");
-    for (int i=0;i<argc;i++)
+    std::cout<<"argc="<<argc<<std::endl;
+    for (int i=1;i<argc;i++)
     {
         std::vector<string> parts;
         string arg=argv[i];
         split( parts,arg,boost::is_any_of("=") );
+
+        if (parts.size()==2)
+        {
         hash[parts[0]]=parts[1];
+        }
+        else if (parts.size()==1)  
+        {
+            hash["--starting"]=arg;
+        }
+        else 
+        {
+            throw string("Malformed command line argument : "+arg);
+        }
+
+        string s_path=hash["--starting"];
+        if (boost::algorithm::starts_with(s_path,"~"))
+        {
+            s_path.replace(0,1,getenv("HOME"));
+        }
+        hash["--starting"]=s_path;
     }
     return hash;
 }
