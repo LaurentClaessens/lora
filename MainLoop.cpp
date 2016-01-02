@@ -42,7 +42,7 @@ void MainLoop::loopOverDirectory(path sub_directory)
 {
     assert(is_directory(sub_directory));
 
-    //config_ptr->processEvents();      // a more reactive window.
+    config_ptr->processEvents();      // a more reactive window.
     directory_iterator end_itr;
     for(  directory_iterator itr(sub_directory); itr!=end_itr;++itr  )
     {
@@ -100,7 +100,7 @@ void MainBackupLoop::DealWithFile(path file_path)
     assert( is_regular_file(file_path) );
     const path bak_path=config_ptr->home_to_backup(file_path);
     const path purge_modified_path=config_ptr->home_to_modified_purge(file_path);
-    if (configuratioconfig_ptr->do_we_backup(file_path,bak_path))
+    if (config_ptr->do_we_backup(file_path,bak_path))
     {
         // This assert checks that we will not write in the home directory.
         assert( !boost::algorithm::starts_with(bak_path,config_ptr->getHomePath() ) );
