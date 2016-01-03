@@ -150,6 +150,8 @@ void GitRepository::append_format_to_gitignore(string format)
             append_to_gitignore("*.auxlock");
             append_to_gitignore("*.ind");
             append_to_gitignore("*.ilg");
+            append_to_gitignore("*.synctex.gz");
+            synctex.gz
         }
         else if(format=="C++")
         {
@@ -163,8 +165,9 @@ void GitRepository::append_format_to_gitignore(string format)
         }
         else if(format=="vim")
         {
+            append_to_gitignore("*~");
             append_to_gitignore(".*~");
-            append_to_gitignore(".*~");
+            append_to_gitignore("*.swp");
             append_to_gitignore(".viminfo");
         }
         else { std::cout<<"Unknown format : "<<format<<std::endl; }
