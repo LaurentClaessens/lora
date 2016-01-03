@@ -30,6 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 class UntrackedLine;
+class StatusAreaLayout;
 
 QString modified_text(GitRepository rep);
 
@@ -49,14 +50,17 @@ class GitWindow : public QDialog
     private:
         // 0 : no action. 1 : add, 2 : gitignore
         HashTable<path,UntrackedLine*> add_ignore_status;
+        StatusAreaLayout* status_area_layout;     // I keep a hand on the status area
+                                             // in order to update.
 
         // GitRepository is not 'const' because the status of the repository
         // is going to change (even if the logical object is probably const)
         GitRepository repo;
-        QHBoxLayout* untracked_line(path file); 
-        QString modified_text();
         const Configuration* config_ptr;
+
+        QHBoxLayout* untracked_line(path file); 
         void addFormatButton(string,QLayout*);
+        void update_status_area();
     public:
         GitWindow(const GitRepository repo,const Configuration*,QWidget* parent=0);
 };
@@ -122,5 +126,19 @@ class QuickCommitLayout : public QHBoxLayout
     public:
         QuickCommitLayout(GitRepository);
 };
+
+class StatusAreaLayout : public QVBoxLayout
+{
+    Q_OBJECT
+
+    private :
+        GitRepository repo;
+        GitWindow* parent;
+
+        QString modified_text();
+    public:
+        StatusAreaLayout(GitRepository,GitWindow*);
+};
+
 
 #endif   // __GIT_WINDOWS_H__

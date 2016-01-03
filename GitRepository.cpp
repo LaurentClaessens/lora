@@ -151,7 +151,6 @@ void GitRepository::append_format_to_gitignore(string format)
             append_to_gitignore("*.ind");
             append_to_gitignore("*.ilg");
             append_to_gitignore("*.synctex.gz");
-            synctex.gz
         }
         else if(format=="C++")
         {

@@ -23,19 +23,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "GitWindow.h"
 
 using std::string;
-
-QString GitWindow::modified_text()
-{
-    vector<string> v_text;
-    v_text.push_back("Modified files :");
-    for (path f:repo.getModifiedFiles())
-    {
-        v_text.push_back("\t"+f.string());
-    }
-    string s_text=boost::algorithm::join(v_text,"\n");
-    return QString::fromStdString( s_text  );
-}
-
 void GitWindow::addFormatButton(string format,QLayout* layout)
 {
     FormatButton* button=new FormatButton(repo,format);
@@ -50,13 +37,17 @@ GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget*
     QVBoxLayout* main_layout = new QVBoxLayout;
     QHBoxLayout* button_status_layout = new QHBoxLayout;
     QVBoxLayout* button_layout = new QVBoxLayout;
-    QVBoxLayout* status_area_layout = new QVBoxLayout;
+    status_area_layout = new StatusAreaLayout(repo,this);
 
     QPushButton* git_diff_button=new QPushButton("See git diff");
     QPushButton* git_ignore_button=new QPushButton("Edit .gitignore");
     QPushButton* git_commit_button=new QPushButton("launch git commit -a");
     QPushButton* open_terminal_button=new QPushButton("Open a terminal here");
     QPushButton* exit_button=new QPushButton("Exit");
+
+    QFrame* line = new QFrame();
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
 
     addFormatButton("vim",button_layout);
     addFormatButton("latex",button_layout);
@@ -69,16 +60,9 @@ GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget*
     connect(git_ignore_button,SIGNAL( clicked() ), this,SLOT( launch_edit_gitignore() ));
 
 
-    QLabel* modified_qlabel=new QLabel(modified_text());
 
-    AddIgnoreLayout* add_ignore_layout = new AddIgnoreLayout(this);
 
-    QPushButton* apply_add_ignore_button=new QPushButton("Apply these changes");
-    connect(apply_add_ignore_button,SIGNAL(clicked()),this,SLOT(apply_add_ignore_changes()));
 
-    status_area_layout->addWidget(modified_qlabel);
-    status_area_layout->addLayout(add_ignore_layout);
-    status_area_layout->addWidget(apply_add_ignore_button);
 
     button_status_layout->addLayout(button_layout);
     button_status_layout->addLayout(status_area_layout);
@@ -90,6 +74,7 @@ GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget*
 
     button_layout->addWidget(git_diff_button);
     button_layout->addWidget(git_ignore_button);
+    button_layout->addWidget(line);
     button_layout->addWidget(git_commit_button);
     button_layout->addWidget(open_terminal_button);
     button_layout->addWidget(exit_button);
@@ -118,6 +103,7 @@ void GitWindow::apply_add_ignore_changes()
             line->setEnabled(false);
         }
     }
+    //update_status_area();
 }
 
 AddIgnoreLayout::AddIgnoreLayout(GitWindow* gw):
@@ -151,10 +137,10 @@ UntrackedLine::UntrackedLine(path f, GitWindow* p):
     buttons->addButton(box_noaction);
     buttons->setExclusive(true);
 
-    this->addWidget(label_filename);
-    this->addWidget(box_add);
-    this->addWidget(box_ignore);
-    this->addWidget(box_noaction);
+    addWidget(label_filename);
+    addWidget(box_add);
+    addWidget(box_ignore);
+    addWidget(box_noaction);
 }
 
 void UntrackedLine::setEnabled(bool b)
@@ -218,3 +204,35 @@ void QuickCommitLayout::do_commit()
     string message=edit_line->text().toStdString();
     repo.commit(message);
 }
+
+// STATUS AREA LAYOUT
+
+QString StatusAreaLayout::modified_text()
+{
+    vector<string> v_text;
+    v_text.push_back("Modified files :");
+    for (path f:repo.getModifiedFiles())
+    {
+        v_text.push_back("\t"+f.string());
+    }
+    string s_text=boost::algorithm::join(v_text,"\n");
+    return QString::fromStdString( s_text  );
+}
+
+
+StatusAreaLayout::StatusAreaLayout(GitRepository r,GitWindow* p):
+    QVBoxLayout(),
+    repo(r),
+    parent(p)
+{
+    QLabel* modified_qlabel=new QLabel(modified_text());
+    AddIgnoreLayout* add_ignore_layout = new AddIgnoreLayout(parent);
+
+    QPushButton* apply_add_ignore_button=new QPushButton("Apply these changes");
+    connect(apply_add_ignore_button,SIGNAL(clicked()),parent,SLOT(apply_add_ignore_changes()));
+
+    addWidget(modified_qlabel);
+    addLayout(add_ignore_layout);
+    addWidget(apply_add_ignore_button);
+}
+
