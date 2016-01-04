@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using std::string;
 void GitWindow::addFormatButton(string format,QLayout* layout)
 {
-    FormatButton* button=new FormatButton(repo,format);
+    FormatButton* button=new FormatButton(repo,format,this);
     layout->addWidget(button);
 }
 
@@ -197,15 +197,20 @@ void GitWindow::open_terminal()
 // FORMAT BUTTON
 
 
-FormatButton::FormatButton(GitRepository r,const string t) : 
+FormatButton::FormatButton(GitRepository r,const string t,GitWindow* gw) : 
     QPushButton(QString::fromStdString("add "+t+" to gitignore")),
     repo(r),
-    format(t)
+    format(t),
+    parent(gw)
 {
     connect(this,SIGNAL(clicked()),this,SLOT(add_to_gitignore()));
 }
 
-void FormatButton::add_to_gitignore() { repo.append_format_to_gitignore(format); }
+void FormatButton::add_to_gitignore() 
+{ 
+    repo.append_format_to_gitignore(format); 
+    parent->updateMainLayout();
+}
 
 
 // QUICK LAYOUT

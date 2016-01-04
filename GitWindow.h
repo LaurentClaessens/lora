@@ -109,8 +109,9 @@ class FormatButton : public QPushButton
     private :
         GitRepository repo;
         const string format;
+        GitWindow* parent;
     public:
-        FormatButton(GitRepository,string);
+        FormatButton(GitRepository,string,GitWindow*);
 };
 
 // When the button of the quick line is clicked, QuickLine emits 
