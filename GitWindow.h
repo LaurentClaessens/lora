@@ -59,9 +59,9 @@ class GitWindow : public QDialog
         QHBoxLayout* untracked_line(path file); 
         void addFormatButton(string,QLayout*);
         QVBoxLayout* createMainLayout();
-        void updateMainLayout();
     public:
         GitWindow(const GitRepository repo,const Configuration*,QWidget* parent=0);
+        void updateMainLayout();
 };
 
 class AddIgnoreWidget : public QWidget
@@ -113,18 +113,41 @@ class FormatButton : public QPushButton
         FormatButton(GitRepository,string);
 };
 
-// A small bar that allows to write a quick comment and launch 'git commit -a'
-class QuickCommitLayout : public QHBoxLayout
+// When the button of the quick line is clicked, QuickLine emits 
+// the SIGNAL 'ckicked(QString)' with the text of the QLineEdit.
+class QuickLine : public QWidget
+{
+    Q_OBJECT
+
+    signals:
+        void clicked(QString);
+    private slots:
+        void get_clicked();
+    private:
+        QLineEdit* edit;
+        QPushButton* button;
+    public:
+        QuickLine(QString);
+};
+
+// Small bars that allows to
+//  write a quick comment and launch 'git commit -a'
+//  add files to the git repository
+//  add lines to .gitignore
+// Each of these action is presented by a QuickLine.
+class QuickActions : public QWidget
 {
     Q_OBJECT
 
     private:
         GitRepository repo;
-        QLineEdit* edit_line=new QLineEdit();
+        GitWindow* parent;
     private slots:
-        void do_commit();
+        void do_commit(QString);
+        void do_add(QString);
+        void do_ignore(QString);
     public:
-        QuickCommitLayout(GitRepository);
+        QuickActions(GitRepository,GitWindow*);
 };
 
 class StatusAreaLayout : public QVBoxLayout

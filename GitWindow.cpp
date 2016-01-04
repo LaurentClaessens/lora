@@ -34,7 +34,6 @@ QVBoxLayout* GitWindow::createMainLayout()
     QVBoxLayout* main_layout = new QVBoxLayout();
 
     QHBoxLayout* button_status_layout = new QHBoxLayout;
-
     StatusAreaLayout* status_area_layout = new StatusAreaLayout(repo,this);
 
     QPushButton* git_diff_button=new QPushButton("See git diff");
@@ -80,10 +79,10 @@ QVBoxLayout* GitWindow::createMainLayout()
     button_status_layout->addLayout(buttons_layout);
     button_status_layout->addLayout(status_area_layout);
 
-    QuickCommitLayout* quick_commit_layout = new QuickCommitLayout(repo);
+    QuickActions* quick_actions = new QuickActions(repo,this);
 
     main_layout->addLayout( button_status_layout  );
-    main_layout->addLayout( quick_commit_layout  );
+    main_layout->addWidget( quick_actions  );
 
     return main_layout;
 }
@@ -93,6 +92,7 @@ void GitWindow::updateMainLayout()
     auto* main_layout = createMainLayout();
     delete layout();
     setLayout(main_layout);
+    update();
 }
 
 GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget* parent):
@@ -207,23 +207,61 @@ FormatButton::FormatButton(GitRepository r,const string t) :
 void FormatButton::add_to_gitignore() { repo.append_format_to_gitignore(format); }
 
 
-// QUICK COMMIT LAYOUT
+// QUICK LAYOUT
 
-QuickCommitLayout::QuickCommitLayout(GitRepository r):
-    QHBoxLayout(),
-    repo(r)
+QuickLine::QuickLine(QString message):
+    QWidget()
 {
-    QPushButton* button = new QPushButton("Commit me that");
-    connect(button,SIGNAL(clicked()),this,SLOT(do_commit()));
-    edit_line = new QLineEdit();
-    addWidget(edit_line);
-    addWidget(button);
+    QHBoxLayout* line = new QHBoxLayout();
+    edit = new QLineEdit();
+    button = new QPushButton(message);
+    line->addWidget(edit);
+    line->addWidget(button);
+    connect( button,SIGNAL(clicked()),this,SLOT(get_clicked()) );
+    setLayout(line);
 }
 
-void QuickCommitLayout::do_commit()
+void QuickLine::get_clicked() { emit clicked(edit->text()); }
+
+
+QuickActions::QuickActions(GitRepository r,GitWindow* gw):
+    QWidget(),
+    repo(r),
+    parent(gw)
 {
-    string message=edit_line->text().toStdString();
-    repo.commit(message);
+    QVBoxLayout* quick_layout=new QVBoxLayout();
+
+    QuickLine* track_line = new QuickLine("Track these files");
+    QuickLine* ignore_line = new QuickLine("Ignore these files");
+    QuickLine* commit_line = new QuickLine("Commit that");
+    
+    connect(track_line,SIGNAL(clicked(QString)),this,SLOT(do_add(QString)));
+    connect(ignore_line,SIGNAL(clicked(QString)),this,SLOT(do_ignore(QString)));
+    connect(commit_line,SIGNAL(clicked(QString)),this,SLOT(do_commit(QString)));
+
+    quick_layout->addWidget(track_line);
+    quick_layout->addWidget(ignore_line);
+    quick_layout->addWidget(commit_line);
+
+    setLayout(quick_layout);
+}
+
+void QuickActions::do_commit(QString message) 
+{ 
+    repo.commit(message.toStdString()); 
+    parent->updateMainLayout();
+}
+
+void QuickActions::do_add(QString message) 
+{ 
+    repo.git_add(message.toStdString());
+    parent->updateMainLayout();
+}
+
+void QuickActions::do_ignore(QString message) 
+{ 
+    repo.append_to_gitignore(message.toStdString());
+    parent->updateMainLayout();
 }
 
 // STATUS AREA LAYOUT
