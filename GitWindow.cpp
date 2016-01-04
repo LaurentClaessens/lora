@@ -221,6 +221,12 @@ QString StatusAreaLayout::modified_text()
     {
         v_text.push_back("\t"+f.string());
     }
+
+    v_text.push_back("New files :");
+    for (path f:repo.getNewFiles())
+    {
+        v_text.push_back("\t"+f.string());
+    }
     string s_text=boost::algorithm::join(v_text,"\n");
     return QString::fromStdString( s_text  );
 }

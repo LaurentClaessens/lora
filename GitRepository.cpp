@@ -109,6 +109,22 @@ vector<path> GitRepository::getModifiedFiles() const
     return modified_files;
 }
 
+vector<path> GitRepository::getNewFiles() const
+{
+    vector<path> new_files;
+    vector<string> lines=v_commit_message();
+    string prefix="\tnew file:   ";
+    for (string& line:lines)
+    {
+        if (boost::algorithm::starts_with(line,prefix))
+        {
+            boost::algorithm::erase_all(line,prefix);
+            new_files.push_back(line);
+        }
+    }
+    return new_files;
+}
+
 void GitRepository::git_add(string s_file)
 {
     CommandLine cl=CommandLine("git add \""+s_file+"\"");

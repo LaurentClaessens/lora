@@ -56,6 +56,7 @@ class GitRepository
         // the paths are relative to the repository path
         vector<path> getUntrackedFiles() const; 
         vector<path> getModifiedFiles() const;
+        vector<path> getNewFiles() const;
 };
 
 #endif   //__GITREPOSITORY_H__
