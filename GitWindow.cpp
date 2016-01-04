@@ -104,6 +104,7 @@ GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget*
     setLayout(main_layout);
 };
 
+
 void GitWindow::apply_add_ignore_changes()
 {
     for (auto itr=add_ignore_status.begin();itr!=add_ignore_status.end();itr++) 

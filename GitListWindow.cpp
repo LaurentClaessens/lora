@@ -60,3 +60,13 @@ GitListWindow::GitListWindow(const Configuration* conf):
 }
 
 void GitListWindow::processEvents() { qApp->processEvents(); }
+
+// this functions waits until the main list window is closed.
+// The point is that in the main file 'lora.cpp' I cannot do
+// 'git_list_window->exec()' since I want the other processes to run.
+void GitListWindow::join()
+{
+    QEventLoop loop;
+    connect(this, SIGNAL(exit()), &loop, SLOT(quit()));
+    loop.exec();
+}

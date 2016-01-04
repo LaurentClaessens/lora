@@ -57,7 +57,7 @@ void loops(Configuration* config_ptr)
     cout<<endl<<"Launching the purge process ..."<<endl;
     purge_loop.run();
 }
- 
+
 int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
@@ -76,6 +76,7 @@ int main(int argc, char* argv[])
         loops(config_ptr);
         
         scheduler.join();
+        git_list_window->join();
     }
     catch (string err) { cout<<endl<<string("I got a bad news : ")<<err<<endl; }
     catch (std::length_error &err) 

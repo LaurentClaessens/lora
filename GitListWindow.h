@@ -32,6 +32,7 @@ class GitListWindow : public QMainWindow
         void launchGitWindow(GitRepository);
         void addGitButton(GitRepository);
         void processEvents();
+        void join();
 };
 
 // When asked to launch a git window, the button refers to his parent
