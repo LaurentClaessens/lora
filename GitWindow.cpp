@@ -29,14 +29,11 @@ void GitWindow::addFormatButton(string format,QLayout* layout)
     layout->addWidget(button);
 }
 
-GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget* parent):
-    QDialog(parent),
-    repo(repo),
-    config_ptr(conf)
-{ 
-    QVBoxLayout* main_layout = new QVBoxLayout;
+QVBoxLayout* GitWindow::createMainLayout()
+{
+    QVBoxLayout* main_layout = new QVBoxLayout();
+
     QHBoxLayout* button_status_layout = new QHBoxLayout;
-    QVBoxLayout* button_layout = new QVBoxLayout;
 
     StatusAreaLayout* status_area_layout = new StatusAreaLayout(repo,this);
 
@@ -82,14 +79,28 @@ GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget*
 
     button_status_layout->addLayout(buttons_layout);
     button_status_layout->addLayout(status_area_layout);
-    main_layout->addLayout( button_status_layout  );
 
     QuickCommitLayout* quick_commit_layout = new QuickCommitLayout(repo);
+
+    main_layout->addLayout( button_status_layout  );
     main_layout->addLayout( quick_commit_layout  );
 
-    button_layout->addWidget(open_terminal_button);
-    button_layout->addWidget(exit_button);
+    return main_layout;
+}
 
+void GitWindow::updateMainLayout()
+{
+    auto* main_layout = createMainLayout();
+    delete layout();
+    setLayout(main_layout);
+}
+
+GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget* parent):
+    QDialog(parent),
+    repo(repo),
+    config_ptr(conf)
+{ 
+    auto* main_layout = createMainLayout();
     setLayout(main_layout);
 };
 
@@ -111,6 +122,7 @@ void GitWindow::apply_add_ignore_changes()
             line->setEnabled(false);
         }
     }
+    updateMainLayout();
 }
 
 AddIgnoreWidget::AddIgnoreWidget(GitWindow* gw):

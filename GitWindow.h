@@ -54,11 +54,12 @@ class GitWindow : public QDialog
     private:
         GitRepository repo;
         const Configuration* config_ptr;
-
         HashTable<path,UntrackedLine*> add_ignore_status;
 
         QHBoxLayout* untracked_line(path file); 
         void addFormatButton(string,QLayout*);
+        QVBoxLayout* createMainLayout();
+        void updateMainLayout();
     public:
         GitWindow(const GitRepository repo,const Configuration*,QWidget* parent=0);
 };
