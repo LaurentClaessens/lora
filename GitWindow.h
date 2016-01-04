@@ -34,6 +34,10 @@ class StatusAreaLayout;
 
 QString modified_text(GitRepository rep);
 
+
+// The git repository 'repo' is not 'const' because the status of the repository
+// is going to change (even if the logical object is probably const)
+
 class GitWindow : public QDialog
 {
     Q_OBJECT
@@ -48,19 +52,13 @@ class GitWindow : public QDialog
         void apply_add_ignore_changes();
         void open_terminal();
     private:
-        // 0 : no action. 1 : add, 2 : gitignore
-        HashTable<path,UntrackedLine*> add_ignore_status;
-        StatusAreaLayout* status_area_layout;     // I keep a hand on the status area
-                                             // in order to update.
-
-        // GitRepository is not 'const' because the status of the repository
-        // is going to change (even if the logical object is probably const)
         GitRepository repo;
         const Configuration* config_ptr;
 
+        HashTable<path,UntrackedLine*> add_ignore_status;
+
         QHBoxLayout* untracked_line(path file); 
         void addFormatButton(string,QLayout*);
-        void update_status_area();
     public:
         GitWindow(const GitRepository repo,const Configuration*,QWidget* parent=0);
 };
@@ -76,6 +74,7 @@ class AddIgnoreLayout : public QVBoxLayout
         AddIgnoreLayout(GitWindow*);
 };
 
+// 0 : no action. 1 : add, 2 : gitignore
 class UntrackedLine : public QHBoxLayout
 {
     Q_OBJECT

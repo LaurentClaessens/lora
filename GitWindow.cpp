@@ -37,7 +37,7 @@ GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget*
     QVBoxLayout* main_layout = new QVBoxLayout;
     QHBoxLayout* button_status_layout = new QHBoxLayout;
     QVBoxLayout* button_layout = new QVBoxLayout;
-    status_area_layout = new StatusAreaLayout(repo,this);
+    StatusAreaLayout* status_area_layout = new StatusAreaLayout(repo,this);
 
     QPushButton* git_diff_button=new QPushButton("See git diff");
     QPushButton* git_ignore_button=new QPushButton("Edit .gitignore");
@@ -45,42 +45,49 @@ GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget*
     QPushButton* open_terminal_button=new QPushButton("Open a terminal here");
     QPushButton* exit_button=new QPushButton("Exit");
 
-    QFrame* line = new QFrame();
-    line->setFrameShape(QFrame::HLine);
-    line->setFrameShadow(QFrame::Sunken);
+    QFrame* format_frame = new QFrame();
+    QVBoxLayout* format_layout = new QVBoxLayout();
+    addFormatButton("vim",format_layout);
+    addFormatButton("latex",format_layout);
+    addFormatButton("C++",format_layout);
+    addFormatButton("python",format_layout);
+    format_frame->setLayout(format_layout);
 
-    addFormatButton("vim",button_layout);
-    addFormatButton("latex",button_layout);
-    addFormatButton("C++",button_layout);
-    addFormatButton("python",button_layout);
+    format_frame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    format_frame->setLineWidth(2);
+
+    QFrame* git_action_frame = new QFrame();
+    QVBoxLayout* git_action_layout = new QVBoxLayout();
+    git_action_layout->addWidget(git_diff_button);
+    git_action_layout->addWidget(git_ignore_button);
+    git_action_layout->addWidget(git_commit_button);
+    git_action_frame->setLayout(git_action_layout);
+    git_action_frame->setLayout(git_action_layout);
+
+    git_action_frame->setFrameStyle(QFrame::Panel | QFrame::Raised);
+    git_action_frame->setLineWidth(2);
+   
+    QVBoxLayout* buttons_layout = new QVBoxLayout();
+    buttons_layout->addWidget(format_frame);
+    buttons_layout->addWidget(git_action_frame);
+    buttons_layout->addWidget(open_terminal_button);
+    buttons_layout->addWidget(exit_button);
 
     connect(git_commit_button,SIGNAL(clicked()),this,SLOT(launch_git_commit()));
+    connect(git_diff_button,SIGNAL( clicked() ), this,SLOT( launch_git_diff() ));
     connect(open_terminal_button,SIGNAL(clicked()),this,SLOT(open_terminal()));
     connect(exit_button,SIGNAL(clicked()),this,SLOT(close()));
     connect(git_ignore_button,SIGNAL( clicked() ), this,SLOT( launch_edit_gitignore() ));
 
-
-
-
-
-
-    button_status_layout->addLayout(button_layout);
+    button_status_layout->addLayout(buttons_layout);
     button_status_layout->addLayout(status_area_layout);
     main_layout->addLayout( button_status_layout  );
-
 
     QuickCommitLayout* quick_commit_layout = new QuickCommitLayout(repo);
     main_layout->addLayout( quick_commit_layout  );
 
-    button_layout->addWidget(git_diff_button);
-    button_layout->addWidget(git_ignore_button);
-    button_layout->addWidget(line);
-    button_layout->addWidget(git_commit_button);
     button_layout->addWidget(open_terminal_button);
     button_layout->addWidget(exit_button);
-    
-
-    connect(git_diff_button,SIGNAL( clicked() ), this,SLOT( launch_git_diff() ));
 
     setLayout(main_layout);
 };
@@ -103,7 +110,6 @@ void GitWindow::apply_add_ignore_changes()
             line->setEnabled(false);
         }
     }
-    //update_status_area();
 }
 
 AddIgnoreLayout::AddIgnoreLayout(GitWindow* gw):
