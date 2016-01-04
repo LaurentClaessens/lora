@@ -37,6 +37,7 @@ GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget*
     QVBoxLayout* main_layout = new QVBoxLayout;
     QHBoxLayout* button_status_layout = new QHBoxLayout;
     QVBoxLayout* button_layout = new QVBoxLayout;
+
     StatusAreaLayout* status_area_layout = new StatusAreaLayout(repo,this);
 
     QPushButton* git_diff_button=new QPushButton("See git diff");
@@ -112,16 +113,18 @@ void GitWindow::apply_add_ignore_changes()
     }
 }
 
-AddIgnoreLayout::AddIgnoreLayout(GitWindow* gw):
-    QVBoxLayout(),
+AddIgnoreWidget::AddIgnoreWidget(GitWindow* gw):
+    QWidget(),
     parent(gw)
 {
+    QVBoxLayout*  layout = new QVBoxLayout();
     for (path f : parent->repo.getUntrackedFiles())
     {
         UntrackedLine* line=new UntrackedLine(f,parent);
         parent->add_ignore_status[f]=line;
-        this->addLayout(line);
+        layout->addLayout(line);
     }
+    setLayout(layout);
 }
 
 UntrackedLine::UntrackedLine(path f, GitWindow* p):
@@ -216,17 +219,27 @@ void QuickCommitLayout::do_commit()
 QString StatusAreaLayout::modified_text()
 {
     vector<string> v_text;
-    v_text.push_back("Modified files :");
-    for (path f:repo.getModifiedFiles())
+    auto modified_files=repo.getModifiedFiles();
+    auto new_files=repo.getNewFiles();
+
+    if (new_files.size()>0)
     {
-        v_text.push_back("\t"+f.string());
+        v_text.push_back("New files :");
+        for (path f:repo.getNewFiles())
+        {
+            v_text.push_back("\t"+f.string());
+        }
     }
 
-    v_text.push_back("New files :");
-    for (path f:repo.getNewFiles())
+    if( modified_files.size()>0 )
     {
-        v_text.push_back("\t"+f.string());
+        v_text.push_back("Modified files :");
+        for (path f:modified_files)
+        {
+            v_text.push_back("\t"+f.string());
+        }
     }
+
     string s_text=boost::algorithm::join(v_text,"\n");
     return QString::fromStdString( s_text  );
 }
@@ -238,13 +251,16 @@ StatusAreaLayout::StatusAreaLayout(GitRepository r,GitWindow* p):
     parent(p)
 {
     QLabel* modified_qlabel=new QLabel(modified_text());
-    AddIgnoreLayout* add_ignore_layout = new AddIgnoreLayout(parent);
+    AddIgnoreWidget* add_ignore_widget = new AddIgnoreWidget(parent);
+
+    QScrollArea* add_ignore_scroll=new QScrollArea;
 
     QPushButton* apply_add_ignore_button=new QPushButton("Apply these changes");
     connect(apply_add_ignore_button,SIGNAL(clicked()),parent,SLOT(apply_add_ignore_changes()));
 
     addWidget(modified_qlabel);
-    addLayout(add_ignore_layout);
+    add_ignore_scroll->setWidget(add_ignore_widget);
+    addWidget(add_ignore_scroll);
+
     addWidget(apply_add_ignore_button);
 }
-

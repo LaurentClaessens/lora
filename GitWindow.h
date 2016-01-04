@@ -42,7 +42,7 @@ class GitWindow : public QDialog
 {
     Q_OBJECT
 
-    friend class AddIgnoreLayout;
+    friend class AddIgnoreWidget;
     friend class UntrackedLine;
 
     private slots :
@@ -63,7 +63,7 @@ class GitWindow : public QDialog
         GitWindow(const GitRepository repo,const Configuration*,QWidget* parent=0);
 };
 
-class AddIgnoreLayout : public QVBoxLayout
+class AddIgnoreWidget : public QWidget
 {
     Q_OBJECT
 
@@ -71,7 +71,7 @@ class AddIgnoreLayout : public QVBoxLayout
         QHBoxLayout* untracked_line(path);
         GitWindow* parent;
     public:
-        AddIgnoreLayout(GitWindow*);
+        AddIgnoreWidget(GitWindow*);
 };
 
 // 0 : no action. 1 : add, 2 : gitignore
