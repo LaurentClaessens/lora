@@ -31,6 +31,7 @@ void GitWindow::addFormatButton(string format,QLayout* layout)
 
 QVBoxLayout* GitWindow::createMainLayout()
 {
+    add_ignore_status.reset();
     QVBoxLayout* main_layout = new QVBoxLayout();
 
     QHBoxLayout* button_status_layout = new QHBoxLayout;
@@ -91,6 +92,7 @@ void GitWindow::updateMainLayout()
 {
     auto* main_layout = createMainLayout();
     delete layout();
+    qDeleteAll(this->children());
     setLayout(main_layout);
     update();
 }
