@@ -152,6 +152,16 @@ void test_ht4()
             // assert( my_hash["foo"]==5.4 );       
 }
 
+void test_ht5()
+{
+    HashTable<string,int> my_hash;
+    my_hash["foo"]=1;
+    my_hash["bar"]=2;
+    my_hash["egg"]=3;
+    my_hash.reset();
+    test_assert(my_hash.isEmpty()==1,"the reset function does not empty the hash table.");
+}
+
 void test_gr1()
 {
     std::string commit;
@@ -228,6 +238,7 @@ int main(int argc,char* argv[])
     GenericTestingFunction("test_ht2",false,test_ht2).run();
     GenericTestingFunction("test_ht3",false,test_ht3).run();
     GenericTestingFunction("test_ht4",false,test_ht4).run();
+    GenericTestingFunction("test_ht5",false,test_ht5).run();
 
     GenericTestingFunction("test_gr2",false,test_gr2).run();
 
