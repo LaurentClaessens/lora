@@ -34,6 +34,8 @@ QVBoxLayout* GitWindow::createMainLayout()
     add_ignore_status.reset();
     QVBoxLayout* main_layout = new QVBoxLayout();
 
+    QLabel* title = new QLabel(QString::fromStdString( repo.getPathName() ));
+
     QHBoxLayout* button_status_layout = new QHBoxLayout;
     StatusAreaLayout* status_area_layout = new StatusAreaLayout(repo,this);
 
@@ -82,6 +84,7 @@ QVBoxLayout* GitWindow::createMainLayout()
 
     QuickActions* quick_actions = new QuickActions(repo,this);
 
+    main_layout->addWidget(title);
     main_layout->addLayout( button_status_layout  );
     main_layout->addWidget( quick_actions  );
 
