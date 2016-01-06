@@ -1,5 +1,5 @@
 /*
-Copyright 2015 Laurent Claessens
+Copyright 2015-2016 Laurent Claessens
 contact : moky.math@gmail.com
 
 This is part of 'lora': you can redistribute it and/or modify
@@ -27,6 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "HashTable.h"
 #include "GitListWindow.h"
 #include "GitRepository.h"
+#include "Logging.h"
 
 
 // The aim of this class is to answer the questions which depend on the
@@ -39,6 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // - excluded path,
 // - terminal command line,
 // - an handle on the git list window
+// - a logging system
 // and some functions to access it.
 class Configuration
 {
@@ -49,6 +51,7 @@ class Configuration
         const TerminalLines* const terminal_lines_ptr;
         std::vector<path> excluded_paths;
         GitListWindow* git_list_window;
+        Logging*  logging;
     public:
         Configuration(const path,const DirectoryConverter* const,TaskList* const, const TerminalLines* const);
         path getStartingBackupPath() const;
@@ -77,6 +80,10 @@ class Configuration
 
         void setGitListWindow(GitListWindow*);
         void addGitButton(GitRepository);
+        
+        void setLog(Logging*);
+        void setLogFile(string);
+        void writeLog(string);
 
         void processEvents();
 };

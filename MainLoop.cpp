@@ -1,5 +1,5 @@
 /*
-Copyright 2015 Laurent Claessens
+Copyright 2015-2016 Laurent Claessens
 contact : moky.math@gmail.com
 
 This is part of 'lora': you can redistribute it and/or modify
@@ -38,13 +38,13 @@ void MainLoop::run()
     loopOverDirectory(getStartingPath()); 
 }
 
-void MainLoop::loopOverDirectory(path sub_directory)
+void MainLoop::loopOverDirectory(path directory)
 {
-    assert(is_directory(sub_directory));
+    assert(is_directory(directory));
 
     config_ptr->processEvents();      // a more reactive window.
     directory_iterator end_itr;
-    for(  directory_iterator itr(sub_directory); itr!=end_itr;++itr  )
+    for(  directory_iterator itr(directory); itr!=end_itr;++itr  )
     {
         path pathname=itr->path();
         if (is_symlink(pathname))
@@ -55,6 +55,7 @@ void MainLoop::loopOverDirectory(path sub_directory)
         else if (is_regular_file(pathname)) { DealWithFile(pathname); }
         else
         {
+            config_ptr->writeLog("Je suis en train de faire une boucle dans "+directory.string());
             throw std::string("***  What the hell is "+pathname.string()+" ??? ");
         }
     }

@@ -1,5 +1,5 @@
 /*
-Copyright 2015 Laurent Claessens
+Copyright 2015-2016 Laurent Claessens
 contact : moky.math@gmail.com
 
 This program is free software: you can redistribute it and/or modify
@@ -105,7 +105,6 @@ GitWindow::GitWindow(const GitRepository repo,const Configuration* conf,QWidget*
     auto* main_layout = createMainLayout();
     setLayout(main_layout);
 };
-
 
 void GitWindow::apply_add_ignore_changes()
 {

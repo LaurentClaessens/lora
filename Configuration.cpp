@@ -1,5 +1,5 @@
 /*
-Copyright 2015,2016 Laurent Claessens
+Copyright 2015-2016 Laurent Claessens
 contact : moky.math@gmail.com
 
 This is part of 'lora': you can redistribute it and/or modify
@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <boost/algorithm/string.hpp>
 #include "GitListWindow.h"
 #include "Configuration.h"
+#include "Logging.h"
 
 using std::string;
 
@@ -221,13 +222,18 @@ Configuration* configuration_file_to_configuration(int argc, char* argv[],bool v
     string terminal=hash_table["terminal"][0];
     string in_terminal=hash_table["in_terminal"][0];
     string editor=hash_table["editor"][0];
+    string log_filename=hash_table["log file"][0];
+
 
     const DirectoryConverter* const converter_ptr=new DirectoryConverter(bp,pp);
     TaskList* tl_ptr=new TaskList();
     const TerminalLines* const terminal_lines_ptr=new TerminalLines(terminal,in_terminal,editor);
-    
+    Logging* logging = new Logging();
+    logging->setFile(log_filename);
+
     Configuration* config_ptr = new Configuration( sp,converter_ptr,tl_ptr,terminal_lines_ptr  );
     config_ptr->add_exclude_path(exclude);
+    config_ptr->setLog(logging);
 
     return config_ptr;
 }
@@ -278,3 +284,9 @@ bool Configuration::do_we_backup(const path orig_path,const path bak_path) const
 }
 
 void Configuration::processEvents(){ git_list_window->processEvents(); }
+
+// LOGGING
+
+void Configuration::setLog(Logging* log) { logging=log;  }
+void Configuration::setLogFile(string filename) { logging->setFile(filename);  }
+void Configuration::writeLog(string message){ logging->write(message); }

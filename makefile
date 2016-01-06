@@ -56,7 +56,7 @@ compiler_clean:
 all: lora UnitTests
 lora: lora.cpp  \
 		DirectoryConverter.o tasks.o MainLoop.o Configuration.o GitRepository.o CommandLine.o GitWindow.o GitListWindow.o 
-	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora MainLoop.o CommandLine.o GitRepository.o Configuration.o DirectoryConverter.o tasks.o  GitWindow.o moc_GitWindow.o GitListWindow.o moc_GitListWindow.o  $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB) $(LIBS)
+	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora MainLoop.o Logging.o CommandLine.o GitRepository.o Configuration.o DirectoryConverter.o tasks.o  GitWindow.o moc_GitWindow.o GitListWindow.o moc_GitListWindow.o  $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB) $(LIBS)
 GitListWindow.o: moc_GitListWindow.o GitListWindow.cpp GitListWindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GitListWindow.o     GitListWindow.cpp
 moc_GitListWindow.cpp: GitListWindow.h
@@ -66,13 +66,16 @@ moc_GitListWindow.o: moc_GitListWindow.cpp
 
 UnitTests: UnitTests.cpp\
    	testing.o CommandLine.o HashTable.o GitRepository.o GitWindow.o Configuration.o DirectoryConverter.o tasks.o
-	$(CXX) $(LFLAGS)  $(CXXFLAGS) $(INCPATH) -o UnitTests GitRepository.o Configuration.o testing.o DirectoryConverter.o tasks.o CommandLine.o GitWindow.o GitListWindow.o moc_GitListWindow.o  moc_GitWindow.o $(BOOST_SYSTEM) UnitTests.cpp  $(LIBS) 
+	$(CXX) $(LFLAGS)  $(CXXFLAGS) $(INCPATH) -o UnitTests GitRepository.o Logging.o Configuration.o testing.o DirectoryConverter.o tasks.o CommandLine.o GitWindow.o GitListWindow.o moc_GitListWindow.o  moc_GitWindow.o $(BOOST_SYSTEM) UnitTests.cpp  $(LIBS) 
 
-MainLoop.o: MainLoop.cpp MainLoop.h
+MainLoop.o: MainLoop.cpp MainLoop.h Configuration.o
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainLoop.o MainLoop.cpp
 
-Configuration.o: Configuration.cpp Configuration.h tasks.o HashTable.o
+Configuration.o: Configuration.cpp Configuration.h tasks.o HashTable.o Logging.o
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Configuration.o  Configuration.cpp
+
+Logging.o: Logging.cpp Logging.h 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Logging.o  Logging.cpp
 
 tasks.o: tasks.cpp tasks.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o tasks.o $(BOOST_SYSTEM)   tasks.cpp

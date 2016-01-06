@@ -56,7 +56,6 @@ struct pathTriple{
     boost::filesystem::path purge;
 };
 
-
 class GenericTask{
     public:
         GenericTask();
