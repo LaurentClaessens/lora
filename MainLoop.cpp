@@ -55,7 +55,7 @@ void MainLoop::loopOverDirectory(path directory)
         else if (is_regular_file(pathname)) { DealWithFile(pathname); }
         else
         {
-            config_ptr->writeLog("Je suis en train de faire une boucle dans "+directory.string());
+            config_ptr->writeLog("I'm looping in the directory : "+directory.string());
             throw std::string("***  What the hell is "+pathname.string()+" ??? ");
         }
     }
@@ -149,5 +149,8 @@ void MainPurgeLoop::DealWithDirectory(const path backup_path)
         DirectoryMoveTask*  dtask= new DirectoryMoveTask(backup_path, config_ptr->backup_to_removed_purge(backup_path)  );
         config_ptr->add_task(dtask);
     }
-    loopOverDirectory(backup_path);
+    else
+    {
+        loopOverDirectory(backup_path);
+    }
 }
