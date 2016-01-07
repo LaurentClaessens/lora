@@ -27,46 +27,32 @@ clean:compiler_clean compiler_moc_source_clean
 	-$(DEL_FILE) $(OBJECTS)
 	-$(DEL_FILE) *~ core *.core
 
-
-mocclean: compiler_moc_header_clean compiler_moc_source_clean
-
-mocables: compiler_moc_header_make_all compiler_moc_source_make_all
-
-compiler_moc_header_make_all:
-compiler_moc_header_clean:
-compiler_rcc_make_all:
-compiler_rcc_clean:
-compiler_image_collection_make_all: qmake_image_collection.cpp
-compiler_image_collection_clean:
-	-$(DEL_FILE) qmake_image_collection.cpp
-compiler_moc_source_make_all:
 compiler_moc_source_clean:
 	rm moc_GitWindow.cpp
-compiler_uic_make_all:
-compiler_uic_clean:
-compiler_yacc_decl_make_all:
-compiler_yacc_decl_clean:
-compiler_yacc_impl_make_all:
-compiler_yacc_impl_clean:
-compiler_lex_make_all:
-compiler_lex_clean:
-compiler_clean: 
 
 ####### Compile
-all: lora UnitTests
+all: installation  lora UnitTests 
 lora: lora.cpp  \
 		DirectoryConverter.o tasks.o MainLoop.o Configuration.o GitRepository.o CommandLine.o GitWindow.o GitListWindow.o 
 	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora MainLoop.o Logging.o CommandLine.o GitRepository.o Configuration.o DirectoryConverter.o tasks.o  GitWindow.o moc_GitWindow.o GitListWindow.o moc_GitListWindow.o  $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB) $(LIBS)
+UnitTests: UnitTests.cpp\
+   	testing.o CommandLine.o HashTable.o GitRepository.o GitWindow.o Configuration.o DirectoryConverter.o tasks.o
+	$(CXX) $(LFLAGS)  $(CXXFLAGS) $(INCPATH) -o UnitTests GitRepository.o Logging.o Configuration.o testing.o DirectoryConverter.o tasks.o CommandLine.o GitWindow.o GitListWindow.o moc_GitListWindow.o  moc_GitWindow.o $(BOOST_SYSTEM) UnitTests.cpp  $(LIBS) 
+
+installation: installation.cpp installation.h moc_installation.o
+	$(CXX) $(LFLAGS)  $(CXXFLAGS) $(INCPATH) -o installation moc_installation.o  installation.cpp  $(LIBS) 
+
 GitListWindow.o: moc_GitListWindow.o GitListWindow.cpp GitListWindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GitListWindow.o     GitListWindow.cpp
 moc_GitListWindow.cpp: GitListWindow.h
 	/usr/lib/i386-linux-gnu/qt4/bin/moc $(DEFINES) $(INCPATH) GitListWindow.h -o moc_GitListWindow.cpp
 moc_GitListWindow.o: moc_GitListWindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_GitListWindow.o moc_GitListWindow.cpp
+moc_installation.cpp: installation.h
+	/usr/lib/i386-linux-gnu/qt4/bin/moc $(DEFINES) $(INCPATH) installation.h -o moc_installation.cpp
+moc_installation.o: moc_installation.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_installation.o moc_installation.cpp
 
-UnitTests: UnitTests.cpp\
-   	testing.o CommandLine.o HashTable.o GitRepository.o GitWindow.o Configuration.o DirectoryConverter.o tasks.o
-	$(CXX) $(LFLAGS)  $(CXXFLAGS) $(INCPATH) -o UnitTests GitRepository.o Logging.o Configuration.o testing.o DirectoryConverter.o tasks.o CommandLine.o GitWindow.o GitListWindow.o moc_GitListWindow.o  moc_GitWindow.o $(BOOST_SYSTEM) UnitTests.cpp  $(LIBS) 
 
 MainLoop.o: MainLoop.cpp MainLoop.h Configuration.o
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainLoop.o MainLoop.cpp
@@ -104,13 +90,4 @@ testing.o: testing.cpp testing.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o testing.o testing.cpp
 HashTable.o:  HashTable.h			
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o HashTable.o HashTable.h
-
-
-####### Install
-
-install:   FORCE
-
-uninstall:   FORCE
-
-FORCE:
 

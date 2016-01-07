@@ -67,6 +67,6 @@ void GitListWindow::processEvents() { qApp->processEvents(); }
 void GitListWindow::join()
 {
     QEventLoop loop;
-    connect(this, SIGNAL(close()), &loop, SLOT(close()));
+    connect(this, SIGNAL(destroyed()), &loop, SLOT(exit()));
     loop.exec();
 }

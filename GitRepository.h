@@ -24,6 +24,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using std::vector;
 using std::string;
 
+// About GitRepository::isClean().
+// if there is not subdir '.git', return "true"
+// If all modified files begin with "../", return true. Here is why :
+//    Let ~/.kde be a gitted directory : ~/.kde/.git exists and IS a git repository.
+//    Then the directory 
+//       ~/.kde/share/apps/konqueror/view_properties/.kde/.git
+ //   may exist. But this one IS NOT a git repository.
+ //   When the backup loop arrives at that directory, it tests "git status" and
+ //   gets all the ../../../../<any file modified in ~/.kde>.
 class GitRepository
 {
     private :
@@ -36,7 +45,7 @@ class GitRepository
         path getGitIgnoreFullPath() const;  // return the full path of .gitignore
         string getPathName() const;
         string getStatusMessage() const;
-        bool isClean() const;   // if there is not subdir '.git', return "true"
+        bool isClean() const;   
 
         // The following functions are not marked as 'const' because
         // they change the git repository and then, indirectly, the logic of 'this'.
