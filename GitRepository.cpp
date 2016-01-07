@@ -62,7 +62,15 @@ bool GitRepository::isClean()  const
     {
         if (line=="nothing to commit, working directory clean") {return true;}
     }
-    return false;
+    for (path& p:getUntrackedFiles())
+    {
+        if ( !boost::algorithm::starts_with(p.string(),"..")  ) {return false;}
+    }
+    for (path& p:getModifiedFiles())
+    {
+        if ( !boost::algorithm::starts_with(p.string(),"..")  ) {return false;}
+    }
+    return true;
 }
 
 // this is a big bunch of sordid string manipulations.
