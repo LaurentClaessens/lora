@@ -17,11 +17,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
 #include <string>
+#include <vector>
 #include <QLineEdit>
+#include <QVBoxLayout>
 
 using std::string;
+using std::vector;
 
-class DirectoryChoosingLine : public QWidget
+// DirectoryChooser displays an explicative text and a directory chooser 
+// (edit bar to write down and a button to choose).
+// If the given text is "" no text is displayed.
+class DirectoryChooser : public QWidget
 {
     Q_OBJECT
 
@@ -30,8 +36,24 @@ class DirectoryChoosingLine : public QWidget
     private:
         QLineEdit* edit;
     public :
-        DirectoryChoosingLine();
+        DirectoryChooser(QString);
         QString text();
+        void setText(QString);
+};
+
+class ExcludeChooser : public QWidget
+{
+    Q_OBJECT
+
+    private slots:
+        void add_chooser();
+    private:
+        vector<DirectoryChooser*> choosers;
+        QVBoxLayout* createLayout(QString);
+        QString text;
+        void refresh();
+    public:
+        ExcludeChooser(QString);
 };
 
 class BackupWidget : public QWidget
@@ -41,6 +63,7 @@ class BackupWidget : public QWidget
 
     private:
         string backup;
+        QStringList exclude_list;
     public:
         BackupWidget();
 

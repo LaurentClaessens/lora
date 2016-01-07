@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QtGui>
 #include "installation.h"
 
-void DirectoryChoosingLine::choose_directory()
+void DirectoryChooser::choose_directory()
 {
     QFileDialog* fdialog = new QFileDialog(this);
     fdialog->setFileMode(QFileDialog::Directory);
@@ -33,10 +33,11 @@ void DirectoryChoosingLine::choose_directory()
     edit->setText(fileNames.at(0));
 }
 
-DirectoryChoosingLine::DirectoryChoosingLine() :
+DirectoryChooser::DirectoryChooser(QString message) :
     QWidget()
 {
-    QHBoxLayout* layout = new QHBoxLayout();
+    QVBoxLayout* layout = new QVBoxLayout();
+    QHBoxLayout* line_layout = new QHBoxLayout();
 
     edit = new QLineEdit();
 
@@ -44,23 +45,89 @@ DirectoryChoosingLine::DirectoryChoosingLine() :
 
     connect(button,SIGNAL(clicked()),this,SLOT(choose_directory()));
 
-    layout->addWidget(edit);
-    layout->addWidget(button);
+    line_layout->addWidget(edit);
+    line_layout->addWidget(button);
+
+    if (message!="") { 
+        QLabel* text = new QLabel(message);
+        layout->addWidget(text); 
+    }
+    layout->addLayout(line_layout);
     setLayout(layout);
 }
 
-QString DirectoryChoosingLine::text() { return edit->text();  }
+QString DirectoryChooser::text() { return edit->text();  }
+void DirectoryChooser::setText(QString t) { return edit->setText(t);  }
+
+ExcludeChooser::ExcludeChooser(QString message) :
+    QWidget(),
+    text(message)
+{
+    choosers = vector<DirectoryChooser*>();
+    setLayout(createLayout(text));
+}
+
+// the refresh process is complicated by the fact that we will
+// delete all children, including the directory choosers. Thus we have to be able to
+// recreate them.
+void ExcludeChooser::refresh()
+{
+    // save the directories that are already sectioned
+    vector<QString> dirs;
+    for ( auto c:choosers  )
+    {
+        dirs.push_back(c->text());
+    }
+    delete layout();
+    qDeleteAll(this->children());
+
+    // recreate the choosers
+    choosers = vector<DirectoryChooser*>();
+    for ( auto d:dirs  )
+    {
+        DirectoryChooser* ch = new DirectoryChooser("");
+        ch->setText(d);
+        choosers.push_back(ch);
+    }
+    setLayout( createLayout(text)  );
+    update();
+}
+
+void ExcludeChooser::add_chooser()
+{
+    DirectoryChooser* chooser = new DirectoryChooser("");
+    choosers.push_back(chooser);
+    refresh();
+}
+
+QVBoxLayout* ExcludeChooser::createLayout(QString message)
+{
+    QVBoxLayout* layout = new QVBoxLayout();
+    QLabel* text = new QLabel(message);
+    layout->addWidget(text);
+
+    for (auto chooser:choosers)
+    {
+        layout->addWidget(chooser);
+    }
+    QPushButton* plus_button = new QPushButton("plus");
+    connect(plus_button,SIGNAL(clicked()),this,SLOT(add_chooser()));
+    layout->addWidget(plus_button);
+    return layout;
+}
 
 BackupWidget::BackupWidget() : 
     QWidget()
 {
     QVBoxLayout* layout = new QVBoxLayout();
-    
-    QLabel* text = new QLabel( "This is the explanation text"  );
-    DirectoryChoosingLine* backup_line = new DirectoryChoosingLine();
-    layout->addWidget(text);   
-    layout->addWidget(backup_line);
 
+    DirectoryChooser* backup_chooser = new DirectoryChooser( "Choose here the directory in which the backup has to be done. Ideally, it has to be an encrypted external disk. There must be as much free space as your HOME directory (minus the directories that you will not backup). ");
+    DirectoryChooser* purge_chooser = new DirectoryChooser("Choose here the purge directory. Ideally this is on an external encrypted disk, and should be next to the backup directory.");
+
+    ExcludeChooser* exclude_chooser= new ExcludeChooser("Choose here the directories to be excluded from backup.");
+    layout->addWidget(backup_chooser);
+    layout->addWidget(purge_chooser);
+    layout->addWidget(exclude_chooser);
     setLayout(layout);
 }
 
