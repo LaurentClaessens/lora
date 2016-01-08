@@ -14,12 +14,18 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+CREDIT : the image "plus.png" is taken from Sage [sagemath.org]
+            .Sage/src/doc/output/html/ca/intro/_static/plus.png
+
 //*/
+
 
 #include <string>
 #include <vector>
 #include <QLineEdit>
 #include <QVBoxLayout>
+#include <QTabWidget>
 
 using std::string;
 using std::vector;
@@ -49,11 +55,12 @@ class ExcludeChooser : public QWidget
         void add_chooser();
     private:
         vector<DirectoryChooser*> choosers;
-        QVBoxLayout* createLayout(QString);
+        QVBoxLayout* createLayout(QString) const;
         QString text;
         void refresh();
     public:
         ExcludeChooser(QString);
+        QStringList getExcludedFiles() const;
 };
 
 class BackupWidget : public QWidget
@@ -64,8 +71,32 @@ class BackupWidget : public QWidget
     private:
         string backup;
         QStringList exclude_list;
+        ExcludeChooser* exclude_chooser;
+        DirectoryChooser* backup_chooser;
+        DirectoryChooser* purge_chooser;
     public:
         BackupWidget();
+        QStringList getExcludedFiles() const;
 
 };
 
+class TabWidget : public QTabWidget
+{
+    Q_OBJECT
+
+    private slots:
+        void write_to_file() const;
+    private:
+        BackupWidget* backup_tab;
+    public:
+        TabWidget();
+};
+
+// The main widget contains the tabs and the "finished" button.
+class MainWidget : public QWidget
+{
+    Q_OBJECT
+
+    public:
+        MainWidget();
+};

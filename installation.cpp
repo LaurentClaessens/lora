@@ -73,11 +73,7 @@ ExcludeChooser::ExcludeChooser(QString message) :
 void ExcludeChooser::refresh()
 {
     // save the directories that are already sectioned
-    vector<QString> dirs;
-    for ( auto c:choosers  )
-    {
-        dirs.push_back(c->text());
-    }
+    QStringList dirs=getExcludedFiles();
     delete layout();
     qDeleteAll(this->children());
 
@@ -100,7 +96,7 @@ void ExcludeChooser::add_chooser()
     refresh();
 }
 
-QVBoxLayout* ExcludeChooser::createLayout(QString message)
+QVBoxLayout* ExcludeChooser::createLayout(QString message) const
 {
     QVBoxLayout* layout = new QVBoxLayout();
     QLabel* text = new QLabel(message);
@@ -110,10 +106,28 @@ QVBoxLayout* ExcludeChooser::createLayout(QString message)
     {
         layout->addWidget(chooser);
     }
-    QPushButton* plus_button = new QPushButton("plus");
+    
+    QToolButton* plus_button = new QToolButton();
+    plus_button->setIcon(QIcon("plus.png"));
     connect(plus_button,SIGNAL(clicked()),this,SLOT(add_chooser()));
+    
     layout->addWidget(plus_button);
     return layout;
+}
+
+QStringList ExcludeChooser::getExcludedFiles() const
+{
+    QStringList dirs;
+    for ( auto c:choosers  )
+    {
+        dirs.push_back(c->text());
+    }
+    return dirs;
+}
+
+QStringList BackupWidget::getExcludedFiles()  const
+{ 
+    return exclude_chooser->getExcludedFiles() ;
 }
 
 BackupWidget::BackupWidget() : 
@@ -121,33 +135,65 @@ BackupWidget::BackupWidget() :
 {
     QVBoxLayout* layout = new QVBoxLayout();
 
-    DirectoryChooser* backup_chooser = new DirectoryChooser( "Choose here the directory in which the backup has to be done. Ideally, it has to be an encrypted external disk. There must be as much free space as your HOME directory (minus the directories that you will not backup). ");
-    DirectoryChooser* purge_chooser = new DirectoryChooser("Choose here the purge directory. Ideally this is on an external encrypted disk, and should be next to the backup directory.");
+    backup_chooser = new DirectoryChooser( "Choose here the directory in which the backup has to be done. Ideally, it has to be an encrypted external disk. There must be as much free space as your HOME directory (minus the directories that you will not backup). ");
+     purge_chooser = new DirectoryChooser("Choose here the purge directory. Ideally this is on an external encrypted disk, and should be next to the backup directory.");
 
-    ExcludeChooser* exclude_chooser= new ExcludeChooser("Choose here the directories to be excluded from backup.");
+    exclude_chooser= new ExcludeChooser("Choose here the directories to be excluded from backup.");
     layout->addWidget(backup_chooser);
     layout->addWidget(purge_chooser);
     layout->addWidget(exclude_chooser);
     setLayout(layout);
 }
 
-int main(int argc, char* argv[])
+TabWidget::TabWidget():
+    QTabWidget()
 {
-    QApplication app(argc, argv);
-
-    QMainWindow* main_window = new QMainWindow();
-
-    QTabWidget* tab_widget=new QTabWidget();
-    BackupWidget* backup_tab=new BackupWidget();
+    backup_tab=new BackupWidget();
     QLabel* git_tab=new QLabel("deux");
     QLabel* terminal_tab=new QLabel("deux");
     QLabel* compilation_tab=new QLabel("deux");
-    tab_widget->addTab(backup_tab,"About backup");
-    tab_widget->addTab(git_tab,"About git");
-    tab_widget->addTab(terminal_tab,"Terminal preferences");
-    tab_widget->addTab(compilation_tab,"Compilation preferences");
+    addTab(backup_tab,"About backup");
+    addTab(git_tab,"About git");
+    addTab(terminal_tab,"Terminal preferences");
+    addTab(compilation_tab,"Compilation preferences");
+}
 
-    main_window->setCentralWidget(tab_widget);
+void TabWidget::write_to_file() const
+{
+    QStringList exclude_list=backup_tab->getExcludedFiles();
+    for (QString& s : exclude_list)
+    {
+        std::cout<<"exclude="<<s.toStdString()<<std::endl;
+    }
+}
+
+MainWidget::MainWidget():
+    QWidget()
+{
+    QVBoxLayout* main_vlayout = new QVBoxLayout();
+
+    QHBoxLayout* finished_layout = new QHBoxLayout();
+    QPushButton* finished_button = new QPushButton("Finished");
+    finished_layout->addStretch();
+    finished_layout->addWidget(finished_button);
+
+    TabWidget* tab_widget = new TabWidget();
+
+    main_vlayout->addWidget(tab_widget);
+    main_vlayout->addLayout(finished_layout);
+
+    connect(finished_button,SIGNAL(clicked()),tab_widget,SLOT(write_to_file()));
+    setLayout(main_vlayout);
+}
+
+int main(int argc, char* argv[])
+{
+    QApplication app(argc, argv);
+    QMainWindow* main_window = new QMainWindow();
+    MainWidget* main_widget = new MainWidget();
+
+    main_window->setCentralWidget(main_widget);
+
 
     main_window->show();
     return app.exec();
