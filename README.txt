@@ -61,4 +61,7 @@ By the way, Lora has very bad performance against renaming an intere directory :
 TODO
 
 - the purge vector is parsed too many times
-- an argument parser
+- a better command line argument parser
+- a better image for "plus.png"
+- the installation program should read the configuration file an fill the blanks.
+- in the installation, there is a duplicate of information between   BackupWidget::exclude_list and ExcludeChooser::choosers.
