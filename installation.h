@@ -63,6 +63,18 @@ class ExcludeChooser : public QWidget
         QStringList getExcludedFiles() const;
 };
 
+// The 'AskInfo' widget displays a text and ask for an answer.
+class AskInfo : public QWidget
+{
+    Q_OBJECT 
+
+    private :
+        QLineEdit* edit;
+    public:
+        AskInfo(QString);   
+        QString text() const;
+};
+
 class BackupWidget : public QWidget
 {
 
@@ -71,13 +83,29 @@ class BackupWidget : public QWidget
     private:
         string backup;
         QStringList exclude_list;
-        ExcludeChooser* exclude_chooser;
         DirectoryChooser* backup_chooser;
         DirectoryChooser* purge_chooser;
+        ExcludeChooser* exclude_chooser;
     public:
         BackupWidget();
         QStringList getExcludedFiles() const;
+        QString getBackupDir() const;
+        QString getPurgeDir() const;
+};
 
+class TerminalWidget : public QWidget
+{
+    Q_OBJECT
+
+    private:
+        AskInfo* info_terminal;
+        AskInfo* info_in_terminal;
+        AskInfo* info_editor;
+    public:
+        TerminalWidget();
+        QString getTerminal() const;
+        QString getInTerminal() const;
+        QString getEditor() const;
 };
 
 class TabWidget : public QTabWidget
@@ -88,6 +116,7 @@ class TabWidget : public QTabWidget
         void write_to_file() const;
     private:
         BackupWidget* backup_tab;
+        TerminalWidget* terminal_tab;
     public:
         TabWidget();
 };

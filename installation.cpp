@@ -17,8 +17,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
 #include <iostream>
+#include <sstream>
 #include <QtGui>
 #include "installation.h"
+
+// ASK INFO
+
+
+AskInfo::AskInfo(QString message)
+{
+    QVBoxLayout* layout=new QVBoxLayout();
+    QLabel* text = new QLabel(message);
+    edit = new QLineEdit();
+    layout->addWidget(text);
+    layout->addWidget(edit);
+    setLayout(layout);
+}
+
+QString AskInfo::text() const { return edit->text(); }
+
+// DIRECTORY CHOOSER
+
 
 void DirectoryChooser::choose_directory()
 {
@@ -58,6 +77,10 @@ DirectoryChooser::DirectoryChooser(QString message) :
 
 QString DirectoryChooser::text() { return edit->text();  }
 void DirectoryChooser::setText(QString t) { return edit->setText(t);  }
+
+
+// EXCLUDE CHOOSER
+
 
 ExcludeChooser::ExcludeChooser(QString message) :
     QWidget(),
@@ -102,10 +125,8 @@ QVBoxLayout* ExcludeChooser::createLayout(QString message) const
     QLabel* text = new QLabel(message);
     layout->addWidget(text);
 
-    for (auto chooser:choosers)
-    {
-        layout->addWidget(chooser);
-    }
+    for (auto chooser:choosers) { layout->addWidget(chooser); }
+
     
     QToolButton* plus_button = new QToolButton();
     plus_button->setIcon(QIcon("plus.png"));
@@ -124,6 +145,11 @@ QStringList ExcludeChooser::getExcludedFiles() const
     }
     return dirs;
 }
+
+// BACKUP WIDGET
+
+QString BackupWidget::getBackupDir() const { return backup_chooser->text(); }
+QString BackupWidget::getPurgeDir() const { return purge_chooser->text(); }
 
 QStringList BackupWidget::getExcludedFiles()  const
 { 
@@ -145,27 +171,62 @@ BackupWidget::BackupWidget() :
     setLayout(layout);
 }
 
+// TERMINAL WIDGET
+
+
+TerminalWidget::TerminalWidget() :
+    QWidget()
+{
+    QLabel* information = new QLabel("If you don't plan to use the git functionality, this section is facultative.");
+    info_terminal = new AskInfo("Command line to launch a terminal (e.g. 'konsole', 'terminology', 'xterm')");
+    info_in_terminal = new AskInfo("Command line to launch a program in a terminal (e.g. 'konsole -e', 'terminology -e', 'xterm -e')");
+    info_editor = new AskInfo("My preferred editor (e.g. 'gedit', 'gvim', 'terminology -e vim', 'emacs')");
+
+    QVBoxLayout* layout=new QVBoxLayout();
+    layout->addWidget(information);
+    layout->addStretch(); 
+    layout->addWidget(info_terminal);
+    layout->addWidget(info_in_terminal);
+    layout->addWidget(info_editor);
+    setLayout(layout);
+}
+
+QString TerminalWidget::getTerminal() const { return info_terminal->text(); }
+QString TerminalWidget::getInTerminal() const { return info_in_terminal->text(); }
+QString TerminalWidget::getEditor() const { return info_editor->text(); }
+
+// TAB WIDGET
+
 TabWidget::TabWidget():
     QTabWidget()
 {
     backup_tab=new BackupWidget();
-    QLabel* git_tab=new QLabel("deux");
-    QLabel* terminal_tab=new QLabel("deux");
+    terminal_tab=new TerminalWidget();
     QLabel* compilation_tab=new QLabel("deux");
+    
     addTab(backup_tab,"About backup");
-    addTab(git_tab,"About git");
     addTab(terminal_tab,"Terminal preferences");
     addTab(compilation_tab,"Compilation preferences");
 }
 
 void TabWidget::write_to_file() const
 {
-    QStringList exclude_list=backup_tab->getExcludedFiles();
-    for (QString& s : exclude_list)
+    std::ostringstream output;
+
+    output<<"backup="<<backup_tab->getBackupDir().toStdString()<<std::endl;
+    output<<"purge="<<backup_tab->getPurgeDir().toStdString()<<std::endl;
+    for (QString& s : backup_tab->getExcludedFiles()  )
     {
-        std::cout<<"exclude="<<s.toStdString()<<std::endl;
+        output<<"exclude="<<s.toStdString()<<std::endl;
     }
+    output<<"terminal="<<terminal_tab->getTerminal().toStdString()<<std::endl;
+    output<<"in_terminal="<<terminal_tab->getInTerminal().toStdString()<<std::endl;
+    output<<"editor="<<terminal_tab->getEditor().toStdString()<<std::endl;
+    std::cout<<output.str()<<std::endl;
 }
+
+
+// MAIN WIDGET
 
 MainWidget::MainWidget():
     QWidget()
@@ -193,7 +254,6 @@ int main(int argc, char* argv[])
     MainWidget* main_widget = new MainWidget();
 
     main_window->setCentralWidget(main_widget);
-
 
     main_window->show();
     return app.exec();
