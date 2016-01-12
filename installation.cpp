@@ -35,6 +35,7 @@ AskInfo::AskInfo(QString message)
 }
 
 QString AskInfo::text() const { return edit->text(); }
+void AskInfo::setText(QString message) { edit->setText(message); }
 
 // DIRECTORY CHOOSER
 
@@ -195,6 +196,25 @@ QString TerminalWidget::getTerminal() const { return info_terminal->text(); }
 QString TerminalWidget::getInTerminal() const { return info_in_terminal->text(); }
 QString TerminalWidget::getEditor() const { return info_editor->text(); }
 
+// COMPILAITION WIDGET
+
+
+CompilationWidget::CompilationWidget():
+    QWidget()
+{
+    QVBoxLayout* compilation_layout = new QVBoxLayout();
+
+    QLabel* text = new QLabel( "The makefile assumes presence of boost and in particular has the hard-coded path BOOST_THREAD_LIB  = /usr/lib/i386-linux-gnu/libboost_thread.so  (Ubutnu 15.10 Wily)  "  );
+
+    AskInfo* thread_info = new AskInfo("path for libboost_thread.so");
+    thread_info->setText("/usr/lib/i386-linux-gnu/libboost_thread.so");
+
+    compilation_layout->addWidget(text);
+    compilation_layout->addWidget(thread_info);
+
+    setLayout(compilation_layout);
+}
+
 // TAB WIDGET
 
 TabWidget::TabWidget():
@@ -202,7 +222,7 @@ TabWidget::TabWidget():
 {
     backup_tab=new BackupWidget();
     terminal_tab=new TerminalWidget();
-    QLabel* compilation_tab=new QLabel("deux");
+    compilation_tab=new CompilationWidget();
     
     addTab(backup_tab,"About backup");
     addTab(terminal_tab,"Terminal preferences");

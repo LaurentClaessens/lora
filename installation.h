@@ -72,6 +72,7 @@ class AskInfo : public QWidget
         QLineEdit* edit;
     public:
         AskInfo(QString);   
+        void setText(QString);
         QString text() const;
 };
 
@@ -108,6 +109,14 @@ class TerminalWidget : public QWidget
         QString getEditor() const;
 };
 
+class CompilationWidget : public QWidget
+{
+    Q_OBJECT
+
+    public:
+        CompilationWidget();
+};
+
 class TabWidget : public QTabWidget
 {
     Q_OBJECT
@@ -117,6 +126,7 @@ class TabWidget : public QTabWidget
     private:
         BackupWidget* backup_tab;
         TerminalWidget* terminal_tab;
+        CompilationWidget* compilation_tab;
     public:
         TabWidget();
 };
