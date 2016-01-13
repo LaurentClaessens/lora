@@ -113,8 +113,11 @@ class CompilationWidget : public QWidget
 {
     Q_OBJECT
 
+    private:
+        AskInfo* thread_info;
     public:
         CompilationWidget();
+        QString getBOOST_THREAD_LIB();
 };
 
 class TabWidget : public QTabWidget
@@ -122,11 +125,15 @@ class TabWidget : public QTabWidget
     Q_OBJECT
 
     private slots:
-        void write_to_file() const;
+        void do_finish();
     private:
         BackupWidget* backup_tab;
         TerminalWidget* terminal_tab;
         CompilationWidget* compilation_tab;
+
+        // the created makefile (named 'auto_makefile') will contain two lines
+        // with BOOT_THREAD_LIB.
+        void write_to_file() const;
     public:
         TabWidget();
 };

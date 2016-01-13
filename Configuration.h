@@ -58,6 +58,8 @@ class Configuration
         path getHomePath() const;
         path getBackupPath() const;
         path getPurgePath() const;
+
+        // excluding a non-existing path throws an exception. 
         void add_exclude_path(const path);    
         void add_exclude_path(const std::vector<path>); 
 

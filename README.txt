@@ -84,6 +84,14 @@ Thus the backup is incremental in the sense that the old version of a modified f
 ATTENTION : There is no mechanism to suppress old file. Thus the size of directory /mnt/baka/purge is always increasing. This is by purpose : I prefer not have an automated way to suppress data.
     Consequence : some segmentation faults are triggered by "disk full". This is the user's responsibility to know what to suppress.
 
+Trying to exclude a non-existing directory throws an error (when reading the configuration file). The reason roots in the following user case. Let suppose I don't want to
+backup /home/daniel/videos/dvd (containing .VOB files) because it is very large and not really important. I add the line
+exclude=/home/daniel/videos/dvd 
+in the configuration file.
+Now I change the directory name to /home/daniel/vidéos/dvd  (add an accent on "vidéo"). Then the backup process will copy the whole directory /home/daniel/vidéo and purge <purge>/videos. This is yet not really optimal, but copying the subdirectory /home/daniel/vidéos/dvd is REALLY what we don't want to do. 
+
+When something strange happens, better to crash than silently manage the situation.
+
 
 WHAT IT DOES -- PURGE
 
@@ -111,11 +119,3 @@ A list of directories that are not clean git repository (untracked or modified f
   - ...
 
 
-TODO
-
-- the purge vector is parsed too many times
-- a better command line argument parser
-- a better image for "plus.png"
-- the installation program should read the configuration file an fill the blanks.
-- in the installation, there is a duplicate of information between   BackupWidget::exclude_list and ExcludeChooser::choosers.
-- make a version with no graphical interface. One should be able to do the backup even from the most basic debbootstraped USB stick.

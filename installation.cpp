@@ -17,7 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
 #include <iostream>
+#include <fstream>
 #include <sstream>
+#include <boost/algorithm/string/predicate.hpp>     // starts_with
 #include <QtGui>
 #include "installation.h"
 
@@ -206,13 +208,18 @@ CompilationWidget::CompilationWidget():
 
     QLabel* text = new QLabel( "The makefile assumes presence of boost and in particular has the hard-coded path BOOST_THREAD_LIB  = /usr/lib/i386-linux-gnu/libboost_thread.so  (Ubutnu 15.10 Wily)  "  );
 
-    AskInfo* thread_info = new AskInfo("path for libboost_thread.so");
+    thread_info = new AskInfo("path for libboost_thread.so");
     thread_info->setText("/usr/lib/i386-linux-gnu/libboost_thread.so");
 
     compilation_layout->addWidget(text);
     compilation_layout->addWidget(thread_info);
 
     setLayout(compilation_layout);
+}
+
+QString CompilationWidget::getBOOST_THREAD_LIB()
+{
+    return thread_info->text();
 }
 
 // TAB WIDGET
@@ -231,20 +238,40 @@ TabWidget::TabWidget():
 
 void TabWidget::write_to_file() const
 {
-    std::ostringstream output;
+    std::ofstream output("truc.cfg");
 
-    output<<"backup="<<backup_tab->getBackupDir().toStdString()<<std::endl;
-    output<<"purge="<<backup_tab->getPurgeDir().toStdString()<<std::endl;
+    output<<"backup="<<backup_tab->getBackupDir().toUtf8().constData()<<std::endl;
+    output<<"purge="<<backup_tab->getPurgeDir().toUtf8().constData()<<std::endl;
     for (QString& s : backup_tab->getExcludedFiles()  )
     {
-        output<<"exclude="<<s.toStdString()<<std::endl;
+        output<<"exclude="<<s.toUtf8().constData()<<std::endl;
     }
     output<<"terminal="<<terminal_tab->getTerminal().toStdString()<<std::endl;
     output<<"in_terminal="<<terminal_tab->getInTerminal().toStdString()<<std::endl;
     output<<"editor="<<terminal_tab->getEditor().toStdString()<<std::endl;
-    std::cout<<output.str()<<std::endl;
+
+    output<<"BOOST="<<compilation_tab->getBOOST_THREAD_LIB().toStdString()<<std::endl;
+
+    std::ifstream makefile("makefile");
+    string output_filename="auto_makefile";
+    std::ofstream tmp_file(output_filename.c_str(),std::ofstream::trunc);
+    string line;
+
+    while( getline(makefile,line)  )
+    {
+        tmp_file<<line<<std::endl; 
+        if ( boost::algorithm::starts_with(line,"BOOST_THREAD_LIB  =")  ) 
+        {
+            tmp_file<<"BOOST_THREAD_LIB = "<<compilation_tab->getBOOST_THREAD_LIB().toStdString()<<std::endl;
+        }
+     };
 }
 
+void TabWidget::do_finish()
+{
+    write_to_file();
+    qApp->exit();
+}
 
 // MAIN WIDGET
 
@@ -263,7 +290,7 @@ MainWidget::MainWidget():
     main_vlayout->addWidget(tab_widget);
     main_vlayout->addLayout(finished_layout);
 
-    connect(finished_button,SIGNAL(clicked()),tab_widget,SLOT(write_to_file()));
+    connect(finished_button,SIGNAL(clicked()),tab_widget,SLOT(do_finish()));
     setLayout(main_vlayout);
 }
 
