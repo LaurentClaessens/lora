@@ -4,6 +4,7 @@ portable.cfg
 lora
 lora.pro
 lora.cfg
+mylora.cfg
 moc_*.cpp
 Makefile
 *.swp
@@ -14,6 +15,6 @@ Makefile
 *.o
 core
 UnitTests
-
+auto_makefile
 lora.log
 installation

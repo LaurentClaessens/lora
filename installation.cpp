@@ -23,6 +23,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QtGui>
 #include "installation.h"
 
+string DEFAULT_BOOST_THREAD_LIB = "/usr/lib/i386-linux-gnu/libboost_thread.so";
+
 // ASK INFO
 
 
@@ -209,7 +211,7 @@ CompilationWidget::CompilationWidget():
     QLabel* text = new QLabel( "The makefile assumes presence of boost and in particular has the hard-coded path BOOST_THREAD_LIB  = /usr/lib/i386-linux-gnu/libboost_thread.so  (Ubutnu 15.10 Wily)  "  );
 
     thread_info = new AskInfo("path for libboost_thread.so");
-    thread_info->setText("/usr/lib/i386-linux-gnu/libboost_thread.so");
+    thread_info->setText(QString::fromStdString(DEFAULT_BOOST_THREAD_LIB));
 
     compilation_layout->addWidget(text);
     compilation_layout->addWidget(thread_info);
@@ -236,9 +238,9 @@ TabWidget::TabWidget():
     addTab(compilation_tab,"Compilation preferences");
 }
 
-void TabWidget::write_to_file() const
+void TabWidget::write_backup_to_file() const
 {
-    std::ofstream output("truc.cfg");
+    std::ofstream output("lora.cfg");
 
     output<<"backup="<<backup_tab->getBackupDir().toUtf8().constData()<<std::endl;
     output<<"purge="<<backup_tab->getPurgeDir().toUtf8().constData()<<std::endl;
@@ -249,9 +251,10 @@ void TabWidget::write_to_file() const
     output<<"terminal="<<terminal_tab->getTerminal().toStdString()<<std::endl;
     output<<"in_terminal="<<terminal_tab->getInTerminal().toStdString()<<std::endl;
     output<<"editor="<<terminal_tab->getEditor().toStdString()<<std::endl;
+}
 
-    output<<"BOOST="<<compilation_tab->getBOOST_THREAD_LIB().toStdString()<<std::endl;
-
+void TabWidget::write_compilation_to_file() const
+{
     std::ifstream makefile("makefile");
     string output_filename="auto_makefile";
     std::ofstream tmp_file(output_filename.c_str(),std::ofstream::trunc);
@@ -264,13 +267,30 @@ void TabWidget::write_to_file() const
         {
             tmp_file<<"BOOST_THREAD_LIB = "<<compilation_tab->getBOOST_THREAD_LIB().toStdString()<<std::endl;
         }
-     };
+    }
+}
+
+bool TabWidget::write_to_file()
+{
+
+    bool a1=true;
+    bool a2=true;
+    int ans =  QMessageBox::question(this,"Operation finished","This will write into 'lora.cfg'",QMessageBox::Save|QMessageBox::Cancel);
+    if (ans==QMessageBox::Save) { write_backup_to_file() ; }
+    if (ans==QMessageBox::Cancel) { a1=false;  }
+
+    if (!(compilation_tab->getBOOST_THREAD_LIB().toStdString()==DEFAULT_BOOST_THREAD_LIB))
+    {
+        int ans =  QMessageBox::question(this,"Operation finished","This will write into 'auto_makefile'",QMessageBox::Save|QMessageBox::Cancel);
+        if (ans==QMessageBox::Save) { write_compilation_to_file() ; }
+        if (ans==QMessageBox::Cancel) { a2=false;  }
+    }
+    return a1&&a2;
 }
 
 void TabWidget::do_finish()
 {
-    write_to_file();
-    qApp->exit();
+    if (write_to_file()) { qApp->exit(); }
 }
 
 // MAIN WIDGET

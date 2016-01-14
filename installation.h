@@ -133,7 +133,10 @@ class TabWidget : public QTabWidget
 
         // the created makefile (named 'auto_makefile') will contain two lines
         // with BOOT_THREAD_LIB.
-        void write_to_file() const;
+        bool write_to_file();     // return 'true' if both are written
+                                        // (or don't need to be written)
+        void write_backup_to_file() const;
+        void write_compilation_to_file() const;
     public:
         TabWidget();
 };
