@@ -24,9 +24,12 @@ class GitListWindow : public QMainWindow
 
     signals:
         void need_git_window();
+    public slots:
+        void finished();
     private :
         QVBoxLayout* main_layout;
         const Configuration* config_ptr;
+        bool is_finished;
     public:
         GitListWindow(const Configuration*);
         void launchGitWindow(GitRepository);

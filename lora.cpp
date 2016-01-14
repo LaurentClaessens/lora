@@ -56,6 +56,7 @@ void loops(Configuration* config_ptr)
     backup_loop.run();
     cout<<endl<<"Launching the purge process ..."<<endl;
     purge_loop.run();
+    cout<<endl<<"all loops ended"<<endl;
 }
 
 int main(int argc, char* argv[])
@@ -76,6 +77,7 @@ int main(int argc, char* argv[])
         loops(config_ptr);
         
         scheduler.join();
+        std::cout<<"scheduler joined"<<std::endl;
         git_list_window->join();
     }
     catch (string err) { cout<<endl<<string("I got a bad news : ")<<err<<endl; }

@@ -41,14 +41,15 @@ void GitListWindow::addGitButton(GitRepository repo)
 
 GitListWindow::GitListWindow(const Configuration* conf):
     QMainWindow(),
-    config_ptr(conf)
+    config_ptr(conf),
+    is_finished(false)
 {
     main_layout=new QVBoxLayout;
     QWidget* button_widget=new QWidget(this);
     QScrollArea* scroll_area=new QScrollArea;
     QPushButton* exit_button=new QPushButton("exit");
 
-    connect( exit_button,SIGNAL(clicked()),this,SLOT(close())  );
+    connect( exit_button,SIGNAL(clicked()),this,SLOT(finished())  );
 
     main_layout->addWidget(exit_button);
     button_widget->setLayout(main_layout);
@@ -61,12 +62,22 @@ GitListWindow::GitListWindow(const Configuration* conf):
 
 void GitListWindow::processEvents() { qApp->processEvents(); }
 
-// this functions waits until the main list window is closed.
+void GitListWindow::finished() 
+{ 
+    is_finished=true; 
+    this->close();
+}
+
+// Wait until the main list window is closed.
 // The point is that in the main file 'lora.cpp' I cannot do
 // 'git_list_window->exec()' since I want the other processes to run.
 void GitListWindow::join()
 {
-    QEventLoop loop;
-    connect(this, SIGNAL(destroyed()), &loop, SLOT(exit()));
-    loop.exec();
+ //   QEventLoop loop;
+    //connect(this, SIGNAL(destroyed()), &loop, SLOT(exit()));
+   // connect(this, SIGNAL(destroyed()), &loop, SLOT(quit()));
+    std::cout<<"Launching the f- loop"<<std::endl;
+   // loop.exec();
+   while(!is_finished) { processEvents();  } 
+    std::cout<<"The f- loop is finished. "<<std::endl;
 }
