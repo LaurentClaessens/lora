@@ -73,11 +73,5 @@ void GitListWindow::finished()
 // 'git_list_window->exec()' since I want the other processes to run.
 void GitListWindow::join()
 {
- //   QEventLoop loop;
-    //connect(this, SIGNAL(destroyed()), &loop, SLOT(exit()));
-   // connect(this, SIGNAL(destroyed()), &loop, SLOT(quit()));
-    std::cout<<"Launching the f- loop"<<std::endl;
-   // loop.exec();
    while(!is_finished) { processEvents();  } 
-    std::cout<<"The f- loop is finished. "<<std::endl;
 }

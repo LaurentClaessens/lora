@@ -122,8 +122,7 @@ MainPurgeLoop::MainPurgeLoop(Configuration* config_ptr) : MainLoop(config_ptr),s
 void MainPurgeLoop::run() 
 { 
     std::cout<<"Launching the purge loop."<<std::endl;
-    //this->MainLoop::run();
-    std::cout<<"____**  PURGE NOT DONE  !!  "<<std::endl<<std::endl;
+    this->MainLoop::run();
     std::cout<<"Purge loop ended."<<std::endl;
     FinalTask* etask= new FinalTask();
     config_ptr->add_task(etask);
