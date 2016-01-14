@@ -26,7 +26,7 @@ compiler_moc_source_clean:
 ####### Compile
 all: installation  lora UnitTests 
 lora: lora.cpp  \
-		DirectoryConverter.o tasks.o MainLoop.o Configuration.o GitRepository.o CommandLine.o GitWindow.o GitListWindow.o 
+		DirectoryConverter.o tasks.o MainLoop.o Configuration.o GitRepository.o CommandLine.o GitWindow.o GitListWindow.o  Logging.o
 	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora MainLoop.o Logging.o CommandLine.o GitRepository.o Configuration.o DirectoryConverter.o tasks.o  GitWindow.o moc_GitWindow.o GitListWindow.o moc_GitListWindow.o  $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB) $(LIBS)
 UnitTests: UnitTests.cpp\
    	testing.o CommandLine.o HashTable.o GitRepository.o GitWindow.o Configuration.o DirectoryConverter.o tasks.o
@@ -47,10 +47,10 @@ moc_installation.o: moc_installation.cpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_installation.o moc_installation.cpp
 
 
-MainLoop.o: MainLoop.cpp MainLoop.h Configuration.o
+MainLoop.o: MainLoop.cpp MainLoop.h 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainLoop.o MainLoop.cpp
 
-Configuration.o: Configuration.cpp Configuration.h tasks.o HashTable.o Logging.o
+Configuration.o: Configuration.cpp Configuration.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Configuration.o  Configuration.cpp
 
 Logging.o: Logging.cpp Logging.h 
