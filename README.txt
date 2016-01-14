@@ -112,7 +112,7 @@ By the way, Lora has very bad performance against renaming an intere directory :
 
 WHAT IT DOES -- GIT
 
-Since Lora loops over the whole $HOME, it also take time to check for each directory if it is a git repository (has non trivial .git subdirectory) and if this repository
+Since Lora loops over the whole $HOME, it also takes time to check for each directory if it is a git repository (has non trivial .git subdirectory) and if this repository
 is clean.
 
 A list of directories that are not clean git repository (untracked or modified files) is displayed. Clicking on one of them opens a dialog window that helps you to 

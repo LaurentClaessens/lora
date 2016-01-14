@@ -31,7 +31,7 @@ Lora is a backup program and a small Git remainder utility\footnote{Did you comm
 \begin{center}
     {\bf Warning}
 \end{center}
-This is a free software\footnote{In the sense of the GPL : no warranty, etc.} manipulating your invaluable data. If you use it, I consider you as a consenting adult.
+This is a free software\footnote{In the sense of the GPL : no warranty, etc.} manipulating your precious data. If you use it, I consider you as a consenting adult.
 
 \tableofcontents
 
@@ -44,6 +44,11 @@ The first step is to download the whole on \href{ https://github.com/LaurentClae
     \info{git clone https://github.com/LaurentClaessens/lora}
 \end{center}
 
+You compile this documentation with
+\begin{center}
+    pdflatex manual.tex
+\end{center}
+A \LaTeX\ distribution is needed\ distribution is needed.
 
 %--------------------------------------------------------------------------------------------------------------------------- 
 \subsection{The manual way}
@@ -126,7 +131,7 @@ Here it is :
 
 You can skip this if you don't use git. 
 
-The ``Terminal tab'' allows you to determine what kind of terminal and editor you prefer\footnote{Serious people use \sout{gedit} vim or \sout{emacs}notepad. Under \sout{konsole}\,\sout{command.com}terminology.}.
+The ``Terminal tab'' allows you to determine what kind of terminal and editor you prefer\footnote{Serious people use \sout{gedit} vim or \sout{notepad}emacs inside \sout{konsole}\,\sout{command.com}terminology.}.
 Here is the tab :
 
 \begin{center}
@@ -134,114 +139,110 @@ Here is the tab :
 \end{center}
 \begin{enumerate}
     \item
-        The line (A) ask you the command line that launch your favorite terminal.
+        The line (A) ask you the command line that launch your favorite terminal. This will be \info{konsole}, \info{terminology}, \info{xterm} or something like that. This is used when clicking on ``Open a terminal here''.
+    \item
+        The line (B) ask you how to launch a process in your terminal. The point is that \info{git diff} has to be launched in a terminal in order to take into account you git preferences\footnote{By the way, you should add \info{quotepath=false} in your \info{.gitconfig} file.}.
+    \item
+        The line (C) ask you your editor. This is used when clicking on ``Edit .gitignore''. If your favorite editor works in a terminal, you need to ask for opening a new terminal, e.g. \info{konsole -e vim} instead of simply \info{vim}.
 \end{enumerate}
+
+%///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+\subsubsection{The compilation tab}
+%///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+Here it is :
+\begin{center}
+    \includegraphics[width=\linewidth]{compilation_tab.png}
+\end{center}
+
+This asks you the path of the file \info{libboost\_thread.so} that is mandatory for the compilation of Lora.
+
+%--------------------------------------------------------------------------------------------------------------------------- 
+\subsection{Compilation}
+%---------------------------------------------------------------------------------------------------------------------------
+
+You need Boost to be installed somewhere on your system\footnote{On my Ubuntu, I do \info{apt install libboost-all-dev  libboost1.58-all-dev }}. The path to the file \info{libboost\_thread.so} has to be correct in the makefile (edit it if you are unsure).
+
+For compiling everything you simply type
+\begin{center}
+    \info{make all}
+\end{center}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+\section{Testing}
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+You can test Lora by
+\begin{center}
+    \info{./tests.sh}
+\end{center}
+This will test some functionalities (for regressions) and allow you to see a Git window. If something gets wrong, send me an email at \info{laurent.claesens@studenti.unipd.it}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+\section{Playing with Lora}
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+%--------------------------------------------------------------------------------------------------------------------------- 
+\subsection{Backup}
+%---------------------------------------------------------------------------------------------------------------------------
+
+Launch
+\begin{center}
+      \info{./lora --configuration=<configuration\_filename>  <starting\_path>  }
+\end{center}
+
+\begin{description}
+    \item[Configuration] Default is \info{lora.cfg}. The filename in which Lora has to read your configuration.
+    \item[Starting path] Default is \info{\$HOME}. Giving the argument overrides the starting path written in the configuration file. If you want to backup only a part of your home because you only have \( 5\) minutes to shut down your computer.
+\end{description}
+Most of time you only have to launch \info{./lora} with no arguments.
+
+Lora will loop over your home directory (or \info{starting\_path} if given in command line or in the configuration file) and compare\footnote{Files are different if they size differ or if they \info{last\_write\_time} attribute differ.} each file with the corresponding one in your backup directory. 
+\begin{enumerate}
+    \item
+        If \info{<home>/foo/bar.txt} differs from \info{<backup>/foo/bar.txt}. 
+        \begin{itemize}
+            \item Move \info{<backup>/foo/bar.txt} to \info{<purge>/foo/bar.txt} Thus you will never loose data\footnote{Never in the sense of the GPL no warranty stuff\ldots}. In this sense, Lora is more than a \emph{synchronizing} program. It synchronizes and keeps the old data.
+            \item Copy \info{<home>/foo/bar.txt} to \info{<backup>/foo/bar.txt}
+        \end{itemize}
+        If \info{<home>/foo/bar.txt} exists and \info{<backup>/foo/bar.txt} does not exist.
+        \begin{itemize}
+            \item Copy.
+        \end{itemize}
+\end{enumerate}
+
+%--------------------------------------------------------------------------------------------------------------------------- 
+\subsection{Purge}
+%---------------------------------------------------------------------------------------------------------------------------
+
+When the backup is finished, Lora will loop over your \info{<backup>} directory.
+
+If \info{<backup>/foo/bar.txt} exists and \info{<home>/foo/bar.txt} does not exist, we deduce that you removed your file.
+\begin{itemize}
+    \item 
+        Move \info{<backup>/foo/bar.txt} to \info{<purge>/foo/bar.txt}.
+\end{itemize}
+Note. The purge directory here is not exactly the same as the previous one. In fact each time you launch Lora, a new directory is created :
+\begin{center}
+    \info{<purge>/<date>/<hour-minutes>}
+\end{center}
+Inside that directory, Lora creates two directories : \info{modified} and \info{removed} which contain the files that were respectively seen to be modified and removed.
+
+A general concept of Lora is that your data is more precious than your disk space and than everything\footnote{Better to crash than to manage a borderline situation.}. If you understand well the backup/purge concept, you can imagine the extreme disk space waste when you just rename, say your music directory.
+
+%--------------------------------------------------------------------------------------------------------------------------- 
+\subsection{The Git helper}
+%---------------------------------------------------------------------------------------------------------------------------
+
+Since Lora loops over the whole \info{\$HOME}, it also takes time to check for each directory if it is a git repository (has non trivial .git subdirectory) and if this repository is clean\footnote{I personally gitted directories like \info{.config} and \info{.kde}, so I am not always conscient that a git repository have been modified.}.
+
+A list of directories that are not clean git repository (untracked or modified files) is displayed. Clicking on one of them opens a dialog window that helps you to manage the situation.
+
+
+\begin{description}
+    \item[Add <this> to gitignore]
+\end{description}
 <++>
 
-
 \end{document}
-
-    \includegraphics[width=\linewidth]{compilation_tab.png}
-
-
-
-Compile the whole
-    make all
-
-NOTES
- 
-    You can bypass the installation if Boost is correctly located (see where the makefile assumes it is).  
-Doing directly
-        make all
-works at my place (Ubuntu 15.10 Wily) 
-
-    You can directly modify the 'lora.cfg' and 'makefile' file instead of using the installation program. 
-
-
-DEFAULT USE
-
-./lora 
-
-will backup your $HOME directory using the backup and purge paths found in 'lora.cfg'
-
-BACKUP A PART
-
-./lora ~/foo
-
-will backup the directory ~/foo in   <backup>/foo   where <backup> is the directory found in 'lora.cfg'. This contains the backup of $HOME.
-
-
-USE AN OTHER CONFIG FILE
-
-./lora --configuration=myconfig.cfg
-
-will read the configuration file 'myconfig.cfg' instead of 'lora.cfg'
-
-
-WHAT IS DOES -- BACKUP
-
-The main feature is : the backup copy is only a copy. You can browse it with your favorite file browser and get a file back with a simple copy. You do not require a special software for getting back your data.
-
-As an example, let us show how work the backup of $HOME=/home/daniel
-
-We choose :
-    backup directory : /mnt/baka/backup
-    purge directory  : /mnt/baka/purge
-
-Typically, /mnt/baka is the mount point of an encrypted external disk.
-
-
-This software loops over the files and repertories of /home/daniel and creates a copy into
-/mnt/baka/backup
-
-At the end of the process, the directories /home/daniel and /mnt/baka/backup are the same (except for the excluded directories).
-
-When making the backup of /home/daniel/bar/foo.txt,
-* check if /mnt/baka/backup/bar/foo.txt
-* if not, create it with a simple copy (but the last write time attribute is conserved)
-* if /mnt/baka/backup/bar/foo.txt exists and is different
-    - move to /mnt/backup/bakapurge.lora/<today date>/<hour>/modified/bar/foo.txt   (keeping the time attribute)
-    - make the copy.
-
-Thus the backup is incremental in the sense that the old version of a modified files is still available in a directory whose name is the date and the hour of the backup.
-
-
-
-ATTENTION : There is no mechanism to suppress old file. Thus the size of directory /mnt/baka/purge is always increasing. This is by purpose : I prefer not have an automated way to suppress data.
-    Consequence : some segmentation faults are triggered by "disk full". This is the user's responsibility to know what to suppress.
-
-Trying to exclude a non-existing directory throws an error (when reading the configuration file). The reason roots in the following user case. Let suppose I don't want to
-backup /home/daniel/videos/dvd (containing .VOB files) because it is very large and not really important. I add the line
-exclude=/home/daniel/videos/dvd 
-in the configuration file.
-Now I change the directory name to /home/daniel/vidéos/dvd  (add an accent on "vidéo"). Then the backup process will copy the whole directory /home/daniel/vidéo and purge <purge>/videos. This is yet not really optimal, but copying the subdirectory /home/daniel/vidéos/dvd is REALLY what we don't want to do. 
-
-When something strange happens, better to crash than silently manage the situation.
-
-
-WHAT IT DOES -- PURGE
-
-Lora loops over the directory /mnt/baka/backup and checks if these files correspond to files in /home/daniel.
-When looking at /mnt/backa/backup/blah/stuff.tex
-
-* check if /home/daniel/blah/stuff.tex exists
- - if yes, do nothing
- - if not, assume that this file was removed in the home and then move
-/mnt/baka/backup/blah/stuff.tex ---> /mnt/baka/purge/<today date>/<hour>/removed/blah/stuff.tex
-
-
-By the way, Lora has very bad performance against renaming an intere directory : in the first pass, it copy everything and in the second pass, it move the whole to the purge directory.
-
-WHAT IT DOES -- GIT
-
-Since Lora loops over the whole $HOME, it also take time to check for each directory if it is a git repository (has non trivial .git subdirectory) and if this repository
-is clean.
-
-A list of directories that are not clean git repository (untracked or modified files) is displayed. Clicking on one of them opens a dialog window that helps you to 
-  - add files in .gitignore
-  - add files
-  - make a 'git commit -a'
-  - see git diff
-  - ...
-
-

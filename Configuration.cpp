@@ -174,14 +174,17 @@ HashTable<string,string> parse_arguments(int argc,char* argv[])
     return hash;
 }
 
-path get_starting_backup_path(string s_path)
+path get_starting_backup_path(string s_path,bool verbose=true)
 {
     const path starting_path=path(s_path);
     path full_path;
     if (starting_path.is_relative()) { full_path=absolute(starting_path); }
     else { full_path=starting_path; }
     full_path=canonical(full_path);
-    std::cout<<"We are going to backup the repertory "<<full_path<<std::endl;
+    if (verbose)
+    {
+        std::cout<<"We are going to backup the repertory "<<full_path<<std::endl;
+    }
     return full_path;
 }
 
@@ -191,7 +194,7 @@ Configuration* configuration_file_to_configuration(int argc, char* argv[],bool v
     HashTable<string,string> hash_args=parse_arguments(argc,argv);
 
     path cfg_path=hash_args["--configuration"];
-    path starting_backup_path=get_starting_backup_path(hash_args["--starting"]);
+    path starting_backup_path=get_starting_backup_path(hash_args["--starting"],verbose);
 
     assert(is_regular_file(cfg_path));
     auto hash_table=read_configuration_file(cfg_path);
