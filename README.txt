@@ -1,4 +1,4 @@
-________________________________________- LORA __ A BACKUP AND GIT AID PROGRAM __________________________
+________________________________________ LORA : A BACKUP AND GIT AID  PROGRAM __________________________
 
 Lora will loop over your $HOME directory and 
  - backup it. 
@@ -15,6 +15,10 @@ INSTALLATION AND COMPILATION
 
 Download 
     git clone https://github.com/LaurentClaessens/lora
+Compile the documentation
+    pdflatex manual.tex
+Read the manual
+    It contains more detailed informations than this README.txt
 Compile the installation program
     make installation
 Launch the installation program
