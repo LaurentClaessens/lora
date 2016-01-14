@@ -41,7 +41,7 @@ QVBoxLayout* GitWindow::createMainLayout()
 
     QPushButton* git_diff_button=new QPushButton("See git diff");
     QPushButton* git_ignore_button=new QPushButton("Edit .gitignore");
-    QPushButton* git_commit_button=new QPushButton("launch git commit -a");
+    QPushButton* git_commit_button=new QPushButton("Launch git commit -a");
     QPushButton* open_terminal_button=new QPushButton("Open a terminal here");
     QPushButton* exit_button=new QPushButton("Exit");
 
