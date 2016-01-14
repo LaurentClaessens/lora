@@ -186,9 +186,9 @@ int UntrackedLine::getStatus()
 
 string UntrackedLine::getActualPath() {return printed_path;}
 
-void GitWindow::launch_git_diff() { repo.launchGitDiff(); }
-void GitWindow::launch_git_commit() { repo.launchGitCommit(); }
-void GitWindow::launch_edit_gitignore() { repo.editGitIgnore(); }
+void GitWindow::launch_git_diff() { repo.launchGitDiff(config_ptr->getInTerminal()); }
+void GitWindow::launch_git_commit() { repo.launchGitCommit(config_ptr->getInTerminal()); }
+void GitWindow::launch_edit_gitignore() { repo.editGitIgnore(config_ptr->getEditor()); }
 void GitWindow::open_terminal()
 {
     CommandLine cl=CommandLine("");
