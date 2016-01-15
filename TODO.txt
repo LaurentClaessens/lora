@@ -12,6 +12,7 @@ For reading the configuration file
 
 TODO
 
+- add "tr" on every QString for internationalization.
 - the purge vector is parsed too many times
 - a better command line argument parser
 - a better image for "plus.png"
