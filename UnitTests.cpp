@@ -212,22 +212,18 @@ void test_gw1()
     std::cin>>directory;
     GitRepository repo=GitRepository(directory);
     
-    Configuration* config_ptr=configuration_file_to_configuration();
+    Configuration* config_ptr=configuration_file_to_configuration("example.cfg","",false);
     GitWindow* gw1=new GitWindow(repo,config_ptr);
     gw1->exec();
 }
 
 void test_exclude()
 {
-    std::cout<<"0"<<std::endl;
-    Configuration* config_ptr=configuration_file_to_configuration(0,0,false);   // the last boolean argument is 'verbose'
-    std::cout<<"1"<<std::endl;
-    test_assert(config_ptr->is_excluded("jjlk")==true,"A non existing path has to be excluded.");
-    std::cout<<"2"<<std::endl;
-    test_assert(config_ptr->is_excluded("/home/moky/Linux")==true,"This should be excluded.");
-    std::cout<<"3"<<std::endl;
-    test_assert(config_ptr->is_excluded("/home/moky/Linux/")==true,"This should be excluded.");
-    std::cout<<"4"<<std::endl;
+    Configuration* config_ptr=configuration_file_to_configuration("example.cfg","",false);   // the last boolean argument is 'verbose'
+    test_assert(config_ptr->is_excluded("/home/daniel/stuff")==true,"This should be excluded.");
+    test_assert(config_ptr->is_excluded("/home/daniel/stuff/")==true,"This should be excluded.");
+    test_assert(config_ptr->is_excluded("/home/daniel/foo/bar")==true,"This should be excluded.");
+    test_assert(config_ptr->is_excluded("/home/daniel/foo/bar/")==true,"This should be excluded.");
 }
 
 int main(int argc,char* argv[])
