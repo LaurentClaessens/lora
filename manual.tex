@@ -18,6 +18,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
+\newcounter{numtho}
+\newtheorem{remark}[numtho]{Remark}
 \newcommand{\info}[1]{\texttt{#1}}
 
 \begin{document}
@@ -46,7 +48,7 @@ The first step is to download the whole on \href{ https://github.com/LaurentClae
 
 You compile this documentation with
 \begin{center}
-    pdflatex manual.tex
+    \info{pdflatex manual.tex}
 \end{center}
 A \LaTeX\ distribution is needed\ distribution is needed.
 
@@ -124,6 +126,7 @@ Here it is :
     \item
         The excluded directories (C) are what they seem to be : they will be excluded from the backup. You can as example not backup the directory in which you save the \info{iso} files of your preferred Linux distribution. Press the \includegraphics{plus.png} button to add an excluded directory.
 \end{enumerate}
+
 
 %///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 \subsubsection{The terminal tab}
@@ -239,10 +242,33 @@ Since Lora loops over the whole \info{\$HOME}, it also takes time to check for e
 
 A list of directories that are not clean git repository (untracked or modified files) is displayed. Clicking on one of them opens a dialog window that helps you to manage the situation.
 
+Here is a window example :
 
-\begin{description}
-    \item[Add <this> to gitignore]
+\begin{center}
+    \includegraphics[width=\linewidth]{git_helper.png}
+\end{center}
+
+\begin{enumerate}
+    \item
+        A list of modified files (A).
+    \item
+        A list of untracked files (B). For each you can choice to track it (add) or ignore it (add to \info{.gitignore}). When clicking on ``Apply these changes'' (C), Lora does \info{git add} for the files you checked ``add'' and appends to \info{.gitignore} the names that you checked as ``gitignore''.
+    \item
+        The ``Track these files'' line (D). Lora will perform \info{git add} with the given argument (like \info{*.cpp}, \info{*.tex}).
+    \item
+        The ``Ignore these files'' line (E). Lora will append the files given in argument into \info{.gitignore} (like \info{*.tmp}, \info{*.eps}).
+    \item
+        The ``Commit that'' line (F) performs \info{git commit --message=} with the given message.
+\end{enumerate}
+
+
+\begin{description} 
+    \item[Add <this> to gitignore] Click there is this repository is of <this> type and Lora will add corresponding files to \info{.gitignore}. Example : with ``add latex to gitignore'', it will add \info{*.aux}, \info{*.toc}, etc.
+    \item[See git diff] open a terminal and launch \info{git diff} inside.
+    \item[Edit .gitignore] open \info{.gitignore} in your preferred editor.
+    \item[Launch git commit -a] Open a terminal and launches \info{git commit -a} inside.
+    \item[Open a terminal here] does what you think it does.
+    \item[Exit] does what you think it does.
 \end{description}
-<++>
 
 \end{document}
