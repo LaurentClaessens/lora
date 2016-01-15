@@ -17,6 +17,9 @@
 \usepackage[a4paper]{geometry} 
 \usepackage[italian]{babel}
 
+\newcounter{numtho}
+\newtheorem{remark}[numtho]{Remark}
+\newcommand{\info}[1]{\texttt{#1}}
 
 \begin{document}
 
@@ -43,10 +46,55 @@ Lora è un programmo che fa due cose.
 \end{itemize}
 
 %--------------------------------------------------------------------------------------------------------------------------- 
-\subsection{}
+\subsection{L'algoritmo di backup}
 %---------------------------------------------------------------------------------------------------------------------------
 
-<++>
+Il programma si invoca con\footnote{Vedere il manuale del'utente per maggiore informazioni.}
+\begin{center}
+      \info{./lora}
+\end{center}
+
+In questo esempio, supponiamo fare il backup di \info{<home>} (che sarà usualmente la cartella \info{\$HOME}) dentro la cartella \info{<backup>} (che carà su un disco esterno\footnote{Che dovrebbe essere cifrato, però è un altra storia.}). Di più abbiamo bisogno di una cartelle \info{<purge>} accanto a \info{<backup>}.
+
+Lora fa un \emph{loop} su tutti i file di \info{\$HOME}.
+
+\begin{enumerate}
+    \item
+        Se \info{<home>/foo/bar.txt} è diverso\footnote{L'attributo \emph{size} o \emph{last write time} è diverso.}  da \info{<backup>/foo/bar.txt}. 
+        \begin{itemize}
+            \item Sposta \info{<backup>/foo/bar.txt} verso \info{<purge>/foo/bar.txt} Quindi non ci sarà mai una perdita di dati : Lora è più di un programma di sincronizzazione. Lora fa la sincronizzationne di \info{<home>} con \info{<backup>}, ma guarda i viechi files in \info{<purge>}.
+            \item Copia \info{<home>/foo/bar.txt} su \info{<backup>/foo/bar.txt}
+        \end{itemize}
+        Se \info{<home>/foo/bar.txt} ma \info{<backup>/foo/bar.txt} non esista.
+        \begin{itemize}
+            \item Copia.
+        \end{itemize}
+\end{enumerate}
+
+Vantaggio di Lora su altri programmi di backup\footnote{Sopratutto quelli che implementano un backup incrementale.} : i dati si ritrovano con una semplice copia di \info{<backup>} si \info{<home>}. L'utente non ha bisogno si Lora per ritrovare i dati. 
+
+In particolare, l'utente può ritrovare i sui dati anche da una chiave USB minimale senza interfaccia grafica. 
+
+%--------------------------------------------------------------------------------------------------------------------------- 
+\subsection{L'algoritmo di purge}
+%---------------------------------------------------------------------------------------------------------------------------
+
+Quando il backup è finito, Lora fa un \emph{loop} su la cartella \info{<bakcup>}.
+
+
+Se \info{<backup>/foo/bar.txt} esista ma \info{<home>/foo/bar.txt} non esista, Lora pensa che l'utente abbia eliminato questo file.
+\begin{itemize}
+    \item 
+        Sposta \info{<backup>/foo/bar.txt} verso \info{<purge>/foo/bar.txt}.
+\end{itemize}
+
+Nota bene. The purge directory here is not exactly the same as the previous one. In fact each time you launch Lora, a new directory is created :
+\begin{center}
+    \info{<purge>/<date>/<hour-minutes>}
+\end{center}
+Inside that directory, Lora creates two directories : \info{modified} and \info{removed} which contain the files that were respectively seen to be modified and removed.
+
+A general concept of Lora is that your data is more precious than your disk space and than everything\footnote{Better to crash than to manage a borderline situation.}. If you understand well the backup/purge concept, you can imagine the extreme disk space waste when you just rename, say your music directory.
 
 %--------------------------------------------------------------------------------------------------------------------------- 
 \subsection{Multi-thread}
@@ -65,7 +113,7 @@ Nello stesso tempo, un elenco dei \emph{git repository} che hanno bisogno di pul
 \subsection{Perché è cosi grosso ?}
 %---------------------------------------------------------------------------------------------------------------------------
 
-Avevo comminciato il lavoro al'inizio di Ottobre 2015 perché avevo bisogno di un programmo di backup per uso personale. La parte di backup era già quasi finita quando abbiamo a parlare del progetto in classe.
+Avevo cominciato il lavoro al'inizio di Ottobre 2015 perché avevo bisogno di un programmo di backup per uso personale. La parte di backup era già quasi finita quando abbiamo a parlare del progetto in classe.
 
 Quindi per il progetto stesso, ho aggiunto la parte ``git'' e l'interfaccia grafica.
 
