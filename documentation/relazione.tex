@@ -1,0 +1,89 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{latexsym}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+
+\usepackage{hyperref}
+\hypersetup{ colorlinks=true, linkcolor=blue, urlcolor=green,    filecolor=magenta }
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{textcomp}
+\usepackage{lmodern}
+\usepackage[a4paper]{geometry} 
+\usepackage[italian]{babel}
+
+
+\begin{document}
+
+\title{Relazione di progetto\\Lora}
+\author{Laurent Claessens}
+\maketitle
+
+\tableofcontents
+
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+\section{Scopo et descrizione generale del progetto}
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+%--------------------------------------------------------------------------------------------------------------------------- 
+\subsection{Cosa fa ?}
+%---------------------------------------------------------------------------------------------------------------------------
+
+Lora è un programmo che fa due cose.
+\begin{itemize}
+    \item
+        Fa un backup della cartelle \info{\$HOME}
+    \item
+        Cerca le cartelle che sono \emph{git repository}, verifica se hanno bisogno di un \info{git add}, \info{git commit} oppure di aggiungere dei file dentro \info{.gitignore}. Un interfaccia grafica aiuta a questo tipo di manutenzione.
+\end{itemize}
+
+%--------------------------------------------------------------------------------------------------------------------------- 
+\subsection{}
+%---------------------------------------------------------------------------------------------------------------------------
+
+<++>
+
+%--------------------------------------------------------------------------------------------------------------------------- 
+\subsection{Multi-thread}
+%---------------------------------------------------------------------------------------------------------------------------
+
+Il backup stesso occupa 2 threads.
+\begin{itemize}
+    \item Il primo è un \emph{loop} sulla cartella \info{\$HOME} che alla ricerca di files o cartelle di cui aggiogare il backup. Questo thread aggiunge delle \emph{tasks} (vedere \ref{SECooVDGXooHTFdPE}) a una lista.
+    \item Il secondo thread legge la lista e esegue le copie da fare.
+\end{itemize}
+Questi threads non hanno interfaccia grafica, e questo è una scelta di design : devo poter fare un backup anche (e soprattutto) quando il computer va male. Per esempio voglio poter fare il backup da une chiave USB minimale\footnote{Dal punto di vista del codice, il backup è abbastanza ben separato delle dipendenze su Qt. Dovrei scrivere un giorno una versione che si può veramente eseguire fuori del'interfacia grafica.}.
+
+Nello stesso tempo, un elenco dei \emph{git repository} che hanno bisogno di pulizia si aggiorna in un interfaccia grafica.
+
+%--------------------------------------------------------------------------------------------------------------------------- 
+\subsection{Perché è cosi grosso ?}
+%---------------------------------------------------------------------------------------------------------------------------
+
+Avevo comminciato il lavoro al'inizio di Ottobre 2015 perché avevo bisogno di un programmo di backup per uso personale. La parte di backup era già quasi finita quando abbiamo a parlare del progetto in classe.
+
+Quindi per il progetto stesso, ho aggiunto la parte ``git'' e l'interfaccia grafica.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+\section{Gerarchia polimorfa : \info{GenericTask}}
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+\label{SECooVDGXooHTFdPE}
+
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+\section{Gerarchia polimorfa : \info{MainLoop}}
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+\end{document}
+
+ descrizione della gerarchia G: utilità e ruolo dei tipi di G
+
+ descrizione dell’uso di codice polimorfo
+
+ manuale utente della GUI, se l’applicazione lo richiede
+
