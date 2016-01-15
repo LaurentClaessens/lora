@@ -74,12 +74,12 @@ int main(int argc, char* argv[])
 
 
         //launching the thread that runs the tasks
-        boost::thread scheduler( run_tasks, config_ptr );
+        boost::thread task_runner( run_tasks, config_ptr );
 
         loops(config_ptr);
         
-        scheduler.join();
-        std::cout<<"scheduler joined"<<std::endl;
+        task_runner.join();
+        std::cout<<"task_runner terminated"<<std::endl;
         git_list_window->join();
     }
     catch (string err) { cout<<endl<<string("I got a bad news : ")<<err<<endl; }
