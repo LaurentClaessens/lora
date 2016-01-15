@@ -20,6 +20,6 @@ TODO
 - make a version with no graphical interface. One should be able to do the backup even from the most basic debbootstraped USB stick.
 - symlinks are ignored. That should be optional. See also the todo about printing the log file.
 - include this TODO.txt in the manual.
-- Before to exit the program, we should print the log file. Many "throws" could be silently catch during the execution and produce a warning in the log file.
+- Before to exit the program, we should print the log file. Many "throws" could be silently caught during the execution and produce a warning in the log file.
     example : excluding a non-existing directory should be very clearly notified to the user.
 - When one deletes a HashTable, it deletes the values. Is it a good choice ? That's what I need in my use case, but ...
