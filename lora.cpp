@@ -51,11 +51,13 @@ void run_tasks(Configuration* config_ptr)
 
 void loops(Configuration* config_ptr)
 {
-    MainBackupLoop backup_loop=MainBackupLoop(config_ptr);
-    MainPurgeLoop purge_loop=MainPurgeLoop(config_ptr);
-    backup_loop.run();
+    HashTable<string,MainLoop*> loops_table;
+    loops_table["backup loop"]=new MainBackupLoop(config_ptr);
+    loops_table["purge loop"]=new MainPurgeLoop(config_ptr);
+
+    loops_table["backup loop"]->run();
     cout<<endl<<"Launching the purge process ..."<<endl;
-    purge_loop.run();
+    loops_table["purge loop"]->run();
     cout<<endl<<"all loops ended"<<endl;
 }
 

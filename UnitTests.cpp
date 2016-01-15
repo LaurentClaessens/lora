@@ -108,7 +108,7 @@ void test_ht1()
         s3=s3+itr->key;
         s3=s3+itr->value;
     }
-    test_assert(s3=="KoneVoneKtwoVtwoKthreeVthree","Value and key retreiving from an iterator");
+    test_assert(s3=="KoneVoneKtwoVtwoKthreeVthree","Value and key retrieving from an iterator");
 }
 
 // We can change the value of a key-value pair.

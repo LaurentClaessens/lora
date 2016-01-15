@@ -38,6 +38,13 @@ INTRODUCTION
 #include <iostream>
 #include <string>
 
+// This class implements something like an "ordered dictionary" (looks like a Python's dictionary).
+// One can assign values by
+//      auto  ht = HashTable<K,V>()
+//      ht[key]=value
+// See UnitTests.cpp to see more examples
+// Deleting the hash table deletes the values too (be careful).
+
 template <class K,class V>
 class HashTable
 {
@@ -55,7 +62,7 @@ class HashTable
         };
 
         node* first;
-        node* last;     // this is really the last one. Nothing to do with "end".
+        node* last;     // this is really the last one. Nothing to do with the "end" of the iterator.
 
     public:
         class iterator
