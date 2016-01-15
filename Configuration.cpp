@@ -56,22 +56,23 @@ path Configuration::getBackupPath() const { return converter_ptr->getBackupPath(
 
 // CONFIGURATION -- excluding paths
 
-void Configuration::add_exclude_path(const path ex) 
+void Configuration::add_exclude_path(const path ex, const bool verbose) 
 { 
     if ( is_directory(ex)  )
     {
         path can_ex=canonical(ex);
         excluded_paths.push_back(can_ex); 
     }
-    else
+    else if (verbose)
     {
-        throw string(  "Trying to exclude a non-directory path : "+ex.string()  );
+        std::cout<< "Trying to exclude a  directory that does not exist: "+ex.string()<<std::endl;
+        //throw string(  "Trying to exclude a non-directory path : "+ex.string()  );
     }
 }
 
-void Configuration::add_exclude_path(const std::vector<path> vp)
+void Configuration::add_exclude_path(const std::vector<path> vp,const bool verbose)
 {
-    for (auto p:vp) { add_exclude_path(p); }
+    for (auto p:vp) { add_exclude_path(p,verbose); }
 }
 
 bool Configuration::is_excluded(const path rep_path) const
@@ -138,8 +139,8 @@ std::string read_configuration_file(const path cfg_path,const std::string search
 }
 
 
-// an argument with no "=" is interpreted // as the starting path.
-//  this allows to use bash completion.
+// an argument with no "=" is interpreted 
+// as the starting path.  This allows to use bash completion.
 HashTable<string,string> parse_arguments(int argc,char* argv[])
 {
     HashTable<string,string>hash=HashTable<string,string>();
@@ -188,16 +189,10 @@ path get_starting_backup_path(string s_path,bool verbose=true)
     return full_path;
 }
 
-Configuration* configuration_file_to_configuration(int argc, char* argv[],bool verbose)
+Configuration* configuration_file_to_configuration(const path cfg_path,const path starting_backup_path, const bool verbose)
 {
-
-    HashTable<string,string> hash_args=parse_arguments(argc,argv);
-
-    path cfg_path=hash_args["--configuration"];
-    path starting_backup_path=get_starting_backup_path(hash_args["--starting"],verbose);
-
-    assert(is_regular_file(cfg_path));
     auto hash_table=read_configuration_file(cfg_path);
+
 
     path bp,pp,sp;
     const path home_path=path(getenv("HOME"));
@@ -222,6 +217,7 @@ Configuration* configuration_file_to_configuration(int argc, char* argv[],bool v
 
     if (starting_backup_path.string()!=""){sp=starting_backup_path;}
 
+
     string terminal=hash_table["terminal"][0];
     string in_terminal=hash_table["in_terminal"][0];
     string editor=hash_table["editor"][0];
@@ -235,10 +231,22 @@ Configuration* configuration_file_to_configuration(int argc, char* argv[],bool v
     logging->setFile(log_filename);
 
     Configuration* config_ptr = new Configuration( sp,converter_ptr,tl_ptr,terminal_lines_ptr  );
-    config_ptr->add_exclude_path(exclude);
+    config_ptr->add_exclude_path(exclude,verbose);
     config_ptr->setLog(logging);
 
     return config_ptr;
+}
+
+Configuration* arguments_to_configuration(int argc, char* argv[],bool verbose)
+{
+
+    HashTable<string,string> hash_args=parse_arguments(argc,argv);
+
+    path cfg_path=hash_args["--configuration"];
+    path starting_backup_path=get_starting_backup_path(hash_args["--starting"],verbose);
+
+    assert(is_regular_file(cfg_path));
+    return configuration_file_to_configuration(cfg_path,starting_backup_path,verbose);
 }
 
 // GIT LIST WINDOWS

@@ -60,8 +60,8 @@ class Configuration
         path getPurgePath() const;
 
         // excluding a non-existing path throws an exception. 
-        void add_exclude_path(const path);    
-        void add_exclude_path(const std::vector<path>); 
+        void add_exclude_path(const path, const bool verbose=false);
+        void add_exclude_path(const std::vector<path>, const bool verbose=false); 
 
         void add_task(GenericTask*);
         bool is_excluded(const path) const;       
@@ -104,11 +104,12 @@ path get_starting_backup_path(int argc, char *argv[]);
 // ht["foo"]=(bla,bli)
 // ht["bar"]=(blo)
 HashTable<std::string,std::vector<std::string>> read_configuration_file(const path cfg_path);
-Configuration* configuration_file_to_configuration(const int argc=0,char* argv[]=0, const bool verbose=true);
+Configuration* arguments_to_configuration(const int argc=0,char* argv[]=0, const bool verbose=true);
+Configuration* configuration_file_to_configuration(const path cfg_path,const path starting_backup_path="", const bool verbose=true);
 
 
 // The following returns the last found value (in the file) of the required property.
-std::string read_configuration_file(const path cfg_patah,const std::string searched_property);
+std::string read_configuration_file(const path cfg_path,const std::string searched_property);
 
 path get_starting_backup_path(int,char*);
 
