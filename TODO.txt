@@ -20,7 +20,10 @@ TODO
 - in the installation, there is a duplicate of information between   BackupWidget::exclude_list and ExcludeChooser::choosers.
 - make a version with no graphical interface. One should be able to do the backup even from the most basic debbootstraped USB stick.
 - symlinks are ignored. That should be optional. See also the todo about printing the log file.
+- list of modified files should be in a scroll
+- update the status widget when commiting.
 - include this TODO.txt in the manual.
+- when a 'git commit' is done, remove the corresponding line inside the GitListWindow
 
 - Before to exit the program, we should print the log file. Many "throws" could be silently caught during the execution and produce a warning in the log file.
         The Logging class is more or less done for this purpose.

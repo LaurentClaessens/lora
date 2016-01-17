@@ -6,17 +6,58 @@
 \usepackage{amsthm}
 \usepackage{amssymb}
 
+\usepackage{color}
 \usepackage{hyperref}
 \hypersetup{ colorlinks=true, linkcolor=blue, urlcolor=green,    filecolor=magenta }
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
+\usepackage{listingsutf8}
+
 \usepackage{textcomp}
 \usepackage{lmodern}
-\usepackage[a4paper]{geometry} 
+\usepackage[a4paper,margin=1.5cm]{geometry} 
 \usepackage[italian]{babel}
 
+
+
+\definecolor{dkgreen}{rgb}{0,0.4,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{ %
+  inputencoding=utf8/latin1,
+  backgroundcolor=\color{white},  % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\ttfamily, % \texttt\small,              % the size of the fonts that are used for the code, FIXME \ttfamily
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                % sets automatic line breaking
+  captionpos=b,                   % sets the caption-position to bottom
+  commentstyle=\small\color{dkgreen},   % comment style
+%  deletekeywords={...},          % if you want to delete keywords from the given language
+%  escapeinside={\%*}{*)},        % if you want to add LaTeX within your code
+  frame=single,                   % adds a frame around the code
+  keywordstyle=\small\color{blue},      % keyword style
+  language=C++,                % the language of the code
+  fontadjust=false,
+  % if you want to add more keywords to the set
+%  morekeywords={define,domain,objects,init,goal,problem,action,parameters,precondition,effect,types,requirements,strips,typing},
+  numbers=left,                   % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+  rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,               % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,         % underline spaces within strings only
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  stepnumber=1,                   % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\small\color{mauve},      % string literal style
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}}, % pour la fin des lignes.
+  aboveskip={1.5\baselineskip},
+  %title=\lstname                  % show the filename of files included with \lstinputlisting; also try caption instead of title
+%  title=\tiny{File \textcolor{blue}{\url{\lstname}}}          % show the filename of files included with \lstinputlisting; also try caption instead of title
+  %% FIXME title !
+}
 \newcounter{numtho}
 \newtheorem{remark}[numtho]{Remark}
 \newcommand{\info}[1]{\texttt{#1}}
@@ -97,6 +138,20 @@ Inside that directory, Lora creates two directories : \info{modified} and \info{
 A general concept of Lora is that your data is more precious than your disk space and than everything\footnote{Better to crash than to manage a borderline situation.}. If you understand well the backup/purge concept, you can imagine the extreme disk space waste when you just rename, say your music directory.
 
 %--------------------------------------------------------------------------------------------------------------------------- 
+\subsection{I dati prima di tutto}
+%---------------------------------------------------------------------------------------------------------------------------
+
+Questo programmo è destinato al ``power user'' : l'utente dovrebbe guardate (un po) coda succede dentro il terminale per tenersi al corrente di cosa succede sul suo disco. Per esempio, vedere \( 2000\) files passare dalla purge significa probabilmente che l'utente abbia soppresso una cartella.
+
+Lora contiene ancora un certo numero di casi in cui va in \emph{crash}. Per esempio quando un file è soppresso dal utente tra il momento in cui è visto come ``da aggiornare dentro \info{<backup>}'' e il momento in cui la copia è effettivamente fatta\footnote{Mi capita spesso con dei file ausiliari di \LaTeX\ quando faccio una compilazione nello stesso tempo di un backup.}.
+
+In questi casi, Lora preferisce lasciare al l'utente la responsabilità di capire cos'ha fatto con i suoi dati piuttosto che prendere un iniziativa. Quindi \emph{crash} piuttosto che gestione.
+
+Ci sono dunque un bel po di eccezione di tipo \info{std::string} che sono sollevate e gestite solo alla fine del'\info{main}, sotto la forma di stampa semplice.
+
+In ogni casi, se succede qualcosa di strano con i dati, l'utente deve essere avvertito. Fina ora, l'utente è avvertito sotto la forma d'un \emph{crash}. C'è però una proposta dentro \info{TODO.txt} di usare il sistema di log (vedere \info{Logging.cpp}) per scrivere i problemi dentro un file e stampare il file alla fine del'esecuzione.
+
+%-------------------------------------------------------------------------------------------------------------------------- 
 \subsection{Multi-thread}
 %---------------------------------------------------------------------------------------------------------------------------
 
@@ -109,6 +164,18 @@ Questi threads non hanno interfaccia grafica, e questo è una scelta di design :
 
 Nello stesso tempo, un elenco dei \emph{git repository} che hanno bisogno di pulizia si aggiorna in un interfaccia grafica.
 
+Per queste ragione, i processi sono lanciate e chiuse in questo modo :
+\lstinputlisting{cpp_snip_1.cpp}
+
+\begin{itemize}
+    \item Leggere il file di configurazione.
+    \item Creare e mostrare l'interfaccia grafica che elenca i \emph{git repository} (\info{GitListWindow}).
+    \item Lanciare il thread che legge l'elenco dei task da fare e esegue le task (\info{task\_runner}). A l'inizio, l'elenco è vuota, ovviamente.
+    \item Lanciare il backup e la purge (\info{loops}), quindi iniziare a popolare l'elenco delle task da fare.
+    \item Aspettare che tutte le task siano finite (\info{task\_runner.join()}).
+    \item Aspettare che l'interfaccia grafica sia chiusa (\info{git\_list\_windows.join()}).
+\end{itemize}
+
 %--------------------------------------------------------------------------------------------------------------------------- 
 \subsection{Perché è cosi grosso ?}
 %---------------------------------------------------------------------------------------------------------------------------
@@ -117,6 +184,7 @@ Avevo cominciato il lavoro al'inizio di Ottobre 2015 perché avevo bisogno di un
 
 Quindi per il progetto stesso, ho aggiunto la parte ``git'' e l'interfaccia grafica.
 
+Di più, questo è un vero programmo che uso veramente per gestire i miei preziosi dati; quindi preferisco avere qualcosa che abbia le funzionalità utile. Storia interessante : avevo già gatto lo stesso programmo molti anni fa\footnote{Le scelte di design sono basate su dei casi di uso reali.} in Python (senza interfaccia grafica). Per finire il lavoro, gli serviva a volte più di trenta minuti. Lora finisce raramente in più di 6 minuti.
 
 %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 \section{Gerarchia polimorfa : \info{GenericTask}}
