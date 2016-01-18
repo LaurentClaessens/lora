@@ -22,6 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "MainLoop.h"
 #include "GitRepository.h"
 #include "Configuration.h"
+#include "DirectoryConverter.h"
+#include "tasks.h"
 
 // MAIN LOOP ----
 
@@ -78,7 +80,6 @@ void MainBackupLoop::run()
     std::cout<<"Backup loop ended."<<std::endl;
 }
 
-
 bool MainBackupLoop::is_excluded(path dirname) { return config_ptr->is_excluded(dirname); }
 
 void MainBackupLoop::DealWithDirectory(path rep_path)
@@ -110,7 +111,7 @@ void MainBackupLoop::DealWithFile(path file_path)
         triple.orig=file_path;
         triple.bak=bak_path;
         triple.purge=purge_modified_path;
-        FileCopyTask* ftask= new FileCopyTask(triple);
+        FileCopyTask* ftask= new FileCopyTask(triple,config_ptr);
         config_ptr->add_task(ftask);
     }
 }
@@ -124,7 +125,7 @@ void MainPurgeLoop::run()
     std::cout<<"Launching the purge loop."<<std::endl;
     this->MainLoop::run();
     std::cout<<"Purge loop ended."<<std::endl;
-    FinalTask* etask= new FinalTask();
+    FinalTask* etask= new FinalTask(config_ptr);
     config_ptr->add_task(etask);
 }
 
@@ -137,7 +138,7 @@ void MainPurgeLoop::DealWithFile(const path pathname)
 {
     if(!is_regular_file(config_ptr->backup_to_home(pathname)   ))
     {
-        FileMoveTask*  mtask= new FileMoveTask(pathname, config_ptr->backup_to_removed_purge(pathname)  );
+        FileMoveTask*  mtask= new FileMoveTask(pathname, config_ptr->backup_to_removed_purge(pathname),config_ptr  );
         config_ptr->add_task(mtask);
     }
 }
@@ -146,7 +147,7 @@ void MainPurgeLoop::DealWithDirectory(const path backup_path)
 {
     if (!is_directory( config_ptr->backup_to_home(backup_path)  ))
     {
-        DirectoryMoveTask*  dtask= new DirectoryMoveTask(backup_path, config_ptr->backup_to_removed_purge(backup_path)  );
+        DirectoryMoveTask*  dtask= new DirectoryMoveTask(backup_path, config_ptr->backup_to_removed_purge(backup_path),config_ptr  );
         config_ptr->add_task(dtask);
     }
     else

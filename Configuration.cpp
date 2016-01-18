@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "GitListWindow.h"
 #include "Configuration.h"
 #include "Logging.h"
+#include "tasks.h"
 
 using std::string;
 
@@ -300,4 +301,4 @@ void Configuration::processEvents(){ git_list_window->processEvents(); }
 
 void Configuration::setLog(Logging* log) { logging=log;  }
 void Configuration::setLogFile(string filename) { logging->setFile(filename);  }
-void Configuration::writeLog(string message){ logging->write(message); }
+void Configuration::writeLog(string message) const { logging->write(message); }

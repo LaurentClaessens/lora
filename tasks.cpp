@@ -25,6 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using std::string;
 
+// GENERAL UTILITIES
+
 // Create the tree up to the directory to which 'rep_path' belongs to.
 // create_directory_tree("/home/foo/bar/lol.txt") creates /home/foo/bar
 void create_directory_tree(const path rep_path)
@@ -63,38 +65,62 @@ void my_copy_file(path from_path,path to_path)
     };
 }
 
-GenericTask::GenericTask(){ };
+
+// GENERIC TASK
+
+
+GenericTask::GenericTask(const Configuration* config):
+    config_ptr(config)
+    { };
 GenericTask::~GenericTask(){ };
 
+// FILE COPY TASK
 
-FileCopyTask::FileCopyTask(pathTriple triple):
-    GenericTask(),
+FileCopyTask::FileCopyTask(pathTriple triple,const Configuration* config):
+    GenericTask(config),
     orig_path(triple.orig),
     bak_path(triple.bak),
     purge_modified_path(triple.purge)
 { }
 
-bool FileCopyTask::run() const
+bool FileCopyTask::run()  const
 {
+    config_ptr->writeLog("FileCopytTask::run");
+    config_ptr->writeLog("orig : "+orig_path.string());
+    config_ptr->writeLog("bak : "+bak_path.string());
+    config_ptr->writeLog("purge : "+purge_modified_path.string());
     if (!is_regular_file(orig_path))
     {
         throw string("The file "+orig_path.string()+" does not exist ?");
     }
 
+    config_ptr->writeLog("1");
     if (is_regular_file(bak_path))
     {
+        config_ptr->writeLog("2");
         create_directory_tree(purge_modified_path.parent_path());
+        config_ptr->writeLog("3");
         rename( bak_path,purge_modified_path );
+        config_ptr->writeLog("4");
         assert( is_regular_file(purge_modified_path) );
     }
+    config_ptr->writeLog("5");
     my_copy_file(  orig_path,bak_path  );
+    config_ptr->writeLog("6");
 
     assert( is_regular_file(orig_path) );
     assert( is_regular_file(bak_path) );
     return true;
 }
 
-FileMoveTask::FileMoveTask(const path orig,const path destination): orig_path(orig), destination_path(destination) {}
+// FILE MOVE TASK
+
+
+FileMoveTask::FileMoveTask(const path orig,const path destination,const Configuration* config): 
+    GenericTask(config),
+    orig_path(orig), 
+    destination_path(destination)
+{}
 
 bool FileMoveTask::run() const
 {
@@ -112,9 +138,17 @@ bool FileMoveTask::run() const
     assert( is_regular_file(destination_path) );
     return true;
 }
-DirectoryMoveTask::DirectoryMoveTask(const path orig,const path destination): orig_path(orig), destination_path(destination) {}
 
-bool DirectoryMoveTask::run() const{
+// DIRECTORY MOVE TASK
+
+DirectoryMoveTask::DirectoryMoveTask(const path orig,const path destination,const Configuration* config):
+    GenericTask(config),
+    orig_path(orig), 
+    destination_path(destination)
+{}
+
+bool DirectoryMoveTask::run()  const
+{
     std::cout<<"(purge rep) "<<orig_path<<" --> "<<destination_path<<std::endl;
 
     if (!is_directory(orig_path))
@@ -132,8 +166,18 @@ bool DirectoryMoveTask::run() const{
 }
 
 
-FinalTask::FinalTask(){}
-bool FinalTask::run() const { return false; }
+// FINAL TASK
+
+FinalTask::FinalTask(Configuration* config):
+    GenericTask(config)
+{}
+bool FinalTask::run() const
+{
+    return false; 
+}
+
+
+// TASK LIST
 
 void TaskList::push_back(GenericTask* gt) { queue.push_back(gt); }
 GenericTask* TaskList::front() { return queue.front(); }

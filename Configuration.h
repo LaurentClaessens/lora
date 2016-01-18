@@ -23,12 +23,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <boost/filesystem.hpp>
 #include "DirectoryConverter.h"
-#include "tasks.h"
+//#include "tasks.h"
 #include "HashTable.h"
 #include "GitListWindow.h"
 #include "GitRepository.h"
 #include "Logging.h"
 
+class TaskList;
+class GenericTask;
 
 // The aim of this class is to answer the questions which depend on the
 // configuration (paths manipulation, excluded files, task_list, ...)
@@ -85,7 +87,7 @@ class Configuration
         
         void setLog(Logging*);
         void setLogFile(string);
-        void writeLog(string);
+        void writeLog(string) const;
 
         void processEvents();
 };

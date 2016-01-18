@@ -24,9 +24,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <deque>
 #include <boost/filesystem.hpp>
+#include "Configuration.h"
 
 using boost::filesystem::path;
-
 
 
 // 'lora' has a loop over all the files/directories to be backuped and creates a list of taskes ('task_list'). That list is read by a thread which lanch the 'run' method over the elements of the task list.
@@ -57,8 +57,10 @@ struct pathTriple{
 };
 
 class GenericTask{
+    protected:
+        const Configuration* config_ptr;
     public:
-        GenericTask();
+        GenericTask(const Configuration* config);
         virtual ~GenericTask();
         virtual bool run() const =0;
 };
@@ -73,9 +75,8 @@ class FileCopyTask : public GenericTask{
         boost::filesystem::path orig_path;
         boost::filesystem::path bak_path;
         boost::filesystem::path purge_modified_path;
-
     public:
-        FileCopyTask(const pathTriple);
+        FileCopyTask(const pathTriple,const Configuration* config);
         bool run() const;
 };
 
@@ -83,7 +84,7 @@ class RepertoryCopyTask : public GenericTask{
     public: 
         boost::filesystem::path orig_path;
         boost::filesystem::path bak_path;
-        RepertoryCopyTask(const boost::filesystem::path orig_path,const boost::filesystem::path bak_path);
+        RepertoryCopyTask(const boost::filesystem::path orig_path,const boost::filesystem::path bak_path,const Configuration* config);
     bool run() const;
 };
 class FileMoveTask: public GenericTask{
@@ -91,7 +92,7 @@ class FileMoveTask: public GenericTask{
         const boost::filesystem::path orig_path;
         const boost::filesystem::path destination_path;
     public:
-        FileMoveTask(const path orig,const path destination);
+        FileMoveTask(const path orig,const path destination,const Configuration* config);
         bool run() const;
 };
 class DirectoryMoveTask: public GenericTask{
@@ -99,13 +100,13 @@ class DirectoryMoveTask: public GenericTask{
         const boost::filesystem::path orig_path;
         const boost::filesystem::path destination_path;
     public:
-        DirectoryMoveTask(const path orig,const path destination);
+        DirectoryMoveTask(const path orig,const path destination,const Configuration* config);
         bool run() const;
 };
 
 class FinalTask : public GenericTask{
     public:
-        FinalTask() ;
+        FinalTask(Configuration* config);
         bool run() const;
 };
 
