@@ -64,7 +64,7 @@ CommandLine.o: CommandLine.cpp CommandLine.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o CommandLine.o $(BOOST_SYSTEM) CommandLine.cpp
 
 DirectoryConverter.o: DirectoryConverter.cpp DirectoryConverter.h \
-		tasks.h
+		tasks.h Configuration.o
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o DirectoryConverter.o DirectoryConverter.cpp
 
 GitRepository.o: GitRepository.cpp GitRepository.h \
