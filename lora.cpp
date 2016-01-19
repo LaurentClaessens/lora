@@ -46,7 +46,7 @@ void run_tasks(Configuration* config_ptr)
             config_ptr->processEvents();
         }
     }
-    cout<<"The work seems to be done. Leaving the 'make_the_work' thread."<<endl;
+    cout<<"The work seems to be done. Leaving the 'task_runner' thread."<<endl;
 }
 
 void loops(Configuration* config_ptr)
