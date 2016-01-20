@@ -147,8 +147,8 @@ path DirectoryConverter::backup_to_home(const path pathname) const
         
 void DirectoryConverter::create_purge_directories() const
 {
-     create_directory_tree(purge_modified_path);
-     create_directory_tree(purge_removed_path);
+     Utilities().create_directory_tree(purge_modified_path);
+     Utilities().create_directory_tree(purge_removed_path);
 }
 
 bool DirectoryConverter::verified_paths=false;

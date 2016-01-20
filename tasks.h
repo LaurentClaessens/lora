@@ -39,14 +39,24 @@ using boost::filesystem::path;
 // The return value of 'run' (boolean) says if one has to continue or bot with the next task. In a normal execution the only task returning 'false' is the final one created right after the main loop.
 
 
-
+// The class Utilities is intended to be used as anonymous.
+// The aim is to make the 'config_ptr' available for logging purposes.
+class Utilities
+{
+     private : 
+         const Configuration* config_ptr;
         // since "/home/foo/bar/something" can be a file as well as a directory (and the system cannot guess since the point of 'create_*_tree' is to create), 
         // we have two functions.
-void create_directory_tree(const path);             // recursively creates the directory tree up to the given directory.
-void create_file_tree(const path);                 // recursively creates the directory tree up to the directory of the given *file* name.
+    public:
+        Utilities(const Configuration*);
+        Utilities();
 
-void my_copy_file(const path ,const path );      // copy but keeping the same last_write_time attribute.
-void copy_tree(const path,const path);
+        void create_directory_tree(const path);             // recursively creates the directory tree up to the given directory.
+        void create_file_tree(const path);                 // recursively creates the directory tree up to the directory of the given *file* name.
+
+        void my_copy_file(const path ,const path );      // copy but keeping the same last_write_time attribute.
+        void copy_tree(const path,const path);
+};
 
 
 // Example : the triple (  /home/myself/foo/bar.txt  ;  /backup/foo/bar.txt   ;   /purge/<date>/<time>/foo/bar.txt )

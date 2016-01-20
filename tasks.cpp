@@ -27,9 +27,12 @@ using std::string;
 
 // GENERAL UTILITIES
 
+Utilities::Utilities(const Configuration* config): config_ptr(config) {}
+Utilities::Utilities() {}
+
 // Create the tree up to the directory to which 'rep_path' belongs to.
 // create_directory_tree("/home/foo/bar/lol.txt") creates /home/foo/bar
-void create_directory_tree(const path rep_path)
+void Utilities::create_directory_tree(const path rep_path)
 {
     const path parent_path=rep_path.parent_path();
     if (is_directory( parent_path ) ) {}
@@ -38,7 +41,7 @@ void create_directory_tree(const path rep_path)
     assert( is_directory(rep_path) );
 }
 // Create the tree up to the directory containing the given file name.
-void create_file_tree(const path file_path)
+void Utilities::create_file_tree(const path file_path)
 {
     const path parent_path=file_path.parent_path();
     if (is_directory( parent_path ) ) {}
@@ -98,18 +101,19 @@ bool FileCopyTask::run()  const
     if (is_regular_file(bak_path))
     {
         config_ptr->writeLog("2");
-        create_directory_tree(purge_modified_path.parent_path());
+        Utilities(config_ptr).create_directory_tree(purge_modified_path.parent_path());
         config_ptr->writeLog("3");
         rename( bak_path,purge_modified_path );
         config_ptr->writeLog("4");
         assert( is_regular_file(purge_modified_path) );
     }
     config_ptr->writeLog("5");
-    my_copy_file(  orig_path,bak_path  );
+    Utilities(config_ptr).my_copy_file(  orig_path,bak_path  );
     config_ptr->writeLog("6");
 
     assert( is_regular_file(orig_path) );
     assert( is_regular_file(bak_path) );
+    config_ptr->writeLog("7");
     return true;
 }
 
@@ -130,7 +134,7 @@ bool FileMoveTask::run() const
     }
     assert( !is_regular_file(destination_path) );
     std::cout<<"(purge file) "<<orig_path<<" --> "<<destination_path<<std::endl;
-    create_file_tree(destination_path);
+    Utilities(config_ptr).create_file_tree(destination_path);
 
     rename(orig_path,destination_path);
 
@@ -157,7 +161,7 @@ bool DirectoryMoveTask::run()  const
     }
     assert( !is_directory(destination_path) );
 
-    create_directory_tree(destination_path);
+    Utilities(config_ptr).create_directory_tree(destination_path);
     rename(orig_path,destination_path);
 
     assert( !is_directory(orig_path) );

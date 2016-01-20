@@ -92,7 +92,10 @@ void MainBackupLoop::DealWithDirectory(path rep_path)
     if (!is_excluded(rep_path))
     {
         path bak_rep=config_ptr->home_to_backup(rep_path);
-        if (!is_directory(bak_rep)) { create_directory_tree(bak_rep); }
+        if (!is_directory(bak_rep)) 
+        { 
+            Utilities(config_ptr).create_directory_tree(bak_rep); 
+        }
         loopOverDirectory(rep_path); 
     }
 }
