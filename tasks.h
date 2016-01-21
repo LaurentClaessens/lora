@@ -43,8 +43,8 @@ using boost::filesystem::path;
 // The aim is to make the 'config_ptr' available for logging purposes.
 class Utilities
 {
-     private : 
-         const Configuration* config_ptr;
+    private : 
+        const Configuration* config_ptr;
         // since "/home/foo/bar/something" can be a file as well as a directory (and the system cannot guess since the point of 'create_*_tree' is to create), 
         // we have two functions.
     public:

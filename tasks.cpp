@@ -49,17 +49,23 @@ void Utilities::create_file_tree(const path file_path)
     assert( is_directory(parent_path) );
 }
 
-void my_copy_file(path from_path,path to_path)
+void Utilities::my_copy_file(path from_path,path to_path)
 {
+    config_ptr->writeLog("my_copy_file");
     assert( is_regular_file(from_path) );
     assert( !is_regular_file(to_path) );
 
     time_t t_ori=last_write_time(from_path);
 
     std::cout<<"Copy "<<from_path<<" --> "<<to_path;    // no end-line here because the size of the task list will be displayed by the 'run_next' function.
+    config_ptr->writeLog("copy "+from_path.string()+" to "+to_path.string());
     copy_file(from_path,to_path);
+    config_ptr->writeLog("copy done");
     last_write_time( to_path,t_ori );
+    config_ptr->writeLog("MCF 4");
     time_t t_done=last_write_time(to_path);
+    config_ptr->writeLog("MCF 5");
+    config_ptr->writeLog("copy done");
 
     if( t_ori!=t_done )
     {
