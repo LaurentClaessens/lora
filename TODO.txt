@@ -13,6 +13,7 @@ For reading the configuration file
 TODO
 
 - add "tr" on every QString for internationalization.
+- the logging system should open lora.log, then lora1.log, lora2.log, etc.  (automatic naming)
 - the purge vector is parsed too many times
 - a better command line argument parser
 - a better image for "plus.png"
@@ -31,4 +32,4 @@ TODO
     example : excluding a non-existing directory should be very clearly notified to the user.
 - When one deletes a HashTable, it deletes the values. Is it a good choice ? That's what I need in my use case, but ...
 - When the configuration file is wrong or empty, we have a stupid crash instead of a well done error message.
-- crash on "permesso negato" su ~/core
+- crash on "permesso negato" on ~/core

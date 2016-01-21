@@ -22,6 +22,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 void Logging::setFile(path l_path) 
 {
-    log_stream.open(l_path.string().c_str(), std::ofstream::app);
+    log_stream.open(l_path.string().c_str(), std::ofstream::trunc);
 }
 void Logging::write(std::string message) { log_stream<<message<<std::endl; }
