@@ -52,15 +52,19 @@ void Utilities::create_file_tree(const path file_path)
 void Utilities::my_copy_file(path from_path,path to_path)
 {
     config_ptr->writeLog("my_copy_file");
+    config_ptr->writeLog("copy "+from_path.string()+" to "+to_path.string());
+    config_ptr->writeLog("MCF 1");
     assert( is_regular_file(from_path) );
     assert( !is_regular_file(to_path) );
 
     Utilities(config_ptr).create_directory_tree(to_path);
+    config_ptr->writeLog("MCF 2");
 
     time_t t_ori=last_write_time(from_path);
 
+    config_ptr->writeLog("MCF 3");
     std::cout<<"Copy "<<from_path<<" --> "<<to_path;    // no end-line here because the size of the task list will be displayed by the 'run_next' function.
-    config_ptr->writeLog("copy "+from_path.string()+" to "+to_path.string());
+    config_ptr->writeLog("On fait la copie ...");
     copy_file(from_path,to_path);
     config_ptr->writeLog("copy done");
     last_write_time( to_path,t_ori );
@@ -105,23 +109,23 @@ bool FileCopyTask::run()  const
         throw string("The file "+orig_path.string()+" does not exist ?");
     }
 
-    config_ptr->writeLog("1");
+    config_ptr->writeLog("T1");
     if (is_regular_file(bak_path))
     {
-        config_ptr->writeLog("2");
+        config_ptr->writeLog("T2");
         Utilities(config_ptr).create_directory_tree(purge_modified_path.parent_path());
-        config_ptr->writeLog("3");
+        config_ptr->writeLog("T3");
         rename( bak_path,purge_modified_path );
-        config_ptr->writeLog("4");
+        config_ptr->writeLog("T4");
         assert( is_regular_file(purge_modified_path) );
     }
-    config_ptr->writeLog("5");
+    config_ptr->writeLog("T5");
     Utilities(config_ptr).my_copy_file(  orig_path,bak_path  );
-    config_ptr->writeLog("6");
+    config_ptr->writeLog("T6");
 
     assert( is_regular_file(orig_path) );
     assert( is_regular_file(bak_path) );
-    config_ptr->writeLog("7");
+    config_ptr->writeLog("T7");
     return true;
 }
 
