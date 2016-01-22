@@ -51,7 +51,7 @@ void MainLoop::loopOverDirectory(path directory)
         path pathname=itr->path();
         if (is_symlink(pathname))
         {
-            std::cout<<"\n"<<"I do not deal with symlink : "<<pathname.string()<<"\n"<<std::endl;
+            config_ptr->writeLog("I do not deal with symlink : "+ pathname.string());
         }
         else if (is_directory( pathname  )) { DealWithDirectory(pathname); }
         else if (is_regular_file(pathname)) { DealWithFile(pathname); }
