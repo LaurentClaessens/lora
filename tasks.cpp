@@ -55,6 +55,8 @@ void Utilities::my_copy_file(path from_path,path to_path)
     assert( is_regular_file(from_path) );
     assert( !is_regular_file(to_path) );
 
+    Utilities(config_ptr).create_directory_tree(to_path);
+
     time_t t_ori=last_write_time(from_path);
 
     std::cout<<"Copy "<<from_path<<" --> "<<to_path;    // no end-line here because the size of the task list will be displayed by the 'run_next' function.
