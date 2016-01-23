@@ -57,7 +57,7 @@ void Utilities::my_copy_file(path from_path,path to_path)
     assert( is_regular_file(from_path) );
     assert( !is_regular_file(to_path) );
 
-    Utilities(config_ptr).create_directory_tree(to_path);
+    Utilities(config_ptr).create_directory_tree(to_path.parent_path());
     config_ptr->writeLog("MCF 2");
 
     time_t t_ori=last_write_time(from_path);
@@ -106,6 +106,7 @@ bool FileCopyTask::run()  const
     config_ptr->writeLog("purge : "+purge_modified_path.string());
     if (!is_regular_file(orig_path))
     {
+        config_ptr->writeLog(" I'm going to crash the file "+orig_path.string()+" does not exist ?");
         throw string("The file "+orig_path.string()+" does not exist ?");
     }
 
