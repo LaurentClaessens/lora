@@ -19,6 +19,7 @@ TODO
 - a better image for "plus.png"
 - the installation program should read the configuration file an fill the blanks.
 - in the installation, there is a duplicate of information between   BackupWidget::exclude_list and ExcludeChooser::choosers.
+- the button "commit that" should update the status panel.
 - make a version with no graphical interface. One should be able to do the backup even from the most basic debbootstraped USB stick.
 - symlinks are ignored. That should be optional. See also the todo about printing the log file.
 - list of modified files should be in a scroll
@@ -33,3 +34,6 @@ TODO
 - When one deletes a HashTable, it deletes the values. Is it a good choice ? That's what I need in my use case, but ...
 - When the configuration file is wrong or empty, we have a stupid crash instead of a well done error message.
 - crash on "permesso negato" on ~/core
+- I have a crash on the backup of file
+   ~/.kde/share/apps/konqueror/autosave/_1.195a
+  FileCopyTask::run() says that it does not exist. I guess it was automatically removed between the task creation and the run. I'm not sure what to do about this... Probably logging.
