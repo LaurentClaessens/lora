@@ -37,3 +37,5 @@ TODO
 - I have a crash on the backup of file
    ~/.kde/share/apps/konqueror/autosave/_1.195a
   FileCopyTask::run() says that it does not exist. I guess it was automatically removed between the task creation and the run. I'm not sure what to do about this... Probably logging.
+- After making the commit, push "Apply these changes". That triggers a crash :
+     Are you trying to iterate over an empty HashTable ?
