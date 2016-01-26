@@ -39,3 +39,9 @@ TODO
   FileCopyTask::run() says that it does not exist. I guess it was automatically removed between the task creation and the run. I'm not sure what to do about this... Probably logging.
 - After making the commit, push "Apply these changes". That triggers a crash :
      Are you trying to iterate over an empty HashTable ?
+- It seem to have a crash when a filename contains ":".
+  what():  boost::filesystem::copy_file: Invalid argument: "/home/1/2015/lclaesse/.local/share/Trash/info/C:\nppdf32Log\debuglog.txt.trashinfo", "/media/00CD-23F5/backup.lora/.local/share/Trash/info/C:\nppdf32Log\debuglog.txt.trashinfo"
+  
+  what():  boost::filesystem::copy_file: Invalid argument: "/home/1/2015/lclaesse/.local/share/gvfs-metadata/computer:-25b5580e.log", "/media/00CD-23F5/backup.lora/.local/share/gvfs-metadata/computer:-25b5580e.log"
+Copy "/home/1/2015/lclaesse/.local/share/gvfs-metadata/computer:-25b5580e.log" --> "/media/00CD-23F5/backup.lora/.local/share/gvfs-metadata/computer:-25b5580e.log"Aborted (core dumped)
+
