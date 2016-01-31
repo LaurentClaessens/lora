@@ -12,6 +12,7 @@ For reading the configuration file
 
 TODO
 
+- The 'run_next' function should not be in a "while true" loop, but launched when a new task is created and when a task is finished.
 - add "tr" on every QString for internationalization.
 - the logging system should open lora.log, then lora1.log, lora2.log, etc.  (automatic naming)
 - the purge vector is parsed too many times
