@@ -2,6 +2,7 @@
 ####### Compiler, tools and options
 
 CXX           = LC_ALL=C g++ -std=c++11    #c++11 for  std::to_string
+MOC_BIN = /usr/lib/i386-linux-gnu/qt4/bin/moc
 DEFINES       = -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED
 CXXFLAGS      = -pipe -O2 -Wall -W -D_REENTRANT $(DEFINES)
 INCPATH       = -I/usr/share/qt4/mkspecs/linux-g++ -I. -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4 -I. -I.
