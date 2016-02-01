@@ -38,11 +38,11 @@ installation: installation.cpp installation.h moc_installation.o
 GitListWindow.o: moc_GitListWindow.o GitListWindow.cpp GitListWindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GitListWindow.o     GitListWindow.cpp
 moc_GitListWindow.cpp: GitListWindow.h
-	/usr/lib/i386-linux-gnu/qt4/bin/moc $(DEFINES) $(INCPATH) GitListWindow.h -o moc_GitListWindow.cpp
+	$(MOC_BIN) $(DEFINES) $(INCPATH) GitListWindow.h -o moc_GitListWindow.cpp
 moc_GitListWindow.o: moc_GitListWindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_GitListWindow.o moc_GitListWindow.cpp
 moc_installation.cpp: installation.h
-	/usr/lib/i386-linux-gnu/qt4/bin/moc $(DEFINES) $(INCPATH) installation.h -o moc_installation.cpp
+	$(MOC_BIN) $(DEFINES) $(INCPATH) installation.h -o moc_installation.cpp
 moc_installation.o: moc_installation.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_installation.o moc_installation.cpp
 
@@ -75,7 +75,7 @@ GitRepository.o: GitRepository.cpp GitRepository.h \
 GitWindow.o: GitWindow.cpp GitWindow.h moc_GitWindow.o
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GitWindow.o  $(BOOST_SYSTEM)    GitWindow.cpp
 moc_GitWindow.cpp: GitWindow.h
-	/usr/lib/i386-linux-gnu/qt4/bin/moc $(DEFINES) $(INCPATH) GitWindow.h -o moc_GitWindow.cpp
+	$(MOC_BIN) $(DEFINES) $(INCPATH) GitWindow.h -o moc_GitWindow.cpp
 moc_GitWindow.o: moc_GitWindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_GitWindow.o moc_GitWindow.cpp
 
