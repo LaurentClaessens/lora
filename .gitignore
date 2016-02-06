@@ -33,3 +33,4 @@ installation
 *.ilg
 *.synctex.gz
 *.dvi
+instance.vim
