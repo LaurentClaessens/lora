@@ -28,29 +28,28 @@
 \author{Laurent Claessens}
 \maketitle
 
-Lora is a backup program and a small Git remainder utility\footnote{Did you committed everything you modified today ?}.
+Lora is a backup program and a small Git remainder utility\footnote{Did you committed all your changes today ?}.
 
 \begin{center}
     {\bf Warning}
 \end{center}
-This is a free software\footnote{In the sense of the GPL : no warranty, etc.} manipulating your precious data. If you use it, I consider you as a consenting adult.
+This is a \emph{libre} software\footnote{In the sense of the GPL : no warranty, etc.} manipulating your precious data. If you use it, I consider you as a consenting adult.
 
 \tableofcontents
 
 %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-\section{Installation and compilation}
+\section{Compilation and installation}
 %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 The first step is to download the whole on \href{ https://github.com/LaurentClaessens/lora  }{ github } with
-\begin{center}
-    \info{git clone https://github.com/LaurentClaessens/lora}
-\end{center}
-
+\begin{verbatim}
+    git clone https://github.com/LaurentClaessens/lora
+\end{verbatim}
 You compile this documentation with
-\begin{center}
-    \info{pdflatex manual.tex}
-\end{center}
-A \LaTeX\ distribution is needed\ distribution is needed.
+\begin{verbatim}
+    pdflatex manual.tex
+    pdflatex relazione.tex
+\end{verbatim}
 
 %--------------------------------------------------------------------------------------------------------------------------- 
 \subsection{The manual way}
@@ -62,21 +61,20 @@ A \LaTeX\ distribution is needed\ distribution is needed.
     \item
         Modify the path of \info{BOOST\_THREAD\_LIB} in \info{makefile}.
     \item
-        Test with
-        \begin{center}
-            \info{./tests.sh}
-        \end{center}
-        This should compile everything and launch a small testing program.
+        Modify the path of \info{MOC\_BIN} in \info{makefile}.
     \item
-        Launch Lora with
-        \begin{center}
-            \info{./lora}
-        \end{center}
+        Test with \info{./tests.sh} This should compile everything and launch a small testing program\footnote{This step does not work on the ``project'' branch. In other words, if you are reading this as professor at unipd, this will not work. The reason is that the tests use \info{std::function<void()>} from C++11 }.
+    \item
+        Compile : \info{make all}
+    \item
+        Launch Lora with \info{./lora}
 \end{enumerate}
 
 %--------------------------------------------------------------------------------------------------------------------------- 
 \subsection{The graphical way}
 %---------------------------------------------------------------------------------------------------------------------------
+
+There is a graphical program that serves to make your configuration. 
 
 %///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 \subsubsection{Compile the installation program}
@@ -122,11 +120,10 @@ Here it is :
 
         Note that there are no automatic process removing the files from the purge directory. The size is then always increasing and you should remove very old subdirectory by hand.
 
-        If you are using a program like Thunderbird, I let you know that it will \href{ http://xkcd.com/725/ }{ literally } produce \href{ https://fr.wikipedia.org/wiki/Gibioctet }{ gibis } of data in the purge directory each day.
+        If you are using a program like Thunderbird, I let you know that it will \href{ http://xkcd.com/725/ }{ literally} produce \href{ https://fr.wikipedia.org/wiki/Gibioctet }{gibis} of data in the purge directory each day.
     \item
         The excluded directories (C) are what they seem to be : they will be excluded from the backup. You can as example not backup the directory in which you save the \info{iso} files of your preferred Linux distribution. Press the \includegraphics{plus.png} button to add an excluded directory.
 \end{enumerate}
-
 
 %///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 \subsubsection{The terminal tab}
@@ -153,13 +150,20 @@ Here is the tab :
 \subsubsection{The compilation tab}
 %///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+If making
+\begin{center}
+    \info{make all}
+\end{center}
+works on the first strike, you can ignore this step.
 
-Here it is :
+Here is the compilation tab :
 \begin{center}
     \includegraphics[width=\linewidth]{compilation_tab.png}
 \end{center}
 
-This asks you the path of the file \info{libboost\_thread.so} that is mandatory for the compilation of Lora.
+This asks you the path of the file \info{libboost\_thread.so} and the \info{moc} program that is mandatory for the compilation of Lora.
+
+The file \info{auto\_makefile} is created and you will be able to compile Lora with this makefile.
 
 %--------------------------------------------------------------------------------------------------------------------------- 
 \subsection{Compilation}
@@ -264,11 +268,45 @@ Here is a window example :
 
 \begin{description} 
     \item[Add <this> to gitignore] Click there is this repository is of <this> type and Lora will add corresponding files to \info{.gitignore}. Example : with ``add latex to gitignore'', it will add \info{*.aux}, \info{*.toc}, etc.
-    \item[See git diff] open a terminal and launch \info{git diff} inside.
-    \item[Edit .gitignore] open \info{.gitignore} in your preferred editor.
+    \item[See git diff]
+        Open a terminal and launch \info{git diff} inside.  
+
+        The behaviour of all the git part could depend on your local git configuration. As an example, the button \emph{See git diff} will open a terminal and launch \info{git diff} inside. If you have configured git in such a way that \info{git diff} only prints the diff, then the terminal will be immediately closed. Thus if you want to take benefit of this functionality on Lora you should add something like
+
+\begin{verbatim}
+[diff]
+    external =  vimdiff
+\end{verbatim}
+in your \info{.gitconfig}.
+    \item[Edit .gitignore] Open \info{.gitignore} in your preferred editor.
     \item[Launch git commit -a] Open a terminal and launches \info{git commit -a} inside.
-    \item[Open a terminal here] does what you think it does.
-    \item[Exit] does what you think it does.
+    \item[Open a terminal here] Does what you think it does.
+    \item[Exit] Does what you think it does.
 \end{description}
 
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+\section{Known issues}
+%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+There are still several cases in which Lora crashes. The general ideology is that your data is precious and \emph{you} should manage border line cases. Anyway, some crashes are known and some improvement in their managing have to be done in Lora.
+\begin{enumerate}
+    \item
+        Crash when one has not the read permission in a file. But really, do you have a file in \emph{your} home on which you don't even have the reading permission ? Sadly, the answer could be \emph{yes}.
+    \item
+        Some filenames seems to pose problems. As an example : \url{~/.local/share/gvfs-metadata/network:} provokes a crash ``invalid argument'' on Boost's filesystem \info{copy\_file}. Some investigations show that this could be related to the fact that this file has a colon in its name.
+    \item
+        When a file is deleted during the backup process, it could lead to a crash ``file not found''. Multithreading make this one not easily reproducible.
+    \item
+        When the \info{last\_write\_time} attribute of a file in the backup is more recent than the one in the home, Lora crashes. Did you got back an old version of a file ? I got that crash in the following way :
+        \begin{itemize}
+            \item clone a git repository,
+            \item modify a file,
+            \item backup with Lora,
+            \item remove the directory and re-clone it. Then the ``new'' file has the last write time attribute of the ``origin'' one. While the file in the backup as the time of \emph{your} modification.
+            \item backup with Lora will crash with an useful error message.
+        \end{itemize}
+        By the way, here the crash has to be seen as a feature more than a bug because you \emph{really} lost data and you should \emph{really} worry.
+\end{enumerate}
+
 \end{document}
+
