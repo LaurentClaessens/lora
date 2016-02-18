@@ -1,81 +1,60 @@
-________________________________________ LORA : A BACKUP AND GIT AID  PROGRAM __________________________
+
+# LORA : a backup and git aid program
 
 Lora will loop over your $HOME directory and 
- - backup it. 
- - check if some subdirectories need some 'git commit' or 'git add'. A small graphical interface help you maintaining your git repositories.
-
-
+* backup it. 
+* check if some subdirectories need some 'git commit' or 'git add'. A small graphical interface help you maintaining your git repositories.
 
 
 This is libre software. Feel free to contribute, report bugs and donate (in the sense of free beer).
 
 
+## INSTALLATION AND COMPILATION
 
-INSTALLATION AND COMPILATION
+* Download 
 
-Download 
-    git clone https://github.com/LaurentClaessens/lora
-Compile the documentation
-    pdflatex manual.tex
-Read the manual
-    It contains more detailed informations than this README.txt
-Compile the installation program
-    make installation
-Launch the installation program
-    ./installation
-Compile the whole
-    make all
+        git clone https://github.com/LaurentClaessens/lora
 
-NOTES
- 
-    You can bypass the installation if Boost is correctly located (see where the makefile assumes it is).  
-Doing directly
+* Read the manual
+    in lora/documentation/manual.pdf
+* Configure
+   * Create `lora.cfg` taking example on `example.cfg` (self-explaining)
+   * Adapt the paths MOC_BIN and BOOST_THREAD_LIB  in `makefile`.
+* Compile the whole
+
         make all
-works at my place (Ubuntu 15.10 Wily) 
 
-    You can directly modify the 'lora.cfg' and 'makefile' file instead of using the installation program. 
+# DEFAULT USE
 
-
-DEFAULT USE
-
-./lora 
-
-will backup your $HOME directory using the backup and purge paths found in 'lora.cfg'
-
-BACKUP A PART
-
-./lora ~/foo
-
-will backup the directory ~/foo in   <backup>/foo   where <backup> is the directory found in 'lora.cfg'. This contains the backup of $HOME.
+`./lora` will backup your $HOME directory using the backup and purge paths found in 'lora.cfg'
 
 
-USE AN OTHER CONFIG FILE
+# USE AN OTHER CONFIGURATION FILE
 
-./lora --configuration=myconfig.cfg
+For reading the configuration file `myconfig.cfg` instead of `lora.cfg` :
 
-will read the configuration file 'myconfig.cfg' instead of 'lora.cfg'
+        ./lora --configuration=myconfig.cfg
 
-
-WHAT IS DOES -- BACKUP
+# WHAT IS DOES -- BACKUP
 
 The main feature is : the backup copy is only a copy. You can browse it with your favorite file browser and get a file back with a simple copy. You do not require a special software for getting back your data.
 
 As an example, let us show how work the backup of $HOME=/home/daniel
 
 We choose :
-    backup directory : /mnt/baka/backup
-    purge directory  : /mnt/baka/purge
 
-Typically, /mnt/baka is the mount point of an encrypted external disk.
+*  backup directory : `/mnt/baka/backup`
+*  purge directory  : `/mnt/baka/purge`
 
+Typically, `/mnt/baka` is the mount point of an encrypted external disk.
 
-This software loops over the files and repertories of /home/daniel and creates a copy into
-/mnt/baka/backup
+Lora loops over the files and repertories of `/home/daniel` and creates a copy into `/mnt/baka/backup`.
 
-At the end of the process, the directories /home/daniel and /mnt/baka/backup are the same (except for the excluded directories).
+At the end of the process, the directories `/home/daniel` and `/mnt/baka/backup` are the same (except for the excluded directories).
 
-When making the backup of /home/daniel/bar/foo.txt,
-* check if /mnt/baka/backup/bar/foo.txt
+When making the backup of the file `/home/daniel/bar/foo.txt`,
+
+* check if /mnt/baka/backup/bar/foo.txt exists
 * if not, create it with a simple copy (but the last write time attribute is conserved)
 * if /mnt/baka/backup/bar/foo.txt exists and is different
     - move to /mnt/backup/bakapurge.lora/<today date>/<hour>/modified/bar/foo.txt   (keeping the time attribute)
