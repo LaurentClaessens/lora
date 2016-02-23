@@ -5,7 +5,6 @@ Lora will loop over your $HOME directory and
 * backup it. 
 * check if some subdirectories need some 'git commit' or 'git add'. A small graphical interface help you maintaining your git repositories.
 
-
 This is libre software. Feel free to contribute, report bugs and donate (in the sense of free beer).
 
 
@@ -15,14 +14,16 @@ This is libre software. Feel free to contribute, report bugs and donate (in the 
 
         git clone https://github.com/LaurentClaessens/lora
 
-* Read the manual
-    in lora/documentation/manual.pdf
 * Configure
    * Create `lora.cfg` taking example on `example.cfg` (self-explaining)
    * Adapt the paths MOC_BIN and BOOST_THREAD_LIB  in `makefile`.
-* Compile the whole
+* Compile the whole and test :
 
         make all
+        ./tests.sh
+
+* Read the manual
+    in lora/documentation/manual.pdf
 
 # DEFAULT USE
 
