@@ -28,6 +28,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using boost::filesystem::path;
 
+/*
+ 
+ABOUT TASKS
+ 
+'lora' has a loop over all the files/directories to be backuped and creates a list of taskes ('task_list'). That list is read by a thread which lanch the 'run' method over the elements of the task list.
+There are the following types of tasks :
+- FileCopyTask describe the operations to backup a file
+- DirectoryCopyTask describe the operations to backup a directory 
+- FinalTask is a dummy task that only says to the calling thread that we are done.
+all are derived from GenericTask (in order to fool the type control and put more than one type in the same list).
 
 // 'lora' has a loop over all the files/directories to be backuped and creates a list of taskes ('task_list'). That list is read by a thread which lanch the 'run' method over the elements of the task list.
 // There are the following types of taskes :
@@ -38,9 +48,35 @@ using boost::filesystem::path;
 //
 // The return value of 'run' (boolean) says if one has to continue or bot with the next task. In a normal execution the only task returning 'false' is the final one created right after the main loop.
 
+ABOUT UTILITIES
 
-// The class Utilities is intended to be used as anonymous.
-// The aim is to make the 'config_ptr' available for logging purposes.
+The class Utilities is intended to be used as anonymous.  The aim is to make the 'config_ptr' available for logging purposes. See the comment in 'Configuration.h' for some rationales.
+
+The constructor with no argument initialize 'config_ptr' to the nul pointer. You should not use that constructor since any logging inside the function will result in a crash.
+Of course, if something has to be logged, it means that something strange happened and you may _prefer_ to have a crash.
+
+Since "/home/foo/bar/something" can be a file as well as a directory (and the system cannot guess since the point of 'create_*_tree' is to create), we have two functions.
+class Utilities
+
+   Why is Utilities not static ?
+
+As explained in 'Configuration.h', the variable 'config_ptr' is an attempt to avoid a global variable. So we pass it as a parameter to more or less all objects.
+   Here we can expect 'create_directory_tree' to be 'static', but it is not because :
+- it needs 'config_ptr' for logging purpose
+- it needs 'config_ptr' for 'assert' purpose. I want to be able to check if we are writing in $HOME at every moment. In other words, a future release of Lora is likely to add something like 
+        assert( file_path 'not inside' config_ptr->getHomePath() )
+  in the create_tree functions.      
+
+     Possible improvement :
+
+It could be clearer to add "Utilities" inside Configuration, and call it with
+        config_ptr->create_directory_tree(...)
+instead of
+        Utilities(config_ptr)->create_directory_tree(...)
+ 
+Because the behaviour of these function *is expected* to depend on the configuration file. That could be coherent with the deprecation of the zero-parameter constructor.
+
+//*/
 class Utilities
 {
     private : 
@@ -49,6 +85,8 @@ class Utilities
         // we have two functions.
     public:
         Utilities(const Configuration*);
+
+        // This constructor is intended to be deprecated in a future version of Lora.
         Utilities();
 
         void create_directory_tree(const path);             // recursively creates the directory tree up to the given directory.

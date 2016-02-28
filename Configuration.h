@@ -43,7 +43,9 @@ class GenericTask;
 // - terminal command line,
 // - an handle on the git list window
 // - a logging system
-// and some functions to access it.
+// and some functions to access all that.
+//
+// Let be clear once for all : 'config_ptr' is more or less a global variable : it has to be available almost everywhere, at least for logging purpose. Since I don't want a global variable, it is passed as argument to almost every objects in Lora.
 class Configuration
 {
     private:

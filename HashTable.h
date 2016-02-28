@@ -79,6 +79,7 @@ class HashTable
                 node* operator->() const;
         };
         HashTable();
+        ~HashTable();
         void setValue(K ,V );
         bool isKey(K) const;     // return true if the given key exists.
         bool isEmpty() const;
@@ -89,7 +90,6 @@ class HashTable
         V& operator[](const K);
         V& operator[](iterator);
 };
-
 
 // NODE
 
@@ -102,6 +102,8 @@ HashTable<K,V>::node::node(const K k,V v): next(0),key(k),value(v)  { }
 
 template <class K,class V>
 HashTable<K,V>::HashTable(): first(0),last(0)  { }
+template <class K,class V>
+HashTable<K,V>::~HashTable() { if (first) delete first;  }
 
 template <class K,class V>
 void HashTable<K,V>::reset()

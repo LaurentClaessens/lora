@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "installation.h"
 
 string DEFAULT_BOOST_THREAD_LIB = "/usr/lib/i386-linux-gnu/libboost_thread.so";
+string DEFAULT_MOC_BIN="/usr/lib/i386-linux-gnu/qt4/bin/moc";
 
 // ASK INFO
 
@@ -208,21 +209,24 @@ CompilationWidget::CompilationWidget():
 {
     QVBoxLayout* compilation_layout = new QVBoxLayout();
 
-    QLabel* text = new QLabel( "The makefile assumes presence of boost and in particular has the hard-coded path BOOST_THREAD_LIB  = /usr/lib/i386-linux-gnu/libboost_thread.so  (Ubutnu 15.10 Wily)  "  );
-
+    QLabel* thread_text = new QLabel( "The makefile assumes presence of boost and in particular has the hard-coded path BOOST_THREAD_LIB  = /usr/lib/i386-linux-gnu/libboost_thread.so  (Ubutnu 15.10 Wily)  "  );
     thread_info = new AskInfo("path for libboost_thread.so");
     thread_info->setText(QString::fromStdString(DEFAULT_BOOST_THREAD_LIB));
 
-    compilation_layout->addWidget(text);
+    QLabel* moc_text = new QLabel( "The makefile assumes presence of the 'moc' program  (Ubutnu 15.10 Wily)  ");
+    moc_info = new AskInfo("path for the moc binary");
+    moc_info->setText(QString::fromStdString(DEFAULT_MOC_BIN));
+
+    compilation_layout->addWidget(thread_text);
     compilation_layout->addWidget(thread_info);
+    compilation_layout->addWidget(moc_text);
+    compilation_layout->addWidget(moc_info);
 
     setLayout(compilation_layout);
 }
 
-QString CompilationWidget::getBOOST_THREAD_LIB()
-{
-    return thread_info->text();
-}
+QString CompilationWidget::getBOOST_THREAD_LIB() { return thread_info->text(); }
+QString CompilationWidget::getMOC_BIN() { return moc_info->text(); }
 
 // TAB WIDGET
 
@@ -244,13 +248,22 @@ void TabWidget::write_backup_to_file() const
 
     output<<"backup="<<backup_tab->getBackupDir().toUtf8().constData()<<std::endl;
     output<<"purge="<<backup_tab->getPurgeDir().toUtf8().constData()<<std::endl;
-    for (QString& s : backup_tab->getExcludedFiles()  )
+    output<<"starting="<<getenv("HOME")<<std::endl;
+
+    //for (QString& s : backup_tab->getExcludedFiles()  )       //C++11
+    QStringList qst = backup_tab->getExcludedFiles();
+    if (qst.size()>0)
     {
-        output<<"exclude="<<s.toUtf8().constData()<<std::endl;
+        for (QStringList::iterator itr=qst.begin();itr!=qst.end();itr++  )      
+        {
+            QString s=*itr;
+            output<<"exclude="<<s.toUtf8().constData()<<std::endl;
+        }
     }
     output<<"terminal="<<terminal_tab->getTerminal().toStdString()<<std::endl;
     output<<"in_terminal="<<terminal_tab->getInTerminal().toStdString()<<std::endl;
     output<<"editor="<<terminal_tab->getEditor().toStdString()<<std::endl;
+    output<<"log file="<<"lora.log"<<std::endl;
 }
 
 void TabWidget::write_compilation_to_file() const
@@ -267,6 +280,10 @@ void TabWidget::write_compilation_to_file() const
         {
             tmp_file<<"BOOST_THREAD_LIB = "<<compilation_tab->getBOOST_THREAD_LIB().toStdString()<<std::endl;
         }
+        if ( boost::algorithm::starts_with(line,"MOC_BIN =")  ) 
+        {
+            tmp_file<<"MOC_BIN = "<<compilation_tab->getMOC_BIN().toStdString()<<std::endl;
+        }
     }
 }
 
@@ -279,7 +296,7 @@ bool TabWidget::write_to_file()
     if (ans==QMessageBox::Save) { write_backup_to_file() ; }
     if (ans==QMessageBox::Cancel) { a1=false;  }
 
-    if (!(compilation_tab->getBOOST_THREAD_LIB().toStdString()==DEFAULT_BOOST_THREAD_LIB))
+    if (!(compilation_tab->getBOOST_THREAD_LIB().toStdString()==DEFAULT_BOOST_THREAD_LIB)  ||  (compilation_tab->getMOC_BIN().toStdString()==DEFAULT_MOC_BIN) )
     {
         int ans =  QMessageBox::question(this,"Operation finished","This will write into 'auto_makefile'",QMessageBox::Save|QMessageBox::Cancel);
         if (ans==QMessageBox::Save) { write_compilation_to_file() ; }

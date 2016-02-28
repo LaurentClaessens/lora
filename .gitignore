@@ -17,6 +17,7 @@ Makefile
 core
 UnitTests
 auto_makefile
+local_makefile
 lora.log
 installation
 

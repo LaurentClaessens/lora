@@ -115,9 +115,11 @@ class CompilationWidget : public QWidget
 
     private:
         AskInfo* thread_info;
+        AskInfo* moc_info;
     public:
         CompilationWidget();
         QString getBOOST_THREAD_LIB();
+        QString getMOC_BIN();
 };
 
 class TabWidget : public QTabWidget

@@ -19,6 +19,13 @@ TODO
 - a better command line argument parser
 - a better image for "plus.png"
 - the installation program should read the configuration file an fill the blanks.
+- in the installation, there is a duplicate of information between   
+    BackupWidget::exclude_list and ExcludeChooser::choosers.
+- the button "commit that" should update the status panel.
+- make a version with no graphical interface. One should be able to do the backup 
+    even from the most basic debbootstraped USB stick.
+- symlinks are ignored. That should be optional. See also the todo about printing 
+    the log file.
 - in the installation, there is a duplicate of information between   BackupWidget::exclude_list and ExcludeChooser::choosers.
 - the button "commit that" should update the status panel.
 - make a version with no graphical interface. One should be able to do the backup even from the most basic debbootstraped USB stick.

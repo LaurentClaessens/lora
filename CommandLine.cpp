@@ -33,8 +33,16 @@ void CommandLine::setEnvironmentVariable(const string key,string value)
     environment_variables.setValue(key,value);
 }
 
-CommandLine::CommandLine(){};
-CommandLine::CommandLine(string s):command(s),environment_variables() {};
+CommandLine::CommandLine():
+    working_directory("."),
+    in_terminal(false)
+{};
+CommandLine::CommandLine(string s):
+    command(s),
+    working_directory("."),
+    environment_variables(),
+    in_terminal(false)
+{};
 
 string CommandLine::toString() const
 {
@@ -82,7 +90,6 @@ string CommandLine::getOutput()
 }
    
 // ENVIRONNEMENT VARIABLE
-
 
 void CommandLine::EnvironmentVariables::setValue(const string key,string value)
 {

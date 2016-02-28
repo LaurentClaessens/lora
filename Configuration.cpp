@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "tasks.h"
 
 using std::string;
+using std::vector;
 
 // CONFIGURATION -- general
 
@@ -93,7 +94,7 @@ TaskList* Configuration::getTaskList() const {return task_list_ptr;}
 
 // CREATING FUNCTIONS (not to be confused with the constructor)
 
-HashTable<std::string,std::vector<std::string>> read_configuration_file(const path cfg_path)
+HashTable<string,std::vector<string> > read_configuration_file(const path cfg_path)
 {
     assert(is_regular_file(cfg_path));
     auto hash_table=HashTable<std::string,std::vector<std::string>>();

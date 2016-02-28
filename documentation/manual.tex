@@ -293,16 +293,16 @@ There are still several cases in which Lora crashes. The general ideology is tha
     \item
         Crash when one has not the read permission in a file. But really, do you have a file in \emph{your} home on which you don't even have the reading permission ? Sadly, the answer could be \emph{yes}.
     \item
-        Some filenames seems to pose problems. As an example : \url{~/.local/share/gvfs-metadata/network:} provokes a crash ``invalid argument'' on Boost's filesystem \info{copy\_file}. Some investigations show that this could be related to the fact that this file has a colon in its name.
+        Some filenames seem to pose problems. As an example : \url{~/.local/share/gvfs-metadata/network:} provokes a crash ``invalid argument'' on Boost's filesystem \info{copy\_file}. Some investigations show that this could be related to the colon in the filename.
     \item
-        When a file is deleted during the backup process, it could lead to a crash ``file not found''. Multithreading make this one not easily reproducible.
+       Deleting a file during the backup process could lead to a crash ``file not found''. Multithreading make this one not easily reproducible.
     \item
         When the \info{last\_write\_time} attribute of a file in the backup is more recent than the one in the home, Lora crashes. Did you got back an old version of a file ? I got that crash in the following way :
         \begin{itemize}
             \item clone a git repository,
             \item modify a file,
             \item backup with Lora,
-            \item remove the directory and re-clone it. Then the ``new'' file has the last write time attribute of the ``origin'' one. While the file in the backup as the time of \emph{your} modification.
+            \item remove the directory and re-clone it. Then the ``new'' file has the last write time attribute of the ``origin'' one while the file in the backup as the time of \emph{your} modification.
             \item backup with Lora will crash with an useful error message.
         \end{itemize}
         By the way, here the crash has to be seen as a feature more than a bug because you \emph{really} lost data and you should \emph{really} worry.

@@ -94,6 +94,16 @@ vector<path> GitRepository::getUntrackedFiles() const
                 filename=aux[1];
                 untracked_files.push_back(path(filename));
             }
+            // The following case deals with the syntax of "git status" at unipd
+            if ( boost::algorithm::starts_with(line,"#\t")    )
+            {
+                string filename;
+                vector<string> aux;
+                boost::split(aux,line,boost::is_any_of("#\t"));
+                filename=aux[1];
+                boost::algorithm::erase_all(line,"#\t");
+                untracked_files.push_back(path(line));
+            }
         }
     }
     return untracked_files;
@@ -215,7 +225,7 @@ void GitRepository::launchGitCommit(string terminal_launcher)
 
 void GitRepository::editGitIgnore(string editor)
 {
-    CommandLine cl=CommandLine(editor+" .gitignore");
+    CommandLine cl=CommandLine(editor+" "+getGitIgnoreFullPath().string());
     cl.setWorkingDirectory(getPath());
     cl.run();
 }
