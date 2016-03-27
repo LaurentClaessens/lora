@@ -36,3 +36,6 @@ installation
 *.synctex.gz
 *.dvi
 instance.vim
+
+READMElora.html
+loraREADME.html

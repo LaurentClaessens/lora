@@ -61,5 +61,4 @@ class MainPurgeLoop: public MainLoop
         void run();
 };
 
-
 #endif   //__MAIN_LOOP_H__
