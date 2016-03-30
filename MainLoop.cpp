@@ -58,7 +58,9 @@ void MainLoop::loopOverDirectory(path directory)
         else
         {
             config_ptr->writeLog("I'm looping in the directory : "+directory.string());
-            throw std::string("***  What the hell is "+pathname.string()+" ??? ");
+            string message="I'm looping in the directory : "+directory.string();
+            config_ptr->writeLog(message);
+            throw std::string(message);
         }
     }
 }

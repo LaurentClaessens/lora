@@ -1,5 +1,5 @@
 /*
-Copyright 2015 Laurent Claessens
+Copyright 2015-2016 Laurent Claessens
 contact : moky.math@gmail.com
 
 This is part of 'lora': you can redistribute it and/or modify
@@ -51,8 +51,6 @@ void Utilities::create_file_tree(const path file_path)
 
 void Utilities::my_copy_file(path from_path,path to_path)
 {
-    config_ptr->writeLog("my_copy_file");
-    config_ptr->writeLog("copy "+from_path.string()+" to "+to_path.string());
     assert( is_regular_file(from_path) );
     assert( !is_regular_file(to_path) );
 
@@ -92,10 +90,6 @@ FileCopyTask::FileCopyTask(pathTriple triple,const Configuration* config):
 
 bool FileCopyTask::run()  const
 {
-    config_ptr->writeLog("FileCopytTask::run");
-    config_ptr->writeLog("orig : "+orig_path.string());
-    config_ptr->writeLog("bak : "+bak_path.string());
-    config_ptr->writeLog("purge : "+purge_modified_path.string());
     if (!is_regular_file(orig_path))
     {
         config_ptr->writeLog(" I'm going to crash the file "+orig_path.string()+" does not exist ?");
