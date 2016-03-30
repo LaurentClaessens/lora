@@ -1,6 +1,6 @@
 /*
 Copyright 2015 Laurent Claessens
-contact : moky.math@gmail.com
+contact : laurent@claessens-donadello.eu
 
 
 This is part of 'lora': you can redistribute it and/or modify
