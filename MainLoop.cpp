@@ -20,7 +20,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/predicate.hpp>     // starts_with
 #include "MainLoop.h"
-#include "GitRepository.h"
 #include "Configuration.h"
 #include "DirectoryConverter.h"
 #include "tasks.h"
@@ -44,7 +43,6 @@ void MainLoop::loopOverDirectory(path directory)
 {
     assert(is_directory(directory));
 
-    config_ptr->processEvents();      // a more reactive window.
     directory_iterator end_itr;
     for(  directory_iterator itr(directory); itr!=end_itr;++itr  )
     {
@@ -86,11 +84,6 @@ bool MainBackupLoop::is_excluded(path dirname) { return config_ptr->is_excluded(
 
 void MainBackupLoop::DealWithDirectory(path rep_path)
 {
-    GitRepository repo=GitRepository(rep_path);
-    if (!repo.isClean())
-    {
-        config_ptr->addGitButton(repo);
-    }
     if (!is_excluded(rep_path))
     {
         path bak_rep=config_ptr->home_to_backup(rep_path);

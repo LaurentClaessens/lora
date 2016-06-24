@@ -20,7 +20,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 #include <fstream>
 #include <boost/algorithm/string.hpp>
-#include "GitListWindow.h"
 #include "Configuration.h"
 #include "Logging.h"
 #include "tasks.h"
@@ -30,11 +29,10 @@ using std::vector;
 
 // CONFIGURATION -- general
 
-Configuration::Configuration(const path sp, const DirectoryConverter* const dc, TaskList* const  tl, const TerminalLines* const term_lines_ptr):
+Configuration::Configuration(const path sp, const DirectoryConverter* const dc, TaskList* const  tl ):
     starting_backup_path(sp),
     converter_ptr(dc),
-    task_list_ptr(tl),
-    terminal_lines_ptr(term_lines_ptr)
+    task_list_ptr(tl)
 {}
 
 path Configuration::getStartingBackupPath() const { return starting_backup_path; }
@@ -220,19 +218,16 @@ Configuration* configuration_file_to_configuration(const path cfg_path,const pat
     if (starting_backup_path.string()!=""){sp=starting_backup_path;}
 
 
-    string terminal=hash_table["terminal"][0];
-    string in_terminal=hash_table["in_terminal"][0];
     string editor=hash_table["editor"][0];
     string log_filename=hash_table["log file"][0];
 
 
     const DirectoryConverter* const converter_ptr=new DirectoryConverter(bp,pp);
     TaskList* tl_ptr=new TaskList();
-    const TerminalLines* const terminal_lines_ptr=new TerminalLines(terminal,in_terminal,editor);
     Logging* logging = new Logging();
     logging->setFile(log_filename);
 
-    Configuration* config_ptr = new Configuration( sp,converter_ptr,tl_ptr,terminal_lines_ptr  );
+    Configuration* config_ptr = new Configuration( sp,converter_ptr,tl_ptr);
     config_ptr->add_exclude_path(exclude,verbose);
     config_ptr->setLog(logging);
 
@@ -250,24 +245,6 @@ Configuration* arguments_to_configuration(int argc, char* argv[],bool verbose)
     assert(is_regular_file(cfg_path));
     return configuration_file_to_configuration(cfg_path,starting_backup_path,verbose);
 }
-
-// GIT LIST WINDOWS
-
-void Configuration::setGitListWindow(GitListWindow* gw)
-{
-    git_list_window=gw;
-}
-
-void Configuration::addGitButton(GitRepository repo)
-{
-    git_list_window->addGitButton(repo);
-}
-
-// TERMINAL LINES
-
-const string Configuration::getTerminal() const {return terminal_lines_ptr->getTerminal();}
-const string Configuration::getInTerminal() const {return terminal_lines_ptr->getInTerminal();}
-const string Configuration::getEditor() const {return terminal_lines_ptr->getEditor();}
 
 // OTHER UTILITIES FUNCTIONS
 
@@ -295,8 +272,6 @@ bool Configuration::do_we_backup(const path orig_path,const path bak_path) const
 
     return false;
 }
-
-void Configuration::processEvents(){ git_list_window->processEvents(); }
 
 // LOGGING
 

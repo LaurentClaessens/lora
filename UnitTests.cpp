@@ -20,61 +20,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <fstream>
 #include <string>
 
-
-#include <QApplication>
-#include <QPushButton>
-
 #include "testing.h"
 #include "Configuration.h"
-#include "CommandLine.h"
 #include "HashTable.h"
-#include "GitRepository.h"
-#include "GitWindow.h"
 
 using namespace std;
-    
-// A simple command line :
-void test_cl1()
-{
-    CommandLine cl1=CommandLine("cat lora.cpp");
-    cl1.setEnvironmentVariable("LC_ALL","C");
-    cl1.setEnvironmentVariable("BLA","foo");
-    cl1.setWorkingDirectory("..");
-    string s=cl1.toString();
-    test_assert(s=="cd \"..\"  && LC_ALL=C BLA=foo cat lora.cpp","Command line composition");
-}
-
-// This one uses "cat" to read a file and compare to the content of the file
-void test_cl2()
-{
-    CommandLine cl2=CommandLine("cat UnitTests.cpp");
-    cl2.setEnvironmentVariable("LC_ALL","C");
-    string out2=cl2.getOutput();
-
-    ifstream file;
-    file.open("UnitTests.cpp");
-    if (!file)
-    {
-        cerr << "The file on which I was about to test is not available";
-        exit(1);   // call system to stop
-    }
-    string sfile;
-    string x;
-    while (std::getline(file,x)) 
-    {
-        sfile = sfile + x+"\n";
-    }
-    test_assert(out2==sfile,"get the output of 'cat UnitTests.cpp'");
-}
-
-// Launching Vim in a terminal
-void test_cl3()
-{
-    CommandLine cl=CommandLine("vim");
-    cl.setWorkingDirectory("..");
-    cl.setTerminal("terminology -e");
-    cl.run();
-}
 
 // Iterators with HashTable
 void test_ht1()
@@ -162,61 +112,6 @@ void test_ht5()
     test_assert(my_hash.isEmpty()==1,"the reset function does not empty the hash table.");
 }
 
-void test_gr1()
-{
-    std::string commit;
-    string repo;
-    std::cout<<"Which directory do you want to see ? ";
-    std::cin>>repo;
-    GitRepository gr=GitRepository(repo);
-    commit=gr.getStatusMessage();
-
-    std::cout<<"--------- begin of status message ------"<<std::endl;
-    std::cout<<commit<<std::endl;
-    std::cout<<"--------- end of status message ------"<<std::endl;
-
-    vector<path> untracked_files=gr.getUntrackedFiles();
-    std::cout<<"Untracked files :"<<std::endl;
-
-    for (path& p:untracked_files) { std::cout<<p<<std::endl; }
-
-    vector<path> modified_files=gr.getModifiedFiles();
-    std::cout<<"Modified files :"<<std::endl;
-
-    for (path& p:modified_files) { std::cout<<p<<std::endl; }
-
-    if (gr.isClean()) { std::cout<<"This repository is CLEAN."<<std::endl; }
-    else
-    {
-        std::cout<<"This repository is NOT CLEAN."<<std::endl;
-        std::string yn="n";
-        std::cout<<"Do you want to see the 'git diff' of this repository ?";
-        std::cin>>yn;
-        if (yn=="y"){ gr.launchGitDiff(); }
-    }
-}
-
-void test_gr2()
-{
-    GitRepository repo=GitRepository("~");
-    path gitignore=repo.getGitIgnoreFullPath();
-    string s1=std::getenv("HOME");
-    test_assert(gitignore.string()==s1+"/.gitignore","bad HOME or gitignore research");
-}
-
-void test_gw1()
-{
-    std::string commit;
-    string directory;
-    std::cout<<"Which directory do you want to see ? ";
-    std::cin>>directory;
-    GitRepository repo=GitRepository(directory);
-    
-    Configuration* config_ptr=configuration_file_to_configuration("example.cfg","",false);
-    GitWindow* gw1=new GitWindow(repo,config_ptr);
-    gw1->exec();
-}
-
 void test_exclude()
 {
     Configuration* config_ptr=configuration_file_to_configuration("example.cfg","",false);   // the last boolean argument is 'verbose'
@@ -226,24 +121,14 @@ void test_exclude()
     test_assert(config_ptr->is_excluded("/home/daniel/foo/bar/")==true,"This should be excluded.");
 }
 
-int main(int argc,char* argv[])
+int main()
 {
-    QApplication app(argc, argv);
     std::cout<<"Initializing tests ---------------------------"<<std::endl<<std::endl<<std::endl;
     GenericTestingFunction("test_exclude",false,test_exclude).run();
-
-    GenericTestingFunction("test_cl1",false,test_cl1).run();
-    GenericTestingFunction("test_cl2",false,test_cl2).run();
 
     GenericTestingFunction("test_ht1",false,test_ht1).run();
     GenericTestingFunction("test_ht2",false,test_ht2).run();
     GenericTestingFunction("test_ht3",false,test_ht3).run();
     GenericTestingFunction("test_ht4",false,test_ht4).run();
     GenericTestingFunction("test_ht5",false,test_ht5).run();
-
-    GenericTestingFunction("test_gr2",false,test_gr2).run();
-
-    GenericTestingFunction("test_gw1",true,test_gw1,"See the git window ?").run();
-    GenericTestingFunction("test_gr1",true,test_gr1,"See a status message ?").run();
-    GenericTestingFunction("test_cl3",true,test_cl3,"See Vim in a new terminal ?").run();
 }

@@ -23,25 +23,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <boost/filesystem.hpp>
 #include "DirectoryConverter.h"
-//#include "tasks.h"
 #include "HashTable.h"
-#include "GitListWindow.h"
-#include "GitRepository.h"
 #include "Logging.h"
+
+using std::string;
 
 class TaskList;
 class GenericTask;
 
 // The aim of this class is to answer the questions which depend on the
 // configuration (paths manipulation, excluded files, task_list, ...)
-// It also holds a hand on the main windows in order to add buttons when
-// a git need is found.
 // This contains a direct sum of
 // - directory converter,
 // - task list,
 // - excluded path,
-// - terminal command line,
-// - an handle on the git list window
 // - a logging system
 // and some functions to access all that.
 //
@@ -52,12 +47,10 @@ class Configuration
         const path starting_backup_path;
         const DirectoryConverter* const converter_ptr;
         TaskList* const task_list_ptr;
-        const TerminalLines* const terminal_lines_ptr;
         std::vector<path> excluded_paths;
-        GitListWindow* git_list_window;
         Logging*  logging;
     public:
-        Configuration(const path,const DirectoryConverter* const,TaskList* const, const TerminalLines* const);
+        Configuration(const path,const DirectoryConverter* const,TaskList* const);
         path getStartingBackupPath() const;
         path getHomePath() const;
         path getBackupPath() const;
@@ -80,13 +73,6 @@ class Configuration
         void create_purge_directories() const;
         bool are_all_paths_ok() const;             
 
-        const string getTerminal() const;
-        const string getInTerminal() const;
-        const string getEditor() const; 
-
-        void setGitListWindow(GitListWindow*);
-        void addGitButton(GitRepository);
-        
         void setLog(Logging*);
         void setLogFile(string);
         void writeLog(string) const;

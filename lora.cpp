@@ -16,9 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //*/
 
-#include <QtGui>
 #include "lora.h"
-#include "GitListWindow.h"
 #include "Configuration.h"
 
 using namespace boost::filesystem;
@@ -43,7 +41,6 @@ void run_tasks(Configuration* config_ptr)
         if (tl_ptr->size() != 0)
         {
             still=run_next(*tl_ptr);
-            config_ptr->processEvents();
         }
     }
     cout<<"The work seems to be done. Leaving the 'task_runner' thread."<<endl;
@@ -63,15 +60,9 @@ void loops(Configuration* config_ptr)
 
 int main(int argc, char* argv[])
 {
-    QApplication app(argc, argv);
     try
     {    
         Configuration* config_ptr=arguments_to_configuration(argc,argv);          // There is the file 'example.cfg' as example.
-
-        GitListWindow* git_list_window=new GitListWindow(config_ptr);
-        config_ptr->setGitListWindow(git_list_window);
-        git_list_window->show();
-
 
         //launching the thread that runs the tasks
         boost::thread task_runner( run_tasks, config_ptr );
@@ -80,7 +71,6 @@ int main(int argc, char* argv[])
         
         task_runner.join();
         std::cout<<"task_runner terminated"<<std::endl;
-        git_list_window->join();
     }
     catch (string err) { cout<<endl<<string("I got a bad news : ")<<err<<endl; }
     catch (std::length_error &err) 

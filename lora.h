@@ -11,7 +11,6 @@
 #include "tasks.h"
 #include "MainLoop.h"
 #include "Configuration.h"
-#include "GitListWindow.h"
 
 
 #endif    //__LORA_H__
