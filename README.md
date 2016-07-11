@@ -1,12 +1,10 @@
 
-# LORA : a backup and git aid program
+# LORA : a backup program
 
 Lora will loop over your $HOME directory and 
 * backup it. 
-* check if some subdirectories need some 'git commit' or 'git add'. A small graphical interface help you maintaining your git repositories.
 
 This is libre software. Feel free to contribute, report bugs and donate (in the sense of free beer).
-
 
 ## INSTALLATION AND COMPILATION
 
@@ -16,7 +14,6 @@ This is libre software. Feel free to contribute, report bugs and donate (in the 
 
 * Configure
    * Create `lora.cfg` taking example on `example.cfg` (self-explaining)
-   * Adapt the paths MOC_BIN and BOOST_THREAD_LIB  in `makefile`.
 * Compile the whole and test :
 
         make all
@@ -89,17 +86,3 @@ When looking at /mnt/backa/backup/blah/stuff.tex
 
 
 By the way, Lora has very bad performance against renaming an intere directory : in the first pass, it copy everything and in the second pass, it move the whole to the purge directory.
-
-WHAT IT DOES -- GIT
-
-Since Lora loops over the whole $HOME, it also takes time to check for each directory if it is a git repository (has non trivial .git subdirectory) and if this repository
-is clean.
-
-A list of directories that are not clean git repository (untracked or modified files) is displayed. Clicking on one of them opens a dialog window that helps you to 
-  - add files in .gitignore
-  - add files
-  - make a 'git commit -a'
-  - see git diff
-  - ...
-
-
