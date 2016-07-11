@@ -84,5 +84,4 @@ When looking at /mnt/backa/backup/blah/stuff.tex
  - if not, assume that this file was removed in the home and then move
 /mnt/baka/backup/blah/stuff.tex ---> /mnt/baka/purge/<today date>/<hour>/removed/blah/stuff.tex
 
-
-By the way, Lora has very bad performance against renaming an intere directory : in the first pass, it copy everything and in the second pass, it move the whole to the purge directory.
+By the way, Lora has very bad performance against renaming a directory : in the first pass, it copy everything and in the second pass, it move the whole to the purge directory.
