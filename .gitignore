@@ -7,6 +7,7 @@ portable.cfg
 lora
 lora.pro
 lora.cfg
+externe_carlotta.cfg
 mylora.cfg
 moc_*.cpp
 Makefile

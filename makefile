@@ -5,7 +5,7 @@ CXX           = LC_ALL=C g++ -std=c++11    #c++11 for  std::to_string
 CXXFLAGS      = -pipe -O2 -Wall -W -D_REENTRANT $(DEFINES)
 BOOST_SYSTEM  = -lboost_filesystem -lboost_system 
 BOOST_THREAD  = -lboost_thread
-BOOST_THREAD_LIB  = /usr/lib/i386-linux-gnu/libboost_thread.so 			# this line is more or less hard-coded in installation.cpp 
+BOOST_THREAD_LIB  = /usr/lib/i386-linux-gnu/libboost_thread.so 
 LFLAGS        = -Wl,-O1
 LIBS          = $(SUBLIBS)  -L/usr/lib/i386-linux-gnu  -lpthread 
 DEL_FILE      = rm -f
@@ -20,7 +20,7 @@ clean:
 
 
 ####### Compile
-all: installation  lora UnitTests 
+all:  lora UnitTests 
 lora: lora.cpp  \
 		DirectoryConverter.o tasks.o MainLoop.o Configuration.o   Logging.o
 	$(CXX)  $(CXXFLAGS) $(INCPATH) -o lora MainLoop.o Logging.o   Configuration.o DirectoryConverter.o tasks.o   $(BOOST_SYSTEM)  $(BOOST_THREAD)  lora.cpp  $(BOOST_THREAD_LIB) $(LIBS)
