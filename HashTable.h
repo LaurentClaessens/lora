@@ -21,6 +21,8 @@ INTRODUCTION
  We implement here an ordered dictionary. Some rationale :
  - I did not found something I like (unordered_map, map, etc)
  - since I'm asked to implement such a structure for an homework assignment, this is the occasion.
+ - I do not actually use the fact to be ordered. But a little in the tests : it's easier to check how
+   does the iterator work.
 
  The keys are ordered in the order of declaration.
  One get the value associated with 'x' by my_hash_table[x].
