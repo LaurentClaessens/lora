@@ -80,7 +80,3 @@ int main(int argc, char* argv[])
     }
     return 1;
 }
-
-
-// segfault on what():  boost::filesystem::copy_file: Permesso negato:
-// segfault when a non-existing directory is excluded.
