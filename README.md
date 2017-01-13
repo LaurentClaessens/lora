@@ -1,10 +1,46 @@
 
 # LORA : a backup program
 
-Lora will loop over your $HOME directory and 
-* backup it. 
+## Why an other backup software ?
 
-This is libre software. Feel free to contribute, report bugs and donate (in the sense of free beer).
+### My requirements
+
+Here are my requirements for a backup program.
+
+* A backup program has to work with no graphical interface. Because you want to backup especially when your system is completely crashed, from ssh or by booting from an minimal USB key.
+* A backup is not a synchronization. 
+* The files have to be recoverable by a simple copy : you do not need the backup program itself for retrieving the data.
+
+Let us be clear : the best backup way is a brand new full copy of your home everyday in a new directory, on an encrypted external disk. This is doable when your home does not exceed a couple of gigis.
+
+### My solution
+
+For the example, let's say I'm making a backup on January 12, 2017 at 09h23 in the directory `/mnt/backup`. This is typically the mount point of an external encrypted disk. Lora will use (and eventually create) the tree following directories :
+```bash
+/mnt/backup/bakatot
+/mnt/backup/bakapurge/2017-January-12/09h23/modified
+/mnt/backup/bakapurge/2017-January-12/09h23/removed
+```
+
+The first is the backup itself : it will be a copy of you home. The backup loop is the following.
+
+* **First pass : the backup** for each file on you home, look for the corresponding file in `/mnt/backup/bakatot`. 
+   * If they are the same (size and last modification time) do nothing
+   * If the file does not exist in the backup, copy.
+   * If the file exists in the backup but is different :
+       * move the backup file to `/mnt/backup/bakapurge/2017-January-12/09h23/modified/path-to-the-file` (so the `modified` directory will contain a partial copy of the directory structure of your home : the parts where there are modifications)
+       * copy from home to backup.
+
+     This way, a modified file does not really erase the backup : you keep a copy of the old version.
+
+* **Second pass : the purge** For each file in the backup : check if the corresponding one in the home exists.
+   * If it exists, do nothing.
+   * If it does not exist, we conclude that this file was deleted between the last backup and the present time. So Lora moves from the backup to `/mnt/backup/bakapurge/2017-January-12/09h23/removed/path-to-the-file`
+
+At this point the directory `/mnt/backup.bakatot` contains a copy of your home. The directory `/mnt/backup/bakapurge` contains a quite well sorted copy of all the old versions of you files, including the deleted ones.
+
+Let is insist on one point : the backup directory is a simple copy : you can browse it with any file browser you want, you can edit the files with any editor you want, and to can retrieve them by hand with a simple copy.
+
 
 ## INSTALLATION AND COMPILATION
 
