@@ -41,6 +41,20 @@ At this point the directory `/mnt/backup.bakatot` contains a copy of your home. 
 
 Let is insist on one point : the backup directory is a simple copy : you can browse it with any file browser you want, you can edit the files with any editor you want, and to can retrieve them by hand with a simple copy.
 
+### Small (shameless) hack for the git object files
+
+I'm not sure of the "why", but it turns out that when I `git clone` a repository from one directory to an other of my home, I get in the cloned directory some object files (in `.git/objects/`) with a wrong `last_write` time. The time in the backup of the cloned directory is more recent than the date in the cloned directory.
+
+It may be due to something like `git pull` rewrites the files with the time of the "pulled" directory while `git clone` creates the files with the time of the clone.
+
+Anyway ...
+
+For the files whose path contains `/.git/objects/`, if the size are identical, the copy is done even if the date in the backup is more recent than the one in the home.
+
+Some remarks :
+* For other files, such a situations throws an exception.
+* Lora is in fact not checking that the "problematic" file is actually a git object file. It only checks that the filename contains the string `/.git/objects/`.
+* If you are working in a directory that, by pure chance, contains that string, Lora will not detect time problems.
 
 ## INSTALLATION AND COMPILATION
 
