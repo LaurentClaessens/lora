@@ -1,5 +1,5 @@
 /*
-Copyright 2015-2016 Laurent Claessens
+Copyright 2015-2017 Laurent Claessens
 contact : laurent@claessens-donadello.eu
 
 This is part of 'lora': you can redistribute it and/or modify
@@ -251,15 +251,45 @@ Configuration* arguments_to_configuration(int argc, char* argv[],bool verbose)
 bool Configuration::do_we_backup(const path orig_path,const path bak_path) const
 {
     assert(is_regular_file(orig_path));
-    if (!is_regular_file(bak_path)){return true;}
+    if (!is_regular_file(bak_path))
+    {
+        return true;
+    }
     uintmax_t s_orig=file_size(orig_path);
     uintmax_t s_bak=file_size(bak_path);
-    if (s_orig!=s_bak){return true;}
+    if (s_orig!=s_bak)
+    {
+        return true;
+    }
     time_t t_ori=last_write_time(orig_path);
     time_t t_bak=last_write_time(bak_path);
-    if (t_ori>t_bak){return true;}
+    if (t_ori>t_bak)
+    {
+        return true;
+    }
+    if (t_ori<t_bak)
+    {
 
-    if (t_ori<t_bak){throw std::string("The last_write_date of this file is f*cked up !"+orig_path.string()+" "+bak_path.string()+" ?");}
+        // One could think that this would not happen : a file in the
+        // backup has always a last_write time before or equal to the one
+        // on the disk.
+        // In fact no. The git objects have their timestamps modified
+        // in some way. Something like that :
+        // - I have a commit at time 1 in the directory D1
+        // - I clone it in an other directory D2 at time 2. 
+        //   The file has time "2" in directory D2. ok.
+        // - In the backup of D2, the file has time 2.
+        // - I pull D1 to D2. Now in D2, the file has time 1 again.
+        //
+        //  ==> we get here in trouble.
+
+        if (orig_path.string().find("/.git/objects/") != std::string::npos) 
+        {
+            this->writeLog("Git file with time problem : "+orig_path.string());
+            return true;
+        }
+        throw std::string("The last_write_date of this file is f*cked up !"+orig_path.string()+" "+bak_path.string()+" ?");
+    }
 
     // The following piece is in order to correct an error in the time managing
     // of my previous backup program.
