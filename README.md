@@ -135,3 +135,18 @@ When looking at /mnt/backa/backup/blah/stuff.tex
 /mnt/baka/backup/blah/stuff.tex ---> /mnt/baka/purge/<today date>/<hour>/removed/blah/stuff.tex
 
 By the way, Lora has very bad performance against renaming a directory : in the first pass, it copy everything and in the second pass, it move the whole to the purge directory.
+
+## PROBLEMS
+
+The backup partition (which is typically an external disk or something in the cloud) has to be mounted somewhere in your directory tree : Lora a transparent writing.
+
+Thus if you do not unmount the backup partition, your user still has writing permission on the backup far after the backup to be completed. In particular a ransomware could encrypt your backup too.
+
+I see two solutions :
+
+* Write a bash script that mounts the backup partition, launches the backup and then unmount the backup.
+* Give the writing permission on the backup to an other user.
+
+In every cases, you should do backups on severa different supports, and permanently have at least one unplugged.
+
+
