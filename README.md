@@ -15,7 +15,7 @@ Let us be clear : the best backup way is a brand new full copy of your home ever
 
 ### My solution
 
-For the example, let's say I'm making a backup on January 12, 2017 at 09h23 in the directory `/mnt/backup`. This is typically the mount point of an external encrypted disk. Lora will use (and eventually create) the tree following directories :
+For the example, let's say I'm making a backup on January 12, 2017 at 09h23 in the directory `/mnt/backup`. This is typically the mount point of an external encrypted disk. Lora will use (and eventually create) the three following directories :
 ```bash
 /mnt/backup/bakatot
 /mnt/backup/bakapurge/2017-January-12/09h23/modified
