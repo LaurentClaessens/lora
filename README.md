@@ -138,7 +138,7 @@ By the way, Lora has very bad performance against renaming a directory : in the 
 
 ## PROBLEMS
 
-The backup partition (which is typically an external disk or something in the cloud) has to be mounted somewhere in your directory tree : Lora a transparent writing.
+The backup partition (which is typically an external disk or something in the cloud) has to be mounted somewhere in your directory tree : Lora needs a transparent writing.
 
 Thus if you do not unmount the backup partition, your user still has writing permission on the backup far after the backup to be completed. In particular a ransomware could encrypt your backup too.
 
