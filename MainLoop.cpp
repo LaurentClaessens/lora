@@ -55,10 +55,9 @@ void MainLoop::loopOverDirectory(path directory)
         else if (is_regular_file(pathname)) { DealWithFile(pathname); }
         else
         {
-            config_ptr->writeLog("I'm looping in the directory : "+directory.string());
-            string message="I'm looping in the directory : "+directory.string();
-            config_ptr->writeLog(message);
-            throw std::string(message);
+            config_ptr->writeLog("In the directory "+directory.string());
+            config_ptr->writeLog("The stuff +"+pathname.string()+" seems strange.");
+            config_ptr->writeLog("I'm not going to enter inside.");
         }
     }
 }
