@@ -58,6 +58,12 @@ Some remarks :
 
 ## INSTALLATION AND COMPILATION
 
+* Prerequisites
+
+```
+apt install make build-essentials libboost-dev libboost-thread-dev libboost-filesystem-dev
+```
+
 * Download 
 
         git clone https://github.com/LaurentClaessens/lora
