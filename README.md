@@ -61,7 +61,7 @@ Some remarks :
 * Prerequisites
 
 ```
-apt install make build-essentials libboost-dev libboost-thread-dev libboost-filesystem-dev
+apt install make  libboost-dev libboost-thread-dev libboost-filesystem-dev
 ```
 
 * Download 
