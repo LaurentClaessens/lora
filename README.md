@@ -1,6 +1,10 @@
 
 # LORA : a backup program
 
+## install
+
+sudo apt install libboost-dev libboost-filesystem-dev libboost-thread-dev
+
 ## Why an other backup software ?
 
 ### My requirements
