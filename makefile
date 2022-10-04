@@ -3,10 +3,20 @@
 
 CXX           = LC_ALL=C g++ -std=c++11    #c++11 for  std::to_string
 CXXFLAGS      = -pipe -O2 -Wall -W -D_REENTRANT $(DEFINES)
-BOOST_SYSTEM  = -lboost_filesystem -lboost_system 
-BOOST_THREAD  = -lboost_thread
-BOOST_THREAD_LIB  = /usr/lib/i386-linux-gnu/libboost_thread.so 
-BOOST_THREAD_LIB  = /usr/lib/x86_64-linux-gnu/libboost_thread.so 
+
+BASE_DIR      = ${CURDIR}
+BOOST_DIR     = $(BASE_DIR)/boost/boost_1_80_0
+INC_BOOST     = -I $(BOOST_DIR)
+
+BOOST_LIB_DIR = $(BOOST_DIR)/stage/lib
+BOOST_SYSTEM  = $(BOOST_LIB_DIR)/libboost_filesystem.a
+BOOST_THREAD  = $(BOOST_LIB_DIR)/libboost_thread.a
+
+#BOOST_SYSTEM  = -lboost_filesystem -lboost_system 
+#BOOST_THREAD  = -lboost_thread
+#BOOST_THREAD_LIB  = /usr/lib/i386-linux-gnu/libboost_thread.so 
+#BOOST_THREAD_LIB  = /usr/lib/x86_64-linux-gnu/libboost_thread.so 
+
 LFLAGS        = -Wl,-O1
 LIBS          = $(SUBLIBS)  -L/usr/lib/i386-linux-gnu  -lpthread 
 LIBS          = $(SUBLIBS)  -L/usr/lib/x86_64-linux-gnu  -lpthread 
