@@ -9,12 +9,6 @@ cd boost_1_80_0/
 ./b2 -std=C++11
 ./b2  headers
 ./b2 install
-
-
-
-./bootstrap.sh --prefix=. --with-libraries=filesystem thread
-./b2 --with-filesystem --with-thread
-./b2 install
 ```
 
 At this point the subdirectory `boost/boost_1_80_0/stage/lib` contains the files `libboost_thread.a` and `libboost_filesystem.a`.
