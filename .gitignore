@@ -1,3 +1,12 @@
+# python
+
+__pycache__/
+config.json
+venv/
+
+
+# C++
+
 .directory
 README.html
 backup.cfg
