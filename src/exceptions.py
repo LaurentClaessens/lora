@@ -7,3 +7,7 @@ class PyLoraError(Exception):
 
 class NotBuildYet(PyLoraError):
     """The object is not build yet."""
+
+
+class MtimeError(PyLoraError):
+    """Strange Mtime for a file."""

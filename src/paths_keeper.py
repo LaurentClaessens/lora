@@ -5,8 +5,9 @@ This class contains the naming convention for the files and
 directories.
 """
 
-from typing import TYPE_CHECKING
+import time
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import dirmanage
 
@@ -31,6 +32,20 @@ class PathsKeeper:
         self["starting"] = Path(config["starting"])
         self["main_backup_dir"] = Path(config["main_backup_dir"])
         self["bakatot_dir"] = self.build_bakatot()
+        self["purge_dir"] = self.build_purge()
+        self["modified"] = self["purge_dir"] / "modified"
+        self["deleted"] = self["purge_dir"] / "deleted"
+
+    def build_purge(self):
+        """Create the purge directory."""
+        config = self.options.config
+        name = config["name"]
+        dirname = f"bakapurge.{name}"
+        now = time.time()
+        local_time = time.localtime(now)
+        str_date = time.strftime("%Y_%B_%d", local_time)
+        str_hour = time.strftime("%Hh%Mm%S", local_time)
+        return self["main_backup_dir"] / dirname / str_date / str_hour
 
     def build_bakatot(self):
         """The directory in which we make the copy."""
@@ -38,6 +53,18 @@ class PathsKeeper:
         name = config["name"]
         dirname = f"bakatot.{name}"
         return self["main_backup_dir"] / dirname
+
+    def get_bak_path(self, src_path):
+        """Return the backup path of a given local path."""
+        starting = self["starting"]
+        rel_path = src_path.relative_to(starting)
+        return self["bakatot_dir"] / rel_path
+
+    def get_mod_purge(self, src_path):
+        """Return the purge path of a modified file."""
+        starting = self["starting"]
+        rel_path = src_path.relative_to(starting)
+        return self["modified"] / rel_path
 
     def create_excluded_dirs(self):
         """The list of directories to be excluded from the backup."""

@@ -5,6 +5,7 @@ import dirmanage
 from src.paths_keeper import PathsKeeper
 from src.exceptions import NotBuildYet
 from src.utilities import read_json_file
+from src.jobs_manager import JobsManager
 
 
 class Options:
@@ -30,3 +31,8 @@ class Options:
         config_file = dirmanage.init_dir / args.config_file
         self.config = read_json_file(config_file)
         self.paths = PathsKeeper(self)
+        self.jobs_manager = JobsManager()
+
+    def close_threads(self):
+        """Close the threads. Only finishes the created jobs."""
+        self.jobs_manager.stop()
