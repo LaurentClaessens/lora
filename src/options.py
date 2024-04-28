@@ -36,3 +36,4 @@ class Options:
     def close_threads(self):
         """Close the threads. Only finishes the created jobs."""
         self.jobs_manager.stop()
+        self.jobs_manager.wait_finished()

@@ -60,6 +60,17 @@ class PathsKeeper:
         rel_path = src_path.relative_to(starting)
         return self["bakatot_dir"] / rel_path
 
+    def get_del_purge(self, src_path):
+        """
+        Return the purge path of a bakup file.
+
+        When a file exists in the backup but does not correspond to an actual
+        file in the real directory, we have to remove it from the directory.
+        """
+        bak_dir = self["bakatot_dir"]
+        rel_path = src_path.relative_to(bak_dir)
+        return self["deleted"] / rel_path
+
     def get_mod_purge(self, src_path):
         """Return the purge path of a modified file."""
         starting = self["starting"]

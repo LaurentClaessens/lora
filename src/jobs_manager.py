@@ -1,5 +1,6 @@
 import time
 
+import threading
 from threading import Thread
 
 from queue import Queue
@@ -12,7 +13,11 @@ class JobsManager:
         """Initialize."""
         self.jobs: Queue[LoraJob] = Queue()
         self.open: bool = True
+        self.finished: bool = False
         self.thread = Thread(target=self.run)
+
+    def start(self):
+        """Start the jobs."""
         self.thread.start()
 
     def append(self, job: LoraJob):
@@ -32,19 +37,41 @@ class JobsManager:
     def do_one_loop(self):
         """Work until the job list is empty."""
         while self.has_jobs():
+            self.check_main_thread()
             job = self.jobs.get()
             print("queue: ", self.jobs.qsize(), end="\r")
             job.run()
+
+    def check_main_thread(self):
+        """
+        Check that the main thread is alive.
+
+        If not, empty the job list as fast as possible.
+        """
+        if threading.main_thread().is_alive():
+            return
+        print("main thread is finished. I stop.")
+        self.stop()
+        with self.jobs.mutex:
+            self.jobs.queue.clear()
 
     def qsize(self):
         """Return the (approximate) size of the queue."""
         return self.jobs.qsize()
 
+    def wait_finished(self):
+        """Wait that all the jobs are done."""
+        print("Waiting that all the jobs are done.")
+        while not self.finished:
+            time.sleep(1)
+
     def run(self):
         while self.open:
+            self.check_main_thread()
             self.do_one_loop()
             print("waiting for new jobs...", end="\r")
             time.sleep(0.2)
         print("manager is closed. One last loop.")
         self.do_one_loop()
         print("manager finished.")
+        self.finished = True

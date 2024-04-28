@@ -35,7 +35,7 @@ class CloseThreads:
 
     def __enter__(self):
         """Enter the context manager."""
-        pass
+        self.options.jobs_manager.start()
 
 
 def all_files(directory: Path):
