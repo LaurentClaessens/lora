@@ -2,9 +2,10 @@ import time
 
 import threading
 from threading import Thread
-
 from queue import Queue
+
 from src.stubs import LoraJob
+from src.exceptions import ClosedManager
 
 
 class JobsManager:
@@ -22,13 +23,15 @@ class JobsManager:
 
     def append(self, job: LoraJob):
         """Append a job to the list if needed."""
+        if not self.open:
+            raise ClosedManager("Try to append task to a closed manager")
         if not job.has_to_to():
             return
         self.jobs.put(job)
 
     def stop(self):
         self.open = False
-        print("The jobs manager is now closed.")
+        print(f"The jobs manager is now closed. ({self.qsize()})")
 
     def has_jobs(self):
         """Say if there are some more jobs."""
@@ -61,7 +64,7 @@ class JobsManager:
 
     def wait_finished(self):
         """Wait that all the jobs are done."""
-        print("Waiting that all the jobs are done.")
+        print(f"Waiting that all the jobs are done. ({self.qsize()})")
         while not self.finished:
             time.sleep(1)
 

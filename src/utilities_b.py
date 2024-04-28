@@ -46,5 +46,4 @@ def all_files(directory: Path):
         if elem.is_dir():
             if is_excluded_dir(elem):
                 continue
-            print(f"enter {elem}")
             yield from all_files(elem)

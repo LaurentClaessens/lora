@@ -8,8 +8,10 @@ from pathlib import Path
 from src.getters import get_paths
 from src.getters import get_options
 from src.exceptions import MtimeError
+from src.utilities import human_timestamp
 from src.utilities import dprint
-_ = shutil
+from src.utilities import ciao
+_ = ciao
 
 
 class BackupJob:
@@ -31,13 +33,23 @@ class BackupJob:
         """
         if not self.destination.is_file():
             return True
-        src_mtime = os.path.getmtime(self.source)
-        dest_mtime = os.path.getmtime(self.destination)
+
+        # round the time because it seems that the
+        # copied mtime is rounded.
+        # source:  1690263067.3967152
+        # backup : 1690263067.0
+        src_mtime = int(os.path.getmtime(self.source))
+        dest_mtime = int(os.path.getmtime(self.destination))
         if src_mtime > dest_mtime:
+            dprint(f"ok pour {self.source}")
+            dprint("parce que :")
+            dprint("  src : ", src_mtime, human_timestamp(src_mtime))
+            dprint("  dst : ", dest_mtime, human_timestamp(dest_mtime))
             return True
         if src_mtime != dest_mtime:
-            raise MtimeError(
-                "Problem with mtime of {self.source} Vs {self.destination}")
+            text = f"Problem with mtime of "\
+                   f"{self.source} Vs {self.destination}"
+            raise MtimeError(text)
         src_size = os.path.getsize(self.source)
         dst_size = os.path.getsize(self.destination)
         if src_size != dst_size:
@@ -48,7 +60,8 @@ class BackupJob:
         """Move the destination file to its purge."""
         purge = self.paths.get_mod_purge(self.source)
         dprint(f"  mod : {purge}")
-        #shutil.move(self.destination, purge)
+        purge.parent.mkdir(parents=True, exist_ok=True)
+        shutil.move(self.destination, purge)
 
     def run(self):
         """Run the job: makes the copy."""
@@ -56,7 +69,11 @@ class BackupJob:
         dprint(f"run bak job ({qsize})")
         dprint(f"  src : {self.source}")
         dprint(f"  dst : {self.destination}")
+        if "ZZ" in str(self.source):
+            self.options.close_threads()
+            ciao()
         if self.destination.is_file():
             self.purge_dest()
         dprint("   bakup")
-        #shutil.copy2(self.source, self.destination)
+        self.destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(self.source, self.destination)

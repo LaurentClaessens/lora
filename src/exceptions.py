@@ -11,3 +11,7 @@ class NotBuildYet(PyLoraError):
 
 class MtimeError(PyLoraError):
     """Strange Mtime for a file."""
+
+
+class ClosedManager(PyLoraError):
+    """The jobs manager is closed."""
