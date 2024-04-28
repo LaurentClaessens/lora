@@ -33,6 +33,9 @@ class BackupJob:
         - the destination and the course are not identical.
         """
         if not self.destination.is_file():
+            dprint(f"ok pour {self.source}")
+            dprint("parce que pas dans bak")
+            dprint("existe pas : ", self.destination)
             return True
 
         # round the time because it seems that the
@@ -43,7 +46,7 @@ class BackupJob:
         dest_mtime = int(os.path.getmtime(self.destination))
         if src_mtime > dest_mtime:
             dprint(f"ok pour {self.source}")
-            dprint("parce que :")
+            dprint("parce que date :")
             dprint("  src : ", src_mtime, human_timestamp(src_mtime))
             dprint("  dst : ", dest_mtime, human_timestamp(dest_mtime))
             return True
@@ -54,6 +57,10 @@ class BackupJob:
         src_size = os.path.getsize(self.source)
         dst_size = os.path.getsize(self.destination)
         if src_size != dst_size:
+            dprint(f"ok pour {self.source}")
+            dprint("parce que taille :")
+            dprint("  src : ", src_size)
+            dprint("  dst : ", dst_size)
             return True
         return False
 

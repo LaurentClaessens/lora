@@ -6,6 +6,7 @@ from pathlib import Path
 
 from src.getters import get_paths
 from src.getters import get_options
+from src.utilities_b import manage_crashs
 from src.utilities import dprint
 _ = shutil
 _ = dprint
@@ -22,8 +23,21 @@ class PurgeJob:
 
     def has_to_to(self):
         """Say if self is a job that has to be done."""
-        return True
+        local_file = self.paths.bak_to_local(self.source)
+        if not local_file.is_file():
+            print("ok purge pour")
+            print("  bak", self.source)
+            print("  loc", local_file)
+            print("  dst", self.destination)
+            print("je dirais que oui")
+        return False
 
+    @manage_crashs
     def run(self):
         """Run the job: makes the copy."""
-        raise NotImplemented
+        qsize = self.options.jobs_manager.qsize()
+        dprint(f"run purge job ({qsize})")
+        dprint(f" src: {self.source}")
+        dprint(f" dst: {self.destination}")
+        self.destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.move(self.source, self.destination)

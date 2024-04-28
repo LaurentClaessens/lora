@@ -62,6 +62,7 @@ class JobsManager:
         """Make an emergency stop."""
         print("making an emergency stop.")
         self.stop()
+        self.finished = True
         with self.jobs.mutex:
             self.jobs.queue.clear()
         self.close_threads()
@@ -91,6 +92,7 @@ class JobsManager:
         print(f"Waiting that all the jobs are done. ({self.qsize()})")
         while not self.finished:
             time.sleep(1)
+        print("All jobs are finished")
 
     def run(self):
         while self.open:

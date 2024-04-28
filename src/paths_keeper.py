@@ -54,6 +54,12 @@ class PathsKeeper:
         dirname = f"bakatot.{name}"
         return self["main_backup_dir"] / dirname
 
+    def bak_to_local(self, bak_path: Path) -> Path:
+        """Return the local path from the backup path."""
+        starting = self["starting"]
+        rel_path = bak_path.relative_to(self['bakatot_dir'])
+        return starting / rel_path
+
     def get_bak_path(self, src_path):
         """Return the backup path of a given local path."""
         starting = self["starting"]

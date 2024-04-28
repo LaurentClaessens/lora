@@ -11,7 +11,7 @@ from src.purge_job import PurgeJob
 from src.utilities import ciao
 from src.utilities import dprint
 _ = dirmanage
-_ = ciao
+_ = ciao, dprint
 
 
 def do_backup(options: Options):
@@ -33,7 +33,7 @@ def do_purge(options: Options):
 def do_work(options: Options):
     """Make backup, then purge."""
     do_backup(options)
-    # do_purge(options)
+    do_purge(options)
 
 
 def ask_for_mount(options):
@@ -53,5 +53,3 @@ options = Options(args)
 ask_for_mount(options)
 with CloseThreads(options):
     do_work(options)
-
-dprint("remettre la position 911108151")

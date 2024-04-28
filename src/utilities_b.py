@@ -31,7 +31,7 @@ def manage_crashs(fun):
         except OSError as error:
             print("Une erreur est survenue")
             print(error)
-            raise error
+            self.options.jobs_manager.emergency_stop()
     return new_fun
 
 
@@ -57,6 +57,8 @@ def all_files(directory: Path):
     options = get_options()
     jobs_manager = options.jobs_manager
     for elem in directory.iterdir():
+        if elem.is_symlink():
+            continue
         if not jobs_manager.open:
             print("le manager est fermé")
             print("j'arrête le all_files")
