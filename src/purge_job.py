@@ -22,7 +22,7 @@ class PurgeJob:
 
     def has_to_to(self):
         """Say if self is a job that has to be done."""
-        raise NotImplemented
+        return True
 
     def run(self):
         """Run the job: makes the copy."""

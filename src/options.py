@@ -31,9 +31,4 @@ class Options:
         config_file = dirmanage.init_dir / args.config_file
         self.config = read_json_file(config_file)
         self.paths = PathsKeeper(self)
-        self.jobs_manager = JobsManager()
-
-    def close_threads(self):
-        """Close the threads. Only finishes the created jobs."""
-        self.jobs_manager.stop()
-        self.jobs_manager.wait_finished()
+        self.jobs_manager = JobsManager(self)

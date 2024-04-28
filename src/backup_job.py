@@ -8,6 +8,7 @@ from pathlib import Path
 from src.getters import get_paths
 from src.getters import get_options
 from src.exceptions import MtimeError
+from src.utilities_b import manage_crashs
 from src.utilities import human_timestamp
 from src.utilities import dprint
 from src.utilities import ciao
@@ -63,15 +64,13 @@ class BackupJob:
         purge.parent.mkdir(parents=True, exist_ok=True)
         shutil.move(self.destination, purge)
 
+    @manage_crashs
     def run(self):
         """Run the job: makes the copy."""
         qsize = self.options.jobs_manager.qsize()
         dprint(f"run bak job ({qsize})")
-        dprint(f"  src : {self.source}")
-        dprint(f"  dst : {self.destination}")
-        if "ZZ" in str(self.source):
-            self.options.close_threads()
-            ciao()
+        dprint(f" src: {self.source}")
+        dprint(f" dst: {self.destination}")
         if self.destination.is_file():
             self.purge_dest()
         dprint("   bakup")
