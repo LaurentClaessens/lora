@@ -1,6 +1,10 @@
 
 # LORA : a backup program
 
+This was mainly written in 2015-2016 as a c++ project when I was (freely) attending to c++ course at university of Padova, Italy.
+
+I made few updates since then because it fits my needs.
+
 ## install
 
 sudo apt install libboost-dev libboost-filesystem-dev libboost-thread-dev
